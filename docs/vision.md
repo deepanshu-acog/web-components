@@ -33,10 +33,11 @@ by an AI assistant. This project should stay that small.
 
 ## Who it serves
 
-**App developer** — building a real application, usually Next.js. Installs one
-package, applies the Aganitha theme, and uses components. The production build
-includes only what the app actually uses. This is the primary path, and the one
-everything else is judged against.
+**App developer** — building a real application in one of the stacks we
+actually use: Astro, Next.js, Hugo, or plain React. Installs the package,
+applies the Aganitha theme, and uses components. Which stack they picked should
+change how the code is loaded and nothing else. This is the primary path, and
+the one everything else is judged against.
 
 **AI-assisted developer** — the same person, working with an assistant. The
 assistant has our skills installed and knows what components exist, which one
@@ -57,9 +58,15 @@ because the markup in the preview is the same markup a real application uses.
 
 ## Must satisfy
 
+- **Work in every stack we use.** Astro, Next.js, Hugo, and React are all in
+  active use, and more will appear. A component that works in only one of them
+  is not usable here. This constraint drives more of the design than any other.
 - **Do not rebuild what a maintained upstream library already does well.** Our
   effort goes into what is ours: the brand, our own components, and the agent
   layer.
+- **We cannot enumerate what teams will need.** Aganitha builds far more
+  applications than any central group can survey, so the system must let teams
+  add what they need rather than depend on us predicting it.
 - **A junior engineer can contribute with a checklist**, without knowing how the
   build, the release, or the packaging works.
 - **The catalog an AI assistant reads is always current and accurate.** A
