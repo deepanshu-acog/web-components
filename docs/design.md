@@ -283,6 +283,13 @@ scientific tooling, not an unlucky pick.
   - **Admitting something requires a check**: licence, last release, version,
     and how much would have to be rebuilt if it disappeared. Recorded when the
     entry is added.
+  - **The check walks the resolved dependency tree, not the declared one.** The
+    package a developer names is often not the package that carries the risk.
+    React is the worked example: `react` has no advisories at any 19.x, while
+    the React Server Components code that shipped a CVSS 10.0 pre-authentication
+    remote code execution lives in `react-server-dom-*`, which nobody installs
+    on purpose. Checking the named package returns a clean result that means
+    nothing. See D13.
 
 ### D13 — Recommend versions where web components work properly
 
@@ -310,28 +317,54 @@ across them, and the difference is not obvious from the outside.
   repository only, not a recommendation to consumers.
 
 **Version floors, checked against the OSV advisory database on 2026-08-08.**
-Recheck before publishing a recipe; these move.
+Recheck before publishing a recipe; these move, and they have moved fast.
 
 | | Minimum | Reason |
 |---|---|---|
-| React | 19.0.0 | Custom element support. No advisories at any 19.x. |
+| React | 19.0.0 for custom elements, but see below | The `react` package itself is clean |
+| `react-server-dom-*` | **19.2.8** (or 19.0.8 / 19.1.9) | Eight CVEs, one of them CVSS 10.0 |
 | Next.js | **16.2.11**, or 15.5.21 on the 15 line | Security, not features |
 | Bun | 1.2.0 | 1.1.x had command injection and prototype pollution |
 | TypeScript | any current | No advisories |
 
-React is not the risk here; Next.js is. `next@16.2.10` carries nine open
-advisories and `16.2.11` carries none, so **a recipe must pin the patch
-version — `^16.2` can resolve to a vulnerable build.** The critical advisory
-that reads as a React problem ("RCE in the React flight protocol") is in
-Next.js's implementation of that protocol, not in React.
+**Pin the patch, never the minor.** `next@16.2.10` carries nine open
+advisories and `16.2.11` carries none. `^16.2` can resolve to the vulnerable
+one.
 
-**This is also an argument for preferring a static stack.** Nearly every
-Next.js advisory concerns middleware and proxy bypass, server-side request
-forgery, cache poisoning, or Server Actions — server-side attack surface that
-an Astro or Hugo site does not have. Where a site does not genuinely need a
-server, the static stacks avoid that whole category and the patching treadmill
-that comes with it. Recommend them first, and treat Next.js as the choice for
-applications that actually need what it does.
+**Check the packages that ship, not the packages that are named.** The
+`react` package has no advisories at any 19.x. The React Server Components
+implementation ships in `react-server-dom-webpack`, `-turbopack` and
+`-parcel` — separate packages, versioned in lockstep with React, pulled in by
+the framework rather than named by the developer. Querying `react` returns
+"clean" and is worthless. This applies to every vetting decision under D12:
+walk the resolved dependency tree.
+
+### The React Server Components record, and what follows from it
+
+Eight advisories in under a year, all in the same subsystem, with the fix line
+climbing continuously:
+
+| CVE | | Fixed in (19.2 line) |
+|---|---|---|
+| CVE-2025-55182 "React2Shell" | RCE, CVSS 10.0, pre-authentication | 19.2.1 |
+| CVE-2025-55183 | Source code exposure | 19.2.2 |
+| CVE-2025-55184 | Denial of service | 19.2.2 |
+| CVE-2025-67779 | Denial of service | 19.2.3 |
+| CVE-2026-23864 | Multiple denial of service | 19.2.4 |
+| CVE-2026-23869 | Denial of service | 19.2.5 |
+| CVE-2026-23870 | Denial of service | 19.2.6 |
+| CVE-2026-44907 | Denial of service in Server Functions | 19.2.8 |
+
+None of these packages are used by Hugo, by a static Astro site, by a
+client-side React application, or by web components on a static page. They are
+reached only by server-rendering React.
+
+**So the recommendation is not "patch faster", it is "prefer a stack that never
+loads this code".** Recommend Hugo or Astro first. Treat Next.js with Server
+Components as a deliberate choice for applications that genuinely need
+server-side rendering, made with this record in view — and, under D12, with the
+understanding that recommending it commits us to tracking these releases on
+behalf of every team that follows the recommendation.
 
 ## What is volatile, and where the seam is
 
