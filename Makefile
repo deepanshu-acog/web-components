@@ -26,9 +26,13 @@ test: ## Run tests
 generate: ## Regenerate custom-elements.json and the agent skill
 	bun run tools/generate.ts
 
-check: build test ## Full gate: build, test, and verify generated files are current
+check: build test ## Full gate: build, test, CSS rules, and generated files
+	bun run tools/check_css.ts
 	bun run tools/generate.ts --check
 	@echo "✓ check passed"
+
+check-css: ## Verify tokens exist and no literal colours are used
+	bun run tools/check_css.ts
 
 clean: ## Remove build output
 	rm -rf dist

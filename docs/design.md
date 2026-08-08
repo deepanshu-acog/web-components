@@ -136,6 +136,42 @@ many packages turned out to be the wrong reason.
 - **Consequences:** documentation comments become a review item, and a check
   must fail the build when a generated file is stale. Without that check this is
   a convention rather than a guarantee.
+- **This decision conflicts with D8, and building the examples is what found
+  it.** The analyser identifies elements by looking for `customElements.define`.
+  D8 registers through a `define()` helper instead, so the analyser saw no
+  elements at all — the components came out as ordinary classes and the base
+  class was wrongly reported as an element. The catalog would have been silently
+  empty. Resolved by declaring the tag in the documentation comment
+  (`@customElement atk-metric`), which means the tag name now exists in two
+  places; a check fails when they disagree, because a catalog that documents an
+  element under a name the browser does not know is worse than no catalog.
+- **Patterns cannot be generated this way at all.** The Custom Elements Manifest
+  describes custom elements, and a pattern is markup plus CSS. Patterns
+  therefore carry a markdown file with front matter, and the generator merges
+  both sources into one skill. This makes the two contribution shapes asymmetric
+  — a component is one file, a pattern is two — which the contributor checklist
+  has to handle rather than pretend away.
+
+### D6a — Check what fails silently
+
+CSS custom properties and CSS classes fail quietly. A misspelled `--wa-` token
+is dropped with no error. A Web Awesome utility class used inside a shadow root
+does nothing, because global CSS does not cross the shadow boundary. A container
+query with no `container-type` never matches. None of these produce a warning,
+and none are reliably caught in review.
+
+- **Options:**
+  - **A. Write the rules down and rely on review** (simplest) — free, and it is
+    what the previous attempt did. Its `AGENTS.md` had nine rules and one
+    contributor.
+  - **B. Check the ones a machine can check.**
+- **Chose B** for the two that are mechanical: every `--wa-` token we reference
+  must exist in Web Awesome's real set, and our CSS may contain no literal
+  colours.
+- **Consequences:** the contributor checklist gets shorter, because the machine
+  enforces what it can and the checklist covers only what needs judgement. That
+  is the intended direction — D9's length budget is met by moving work into
+  tooling, not by writing more tersely.
 
 ### D7 — The skill pulls detail from files, not from a command
 
@@ -214,6 +250,64 @@ many packages turned out to be the wrong reason.
 - **Consequences:** the catalog covers components we did not write, which is
   fine — it is a catalog, not an inventory of our code. Each curated choice is a
   decision to record when it is made, with the licence checked.
+- Superseded in part by D12: curating something means committing to support it.
+
+### D12 — What is in the catalog, we support
+
+Building the `<atk-go-ribbon>` wrapper found that the upstream component it
+wraps is version 0.0.14, last released in 2021. That is the normal state of
+scientific tooling, not an unlucky pick.
+
+- **Options:**
+  - **A. Only admit actively maintained dependencies** — a clean rule, but it
+    would exclude components teams already depend on, and much scientific
+    software is quiet for years without being abandoned.
+  - **B. Admit anything and label its maintenance status** (simplest) — honest,
+    but it leaves every team to decide alone, which is the situation this
+    project exists to end.
+  - **C. Admit it and take on supporting it.**
+- **Chose C.** If something is in the catalog, we are responsible for it
+  continuing to work — old or new. Fixing it, forking it, or replacing it is our
+  problem, not the problem of each application that used it. That promise is the
+  reason to have a curated catalog at all; without it we are only publishing
+  opinions.
+- **Consequences, and they are real:**
+  - **The catalog must stay small enough that the promise is true.** Adding an
+    entry is taking on work with no end date. This is now the main argument
+    against adding anything, and a better one than bundle size ever was.
+  - **Every third-party component needs a wrapper of ours**, so applications
+    depend on our tag rather than the upstream one. This is the seam that lets
+    us replace an implementation without touching any application. Note that
+    this does not contradict D3: we do not wrap Web Awesome elements, because we
+    do not need to replace Web Awesome behind an application's back.
+  - **Admitting something requires a check**: licence, last release, version,
+    and how much would have to be rebuilt if it disappeared. Recorded when the
+    entry is added.
+
+### D13 — Recommend versions where web components work properly
+
+Aganitha uses Astro, Next.js, Hugo and React. Web components behave differently
+across them, and the difference is not obvious from the outside.
+
+- **Options:**
+  - **A. Support whatever versions teams already run** — nothing to migrate, but
+    we would have to ship framework wrappers and document workarounds forever.
+  - **B. Recommend a floor and build the recipes against it.**
+- **Chose B.** Teams follow what we demonstrate, so what we demonstrate should
+  be the version where this works without workarounds.
+- **React 19 or later is the one that matters.** Before 19, React passed
+  everything to a custom element as a stringified attribute and could not listen
+  to custom events without a ref. From 19 it sets properties and handles events
+  directly, so `<atk-metric>` behaves like any other element. **Next.js 15 and 16
+  both still permit React 18**, so naming a Next.js version is not sufficient —
+  the React version has to be stated explicitly.
+- **Consequences:** some applications will need a React upgrade before adopting
+  atk-ui. That is a real cost and we should say so plainly rather than hide it
+  behind a compatibility layer. In exchange we ship no framework wrappers of our
+  own, and Web Awesome's are there for anything still on React 18.
+- Our own build stays on TypeScript 5.x because the manifest analyser is built
+  on the TypeScript compiler API and predates 7. This is a constraint on this
+  repository only, not a recommendation to consumers.
 
 ## What is volatile, and where the seam is
 
