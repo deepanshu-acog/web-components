@@ -19,9 +19,17 @@ Every Aganitha project re-answers the same questions: which UI library, which
 icons, what spacing scale, what a callout looks like. The answers differ per
 project, so nothing is reusable and nothing looks related.
 
-Two earlier attempts at solving this stopped part way. **The reasons are being
-re-examined** — see [`lessons.md`](lessons.md). Do not treat the earlier
-explanation as settled until that file is rewritten from the interviews.
+Two earlier attempts stopped part way, and interviews found something other than
+what their code suggested: **engineers liked the components and still did not use
+them.** They could not find out what existed, could not see what things looked
+like, and had no path from wanting a component to running it. See
+[`lessons.md`](lessons.md).
+
+That sets what this project competes against. It is not another component
+library — it is "let the AI assistant invent it," which already works for the
+people we are asking to switch. They pay the learning cost, and consistency
+benefits the company rather than them, so an engineer who declines is behaving
+sensibly. **We win by producing a better result faster, or we do not win.**
 
 What changed, and why a third attempt is worth making: a maintained upstream
 library now covers most of the ground. Both earlier attempts spent the majority
@@ -80,17 +88,22 @@ because the markup in the preview is the same markup a real application uses.
 
 ## Success looks like
 
-*Draft. To be made concrete once the first sample applications exist.*
+The measure that matters is **time from an empty directory to a working, branded
+page**. Everything else follows from it. If that time is not clearly better than
+asking an assistant to invent a page from nothing, we have not earned the
+learning cost, and an engineer who declines is right to.
 
-- The sample applications are built on it, and building them did not require
-  changes to atk-ui itself.
-- Three or more internal projects depend on it within two quarters, and no new
-  internal project writes its own callout, card, or table.
-- A junior engineer who has never seen the repository adds a component in under
-  a day, using the checklist and the scaffold, with no help from a maintainer.
+- An engineer who has never used atk-ui runs one command and has a working,
+  branded application they can start editing.
+- An engineer can find out what exists, see what it looks like, and see it used
+  in a real application — without asking anyone.
 - An AI assistant asked to build a page picks appropriate components without
   anyone naming them in the prompt.
+- Three or more internal projects depend on it within two quarters, and no new
+  internal project writes its own callout, card, or table.
 - Two teams build separately and the results look related.
+- Later, and only once the above are true: an engineer who has never seen the
+  repository adds a component in a day, with no help from a maintainer.
 
 **Exit criteria.** Two ways this project should stop:
 

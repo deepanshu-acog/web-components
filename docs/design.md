@@ -366,6 +366,48 @@ server-side rendering, made with this record in view — and, under D12, with th
 understanding that recommending it commits us to tracking these releases on
 behalf of every team that follows the recommendation.
 
+### D14 — The on-ramp is a deliverable, not documentation
+
+Interviews found that engineers liked the components of both earlier attempts and
+still did not use them, because there was no path from wanting them to running
+them. See [`lessons.md`](lessons.md).
+
+- **Options:**
+  - **A. Write good documentation and a getting-started guide** (simplest) — this
+    is what both earlier attempts had. Neither was adopted.
+  - **B. Ship starting points that produce a working application.**
+- **Chose B.** Four things, in this order:
+  1. **Starter templates** — a repository that builds and runs, already themed,
+     with a page in it. Astro and Hugo first; both are where internal work is
+     heading, and both are static, which avoids the server-side attack surface
+     recorded in D13. Next.js waits, and alternatives to it are being looked at.
+  2. **A project skill** that starts a new project or moves an existing one onto
+     atk-ui, so it works from Claude, Codex or OpenCode rather than only from a
+     command line.
+  3. **A discovery surface.** Interviews named discovery as a problem in its own
+     right, with three parts that have to be solved together: what exists, what
+     it looks like, and what it looks like in a real application. A list answers
+     only the first. This finally settles the preview question that has been open
+     since the CDN was demoted — preview is a browsable visual reference, and the
+     reason is discovery rather than no-build convenience.
+  4. **Example applications**, because people asked to see whole applications
+     rather than isolated component demonstrations. **A starter template that
+     produces a genuinely good page is also an example application**, so one
+     artefact serves both — which is the main argument for making the templates
+     real rather than minimal.
+  5. **Page layouts**, so nobody has to decide page structure. Check what
+     `<wa-page>` and the Web Awesome utility layer already give before designing
+     anything; the gap is likely three or four opinionated Aganitha page shapes,
+     not a layout system.
+- **Consequences:** every template is a thing we maintain and, under D12, patch.
+  That is the argument for two rather than five, and for preferring static ones.
+  It also reorders the work — the contribution path in D9 is sound but moves
+  behind all of this, because people contribute to systems they already use.
+- **The measure of success changes with it.** Adoption counts are lagging and
+  easy to argue about. The honest test is time from an empty directory to a
+  working, branded page. If that is not clearly better than asking an assistant
+  to invent one, the project has not earned its learning cost.
+
 ## What is volatile, and where the seam is
 
 The test: if this is replaced next year, what has to be rewritten?
@@ -383,9 +425,17 @@ The test: if this is replaced next year, what has to be rewritten?
 - **Wrapping upstream elements under our own names** — D3. It is invisible work.
 - **Building scientific visualisations** — D11. The data owners publish better
   ones and we already use them.
+- **Generating a website from structured data.** Asked for in interviews — "give
+  me JSON plus templates and produce a site." **Never in scope.** That is exactly
+  what Hugo and Astro do, and building it again would mean competing with the
+  tool we are asking people to adopt. The answer to anyone who asks: use Hugo or
+  Astro's own content pipeline, and take our templates and components as the
+  presentation layer. A permanent boundary, not a deferral.
 - **A validation and self-correction pipeline for generated content** — the
-  previous attempt built one. It serves automated content generation, which is
-  explicitly the lower priority. Deferred, not rejected.
+  previous attempt built one. Asking an assistant to produce a document or report
+  with our components is a real request and the catalog already supports it; what
+  stays out is the machinery to check and correct the output, until a real
+  pipeline needs it.
 - **Framework wrappers, server rendering, translations, editor metadata** — all
   shipped by the upstream library. Building any of these would be duplicating
   what we already depend on.
