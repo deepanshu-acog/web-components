@@ -1,3 +1,5 @@
+<!-- Generated from the component source. Do not edit; run `make generate`. -->
+
 # `<atk-metric>`
 
 A labelled value with its recent trend and normal range.

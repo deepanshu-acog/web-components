@@ -1,3 +1,5 @@
+<!-- Generated from the component source. Do not edit; run `make generate`. -->
+
 # `<atk-go-ribbon>`
 
 Gene Ontology annotations for a gene or protein.

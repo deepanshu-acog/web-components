@@ -1,3 +1,5 @@
+<!-- Generated from the component source. Do not edit; run `make generate`. -->
+
 # record-list (pattern)
 
 A list of records, each with a name, a status, secondary detail, and a category.
