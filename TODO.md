@@ -3,32 +3,41 @@
 The only place forward-looking work lives. Reasoning for most items is in
 [docs/design.md](docs/design.md).
 
+## Parked
+
+- [ ] **Aganitha brand values.** Colours and typefaces. A separate effort is
+      building these, and the values in the current applications are not
+      accurate. Until it lands, the theme ships Web Awesome's default values
+      with a marker saying they are placeholders. Only the values are blocked —
+      the theme mechanism is not, and is built below.
+
 ## Blocked on someone else
 
 - [ ] **Interview findings.** What people actually said about why the two
       earlier attempts stopped. `docs/lessons.md` cannot be written until this
       arrives, and the account in the archived repository should not be relied
       on. Rama has this.
-- [ ] **Aganitha brand values.** Colours, typefaces, and any existing brand
-      guide. The theme is the first thing to build and it cannot start without
-      them.
 
 ## Now
 
+Ordered by risk. The generation step and the contribution contract are the parts
+nobody has got right yet, in this repository or either earlier attempt. Build
+them first, while they are still cheap to change.
+
 - [ ] **Set up the package.** One npm package, Lit, Web Awesome as a dependency.
       Type checking and tests running. Nothing else.
-- [ ] **Write the theme.** Aganitha brand as values for `--wa-` tokens. CSS
-      only. This is the smallest useful thing we can ship and the only part
-      every application needs.
 - [ ] **Prove the generation step.** Documentation comments in a component
       become `custom-elements.json`, then the skill and its reference files.
       Include the check that fails when a generated file is stale — without it
-      D6 is a convention, not a guarantee.
+      D6 is a convention, not a guarantee. **This is the highest-risk item.**
 - [ ] **One pattern and one component.** The smallest real example of each, to
       prove the two contribution paths in D9 actually work before anyone writes
       a checklist about them.
 - [ ] **Write the contributor checklist skill.** Budget is about fifty lines.
-      If it needs more, fix the contract.
+      If it needs more, fix the contract. This is the test of whether D9 holds.
+- [ ] **Build the theme mechanism.** Which `--wa-` tokens we set, how the theme
+      is applied, and how it loads. Web Awesome's default values as placeholders
+      until the brand effort lands, so swapping them in later touches one file.
 
 ## Next
 
