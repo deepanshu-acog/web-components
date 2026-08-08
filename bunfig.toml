@@ -1,0 +1,4 @@
+# bun does not search parent directories for this file. Without it, tests run
+# with no DOM and every component test fails in a confusing way.
+[test]
+preload = ["./tests/setup.ts"]

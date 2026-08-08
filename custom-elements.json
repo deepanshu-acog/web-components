@@ -1,0 +1,314 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "src/components/go-ribbon/go-ribbon.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Gene Ontology annotations for a gene or protein, shown as a ribbon.\n\nThis wraps `<wc-go-ribbon>` from the Gene Ontology consortium. We do not\ndraw the ribbon ourselves — the people who own the data maintain the\nvisualisation, and that is the right arrangement.\n\nThe upstream component is large and most pages that can show a ribbon do not\nshow one on first paint, so it is loaded on demand rather than bundled.",
+          "name": "AtkGoRibbon",
+          "cssParts": [
+            {
+              "description": "The message shown while loading or after a failure.",
+              "name": "fallback"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "css",
+              "static": true,
+              "default": "css` :host { display: block; min-block-size: 3rem; } .fallback { color: var(--wa-color-text-quiet); font-size: var(--wa-font-size-s); padding-block: var(--wa-space-s); } .fallback a { color: var(--wa-color-text-link); } `"
+            },
+            {
+              "kind": "field",
+              "name": "subject",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The subject identifier, for example `UniProtKB:Q8NER5`. Several may be\ngiven, separated by commas, as the upstream component expects.",
+              "attribute": "subject"
+            },
+            {
+              "kind": "field",
+              "name": "load_state",
+              "type": {
+                "text": "LoadState"
+              },
+              "privacy": "private",
+              "default": "\"idle\""
+            },
+            {
+              "kind": "method",
+              "name": "load_upstream",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "Promise<void>"
+                }
+              },
+              "description": "Load the upstream component the first time this element is used.\n\nThe import specifier is held in a variable so that bundlers treat it as a\nruntime import rather than trying to resolve it at build time. The package\nis an optional dependency — an application that never shows a ribbon\nshould not have to install it."
+            },
+            {
+              "kind": "method",
+              "name": "render_fallback",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "TemplateResult"
+                }
+              },
+              "description": "A failure has to say what is missing and still show the subject.\n\nA blank space where a chart should be tells the reader nothing and tells\nwhoever has to fix it even less."
+            }
+          ],
+          "attributes": [
+            {
+              "name": "subject",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The subject identifier, for example `UniProtKB:Q8NER5`. Several may be\ngiven, separated by commas, as the upstream component expects.",
+              "fieldName": "subject"
+            }
+          ],
+          "superclass": {
+            "name": "AganithaComponent",
+            "module": "/src/base.js"
+          },
+          "tagName": "atk-go-ribbon",
+          "customElement": true,
+          "summary": "Gene Ontology annotations for a gene or protein.",
+          "atkUse": "Showing GO annotations for one gene or protein, when the reader wants to see which functional categories are annotated at a glance.",
+          "atkAvoid": "Do not use it as a general chart. It only understands Gene Ontology subject identifiers. For arbitrary category data, use a table."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AtkGoRibbon",
+          "declaration": {
+            "name": "AtkGoRibbon",
+            "module": "src/components/go-ribbon/go-ribbon.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/metric/metric.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A single measured value, with its recent history and normal range.\n\nPass the history as a JSON array in a `<script type=\"application/json\">`\nchild. Scalars go in attributes. This is how every atk-ui component takes\ncomplex data — it works in plain HTML, in templates, and in AI-generated\nmarkup, with nothing to serialise.",
+          "name": "AtkMetric",
+          "cssProperties": [
+            {
+              "description": "Width of the sparkline. Defaults to 6rem.",
+              "name": "--atk-metric-chart-width"
+            }
+          ],
+          "cssParts": [
+            {
+              "description": "The number and its unit.",
+              "name": "value"
+            },
+            {
+              "description": "The sparkline SVG.",
+              "name": "chart"
+            }
+          ],
+          "slots": [
+            {
+              "description": "Optional footnote shown under the value. Keep it to a few words.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "css",
+              "static": true,
+              "default": "css` :host { display: flex; align-items: center; justify-content: space-between; gap: var(--wa-space-m); } .text { min-width: 0; } .label { color: var(--wa-color-text-quiet); font-size: var(--wa-font-size-s); } .value { font-weight: var(--wa-font-weight-semibold); font-variant-numeric: tabular-nums; } .unit { color: var(--wa-color-text-quiet); font-size: var(--wa-font-size-s); font-weight: var(--wa-font-weight-normal); } .range { color: var(--wa-color-text-quiet); font-size: var(--wa-font-size-xs); } /* Out-of-range is stated in words as well as shown in the line colour. Colour alone is not perceivable by every reader. */ .status { color: var(--wa-color-danger-fill-loud); font-size: var(--wa-font-size-xs); font-weight: var(--wa-font-weight-semibold); } .chart { inline-size: var(--atk-metric-chart-width, 6rem); block-size: auto; flex: none; overflow: visible; } .band { fill: var(--wa-color-success-fill-quiet); } .line { fill: none; stroke: var(--wa-color-brand-fill-loud); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; } .last { fill: var(--wa-color-brand-fill-loud); } .out-of-range .line, .out-of-range .last { stroke: var(--wa-color-danger-fill-loud); fill: var(--wa-color-danger-fill-loud); } .out-of-range .line { fill: none; } /* Nothing here animates, but honour the preference if that changes. */ @media (prefers-reduced-motion: reduce) { * { transition: none !important; } } `"
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "What is being measured. Always set this.",
+              "attribute": "label"
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The current value, shown as given. Not reformatted.",
+              "attribute": "value"
+            },
+            {
+              "kind": "field",
+              "name": "unit",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Unit shown after the value, for example `g/dL`.",
+              "attribute": "unit"
+            },
+            {
+              "kind": "field",
+              "name": "low",
+              "type": {
+                "text": "number | undefined"
+              },
+              "description": "Lower bound of the normal range.",
+              "attribute": "low"
+            },
+            {
+              "kind": "field",
+              "name": "high",
+              "type": {
+                "text": "number | undefined"
+              },
+              "description": "Upper bound of the normal range.",
+              "attribute": "high"
+            },
+            {
+              "kind": "field",
+              "name": "series",
+              "type": {
+                "text": "number[]"
+              },
+              "default": "[]",
+              "description": "History, newest last. Usually set from the JSON child rather than in code."
+            },
+            {
+              "kind": "field",
+              "name": "parse_failed",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "false"
+            },
+            {
+              "kind": "method",
+              "name": "read_json_child",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Read the `<script type=\"application/json\">` child, if there is one.\n\nA malformed array is reported rather than thrown. One bad value in a\ndashboard should not take down the page around it."
+            },
+            {
+              "kind": "field",
+              "name": "out_of_range",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "description": "True when the current value sits outside the stated normal range.",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "render_chart",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "TemplateResult | typeof nothing"
+                }
+              }
+            },
+            {
+              "kind": "field",
+              "name": "range_status",
+              "type": {
+                "text": "string"
+              },
+              "privacy": "private",
+              "description": "How the current value sits against the normal range, in words.\n\nReturns an empty string when there is no range to compare against. This is\nshown as text rather than signalled by the line colour alone, because\ncolour on its own is not perceivable by every reader.",
+              "readonly": true
+            }
+          ],
+          "attributes": [
+            {
+              "name": "label",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "What is being measured. Always set this.",
+              "fieldName": "label"
+            },
+            {
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The current value, shown as given. Not reformatted.",
+              "fieldName": "value"
+            },
+            {
+              "name": "unit",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Unit shown after the value, for example `g/dL`.",
+              "fieldName": "unit"
+            },
+            {
+              "name": "low",
+              "type": {
+                "text": "number | undefined"
+              },
+              "description": "Lower bound of the normal range.",
+              "fieldName": "low"
+            },
+            {
+              "name": "high",
+              "type": {
+                "text": "number | undefined"
+              },
+              "description": "Upper bound of the normal range.",
+              "fieldName": "high"
+            }
+          ],
+          "superclass": {
+            "name": "AganithaComponent",
+            "module": "/src/base.js"
+          },
+          "tagName": "atk-metric",
+          "customElement": true,
+          "summary": "A labelled value with its recent trend and normal range.",
+          "atkUse": "Showing one measurement that a reader needs to judge at a glance: is it normal, and which way is it moving. Lab results, system metrics, counts tracked over time.",
+          "atkAvoid": "Do not use it to show several measurements at once — use a record list, or a table if they need comparing. Do not use it for a value with no history and no normal range; that is a definition list, not a metric."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AtkMetric",
+          "declaration": {
+            "name": "AtkMetric",
+            "module": "src/components/metric/metric.ts"
+          }
+        }
+      ]
+    }
+  ]
+}

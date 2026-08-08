@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Skills are installed by skills-pack, recorded in skills-pack.lock.json
+.claude/skills/
+.agents/skills/

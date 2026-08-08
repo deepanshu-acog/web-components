@@ -1,0 +1,33 @@
+---
+name: atk-ui
+description: >-
+  Aganitha's UI additions on top of Web Awesome. Use when building an Aganitha
+  page or app and you need an Aganitha-specific component or layout pattern.
+  For anything generic — buttons, inputs, dialogs, cards, layout — use the
+  webawesome skill instead.
+allowed-tools: Read
+---
+
+# atk-ui
+
+Aganitha's additions to Web Awesome. **Web Awesome comes first**: if it has a
+component for what you need, use `wa-` directly and do not look here. This
+skill covers only what Web Awesome does not provide.
+
+**Do not write these from memory.** Both Web Awesome and this package appear
+in training data at older versions. Read the reference file before using
+anything below — the attribute names have changed.
+
+Two kinds of thing:
+
+- **Components** are custom elements. Write the tag.
+- **Patterns** are markup plus our CSS classes. Copy the markup.
+
+## data-display
+
+- [`<atk-go-ribbon>`](references/atk-go-ribbon.md) — Gene Ontology annotations for a gene or protein.
+  - Use when: Showing GO annotations for one gene or protein, when the reader wants to see which functional categories are annotated at a glance.
+- [`<atk-metric>`](references/atk-metric.md) — A labelled value with its recent trend and normal range.
+  - Use when: Showing one measurement that a reader needs to judge at a glance: is it normal, and which way is it moving. Lab results, system metrics, counts tracked over time.
+- [`record-list`](references/record-list.md) — A list of records, each with a name, a status, secondary detail, and a category.
+  - Use when: Showing a set of similar records where each one has a name, some kind of status or severity, and a short supporting detail. Medicines, problems, alerts, tasks, findings, activity. Use it whenever the alternative would be a table with two or three columns.

@@ -1,0 +1,88 @@
+/*
+ * Record list — a list of records, each with a name, a status, secondary
+ * detail, and a category.
+ *
+ * Uses Web Awesome semantic tokens only. No literal colours, no media queries.
+ */
+
+.atk-record-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  /* Required by the container query at the end of this file. Without it the
+     query never matches and the narrow layout silently never appears. */
+  container-type: inline-size;
+}
+
+.atk-record {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  column-gap: var(--wa-space-m);
+  row-gap: var(--wa-space-3xs);
+  padding-block: var(--wa-space-s);
+  border-block-end: var(--wa-border-width-s) var(--wa-border-style)
+    var(--wa-color-surface-border);
+}
+
+.atk-record:last-child {
+  border-block-end: none;
+}
+
+/* Name and status sit together on the first line and wrap as a unit. */
+.atk-record-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--wa-space-xs);
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.atk-record-name {
+  font-weight: var(--wa-font-weight-semibold);
+  overflow-wrap: anywhere;
+}
+
+.atk-record-meta {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  color: var(--wa-color-text-quiet);
+  font-size: var(--wa-font-size-s);
+  white-space: nowrap;
+}
+
+.atk-record-detail {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--wa-color-text-quiet);
+  font-size: var(--wa-font-size-s);
+  line-height: var(--wa-line-height-normal);
+}
+
+/*
+ * Clamp long detail text to two lines by default. Records vary a lot in
+ * length and an unclamped list becomes unreadable, but the full text stays in
+ * the DOM so it is still found by search and read by assistive technology.
+ */
+.atk-record-detail--clamped {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+/* Narrow containers: the category drops below the name instead of squeezing. */
+@container (max-width: 30rem) {
+  .atk-record {
+    grid-template-columns: 1fr;
+  }
+
+  .atk-record-meta {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+  }
+}
