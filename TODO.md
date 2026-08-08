@@ -15,9 +15,10 @@ So: **no phase delivers infrastructure only.** Each one ends with something a
 named person can use from end to end. A phase that would finish with "the
 components are ready, the template comes next" is a phase defined wrongly.
 
-**The skill is the entry point** (D15). Engineers reach atk-ui by asking their
-assistant, not by finding a website. Everything else is something the skill
-points at.
+**A pack of skills is the entry point** (D15, D16). Engineers reach atk-ui by
+asking their assistant, not by finding a website. The pack is what they install;
+the individual skills are how the assistant routes. Everything else — templates,
+the reference site — is something a skill points at.
 
 Two of the three problems found in interviews are in scope: **discovery** and
 **usage**. Contribution is not — components are built by a core team.
@@ -46,14 +47,20 @@ The whole thesis, proven once. Nothing after this matters if this does not work.
 - [ ] **Astro starter template.** Builds, runs, themed, with a page worth
       copying. Good rather than minimal — it doubles as the example application
       people asked to see.
-- [ ] **Widen the skill past the catalog.** It generates components and patterns
-      today. It also needs getting-started, an Astro recipe, and how to install —
-      otherwise it answers "what exists" and leaves "how do I start" unanswered,
-      which is the gap the interviews found. Follow the reference layout Web
-      Awesome uses.
-- [ ] **Tell the assistant to install Web Awesome's two skills too.**
-- [ ] **Publish the skill through skills-pack**, and make publishing part of
-      release. A stale published skill makes every assistant wrong at once.
+- [ ] **`atk-ui` skill — widen past the catalog.** It generates components and
+      patterns today, which answers "what exists" and leaves "how do I use it
+      here" unanswered. Add installation and usage references, following the
+      layout Web Awesome uses. Still generated.
+- [ ] **`atk-ui-start` skill.** Start a new project, or add atk-ui to an
+      existing one. Drives the Astro template. Hand-written, kept thin.
+- [ ] **Tell the assistant to install Web Awesome's two skills too**, the way
+      theirs tell people to install their companion.
+- [ ] **Set up the pack and publish it through skills-pack.** Publishing becomes
+      part of release — a stale published pack makes every assistant wrong at the
+      same moment.
+
+Only these two skills in Phase 1. `atk-ui-design`, `atk-ui-content` and the
+existing `atk-ui-contribute` are Phase 2 and later (D16).
 
 **Completion test:** someone who has never seen atk-ui installs the skill, asks
 their assistant to set up a project, and reaches a working branded page unaided.
@@ -69,6 +76,9 @@ page from nothing, stop and fix it before starting Phase 2.
       skill.
 - [ ] **A "what do we have" path in the skill** that answers well enough that a
       person does not need the site for most questions.
+- [ ] **`atk-ui-design` skill.** How to compose a page that looks like ours —
+      the question a reference cannot answer. Web Awesome's equivalent is 382
+      lines, which is why it is separate rather than merged.
 
 **Completion test:** an engineer finds and uses a component they did not know
 existed, without asking a person.
@@ -112,7 +122,13 @@ decisions.
       taking on its upkeep.
 - [ ] **Next.js recipe, with JSX and TSX usage.** Waiting deliberately —
       alternatives are being looked at and D13 records why there is no hurry.
-- [ ] **A worked example of producing a document or report** with an assistant.
+- [ ] **`atk-ui-content` skill.** Turning content into a page or report with our
+      components. Must stay a skill and not become a generator — Hugo and Astro
+      already generate sites, and that boundary is permanent. Say so inside the
+      skill or someone will build the tool anyway.
+- [ ] **A shared place to publish and share content** is ecosystem, not this
+      repository. Record it as something `atk-ui-content` can target once it
+      exists.
 
 ## Later
 

@@ -423,9 +423,9 @@ people would reach a catalog or a reference site at all.
     exists, go there, and read it. Neither earlier attempt got that far.
   - **B. The skill is the front door**, distributed through skills-pack, which
     engineers already use. They ask their assistant and it answers.
-- **Chose B.** Engineers here already work through Claude, Codex or OpenCode. The
-  skill reaches them where they are, and it is already a solved distribution
-  problem internally. A static reference site still exists, but as something the
+- **Chose B**, and a pack of skills rather than one — see D16. Engineers here
+  already work through Claude, Codex or OpenCode. The pack reaches them where
+  they are, and it is already a solved distribution problem internally. A static reference site still exists, but as something the
   skill links to when someone asks what a thing looks like — not as the way
   people find out atk-ui exists.
 - **Consequences, and they are significant:**
@@ -443,6 +443,55 @@ people would reach a catalog or a reference site at all.
     longer the entry point. That decision can be made late.
   - Our skill should tell the assistant to install Web Awesome's two skills as
     well, the way theirs tell people to install their companion skill.
+
+### D16 — A pack of skills split by intent, not one skill
+
+D15 makes the skill the entry point. One skill cannot serve every context: "what
+are this component's attributes", "how do I compose a good page", "start me a
+project" and "turn this content into a report" want different material loaded at
+different moments.
+
+- **Options:**
+  - **A. One skill covering everything** (simplest) — nothing to choose between
+    and no risk of two skills contradicting each other. But it grows large, and
+    an assistant looking up one attribute loads all the composition guidance
+    too, which is the context bloat progressive disclosure exists to prevent.
+  - **B. A pack of skills, split by the question being asked.**
+- **Chose B.** There is internal precedent: people install a pack and work
+  through it, and it lets them explore in whatever order suits them. Web Awesome
+  independently reached the same split, shipping a reference skill and a separate
+  design skill.
+- **The property that makes this safe: the pack is the unit of installation, the
+  skills are the unit of routing.** The engineer installs one thing and never
+  chooses. The assistant picks between skills from their descriptions. This is
+  what avoids `wc-docs`, which made people choose between three tiers and four
+  bundles before anything appeared on screen.
+
+| Skill | The question it answers | Source |
+|---|---|---|
+| `atk-ui` | What do we have? How do I use this component? | **Generated** |
+| `atk-ui-design` | How do I make a page that looks like ours? | Hand-written |
+| `atk-ui-start` | Start a project, or add atk-ui to one I have | Hand-written, plus templates |
+| `atk-ui-content` | Turn this content into a page or report | Hand-written |
+| `atk-ui-contribute` | Add a component. Core team only. | Hand-written |
+
+- **Consequences:**
+  - **Only one of the five is generated.** The reference skill stays true by
+    construction; the other four are prose and will drift. Under D12 each is
+    something we then keep correct, and a wrong skill is worse than a missing one
+    because every assistant is confidently wrong at the same moment. Keep the
+    hand-written ones thin and pointing into generated material rather than
+    restating it.
+  - **Phase 1 ships two of them** — `atk-ui` and `atk-ui-start`. Shipping all
+    five before anyone has reached a working page would be the same mistake the
+    earlier attempts made, at a larger scale.
+  - **`atk-ui-content` must not become a site generator.** Generating a website
+    from structured data is permanently out of scope; Hugo and Astro do that.
+    This skill teaches an assistant to write content that uses our components and
+    to place it in a Hugo or Astro project. A skill, not a tool. Say so inside
+    the skill, or someone will build the tool anyway.
+  - A shared place to publish and share content is ecosystem, not this
+    repository. `atk-ui-content` can target it once it exists.
 
 ## What is volatile, and where the seam is
 
