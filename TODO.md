@@ -3,10 +3,11 @@
 The only place forward-looking work lives. Reasoning for most items is in
 [docs/design.md](docs/design.md).
 
-**Reordered after the interviews.** Engineers liked the components of both
-earlier attempts and still did not use them, because there was no way in. The
-on-ramp is therefore the adoption bottleneck, and it comes before everything
-except the theme. See [docs/lessons.md](docs/lessons.md).
+**Reordered after the interviews.** Three problems were found — discovery, usage,
+and contribution — and **only the first two are in scope.** Components are built
+by a core team. Engineers liked the components of both earlier attempts and still
+did not use them, because they could not find them and could not work out how to
+use them. See [docs/lessons.md](docs/lessons.md).
 
 ## Parked
 
@@ -66,6 +67,12 @@ except the theme. See [docs/lessons.md](docs/lessons.md).
 
 ## Later
 
+- [ ] **Keep harvesting.** The catalog only stays relevant if the core team keeps
+      looking at what teams are actually building. The signal is the same
+      structure appearing in several applications under different names — the
+      angiosarcoma portal had one list rebuilt five times in a single page. If
+      this stops, the catalog goes stale and discovery fails again in a new form:
+      everything findable, none of it what you need.
 - [ ] **A screen reader pass.** Web Awesome carries most of this, but our own
       components and patterns are ours to check.
 - [ ] **Visual regression testing.** Today a person's eyes are the only check.

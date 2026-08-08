@@ -212,13 +212,17 @@ and none are reliably caught in review.
   - **A. Every contribution is a Lit component** — one consistent thing, but the
     bar to contribute stays high and stays high forever.
   - **B. Patterns by default; components only where behaviour requires it.**
-- **Chose B.** The split follows difficulty rather than being a rule people have
-  to memorise: if it needs no JavaScript, it is a pattern. Most contributions
-  are markup and CSS, which a junior engineer can write with a checklist. The
-  genuinely hard things — anything with data, interaction, or drawing — are
-  components, written less often and by someone more experienced.
+- **Chose B.** The split follows difficulty rather than being a rule anyone has
+  to memorise: if it needs no JavaScript, it is a pattern.
 - **Consequences:** two contribution paths to document instead of one. Accepted,
   because the alternative makes the common case as hard as the rare one.
+- **Amended after the interviews.** The original reasoning was that a junior
+  engineer could write a pattern with a checklist. Components are now built by a
+  core team, so that no longer carries the decision. The split still stands for a
+  narrower reason: a pattern is cheap, and the rate at which the catalog can grow
+  is limited by the core team's time. The fifty-line checklist budget also stays,
+  not as an accessibility target but as a complexity canary — if the contract
+  outgrows it, the contract is wrong even when only experienced people follow it.
 
 ### D10 — Production is a bundler in every stack; the CDN is for preview
 

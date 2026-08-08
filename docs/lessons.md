@@ -33,10 +33,16 @@ and wanted, there was no path from "this looks useful" to "this is in my
 application." No starting point, and nothing that would tell their AI assistant
 how to use any of it.
 
-**They did not want to contribute.** Contributing components was described as too
-complicated. This matters less than it appears: people contribute to systems they
-already use. Contribution is downstream of adoption, and both earlier attempts
-failed before anyone got that far.
+**Contribution was never really tested, and then failed when it was.** For most
+of both attempts the components were written by one person, who watched what
+teams were building and generalised from it. That worked — it is where the
+components people liked came from. Contribution only surfaced as a problem when
+other people were asked to do it, and they found it too complicated.
+
+But the order matters: **usage was already confusing before contribution was
+ever attempted.** Someone who cannot use the system is not going to extend it, so
+contribution difficulty was never the binding constraint. It was the next
+constraint behind two others.
 
 **They already have a working alternative.** "I know how to develop apps with
 React. My LLM agent knows how to build them. Why should I use this new system? I
@@ -54,6 +60,24 @@ about parts:
 - A way to ask an assistant to produce a document or report using the components
 - How to use these from JSX or TSX
 - A layout, so I do not have to think about page structure
+
+## Three problems, in order
+
+1. **Discovery** — I do not know what exists, what it looks like, or what it
+   looks like in a real application.
+2. **Usage** — I do not know how to get it into my application, or how to use it
+   correctly once it is there.
+3. **Contribution** — extending it is too complicated.
+
+**Only the first two are in scope.** Components are built by a core team, not by
+every team. This is a deliberate narrowing and it reflects what already worked:
+one person watching what teams built and generalising from it produced components
+people liked.
+
+So the contribution model is **harvesting, not submission.** The core team's
+input is the applications teams are already writing. When the same structure
+appears in three applications under three different names, that is the signal —
+and it is visible without anyone filing anything.
 
 ## What follows from this
 
@@ -73,6 +97,15 @@ they matter more than the components do, because the components were already
 liked and still went unused.
 
 **Build the on-ramp before the contribution path.** The contribution contract in
-this repository is sound and stays. It is not what unblocks adoption, and
-ordering it first repeats the mistake of building what the maintainers found
-interesting rather than what the users were stuck on.
+this repository is sound and stays, because a core team still needs it and it is
+what keeps the catalog generated rather than hand-written. It is not what unblocks
+adoption, and ordering it first repeats the mistake of building what the
+maintainers found interesting rather than what the users were stuck on.
+
+**One risk to watch, created by narrowing contribution.** Aganitha builds more
+applications than a core team can survey, and we cannot predict what teams will
+need. If only a core team writes components, the catalog grows at the core team's
+pace and will lag demand. Harvesting is the mitigation, but it only works if the
+core team keeps looking at what teams are building. If that stops, the catalog
+goes stale and the discovery problem comes back in a new form — everything is
+findable and none of it is what you need.

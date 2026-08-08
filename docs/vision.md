@@ -53,12 +53,12 @@ fits the task, and how to configure it correctly. In practice this is how most
 people will discover what is available, so the catalog an assistant reads
 matters as much as the documentation a person reads.
 
-**Junior contributor** — an engineer with a component worth sharing. Follows a
-checklist, writes one file, and the documentation and the assistant's catalog
-are produced from it. They should not need to understand the build system, the
-release process, or the rest of the repository. If contributing needs more
-knowledge than a checklist can carry, that is a fault in the system, not in the
-contributor.
+**Core team member** — builds the components. Not every team contributes, and
+that is deliberate. Their main input is the applications other teams are already
+writing: when the same structure shows up in three applications under three
+different names, it belongs here. They write one file and the documentation and
+the assistant's catalog are produced from it, so extending the catalog never
+means extending the documentation by hand.
 
 **Page author and learner** — wants to see what exists, or build one throwaway
 page. Loads a preview and writes plain HTML. What they learn transfers directly,
@@ -73,10 +73,15 @@ because the markup in the preview is the same markup a real application uses.
   effort goes into what is ours: the brand, our own components, and the agent
   layer.
 - **We cannot enumerate what teams will need.** Aganitha builds far more
-  applications than any central group can survey, so the system must let teams
-  add what they need rather than depend on us predicting it.
-- **A junior engineer can contribute with a checklist**, without knowing how the
-  build, the release, or the packaging works.
+  applications than any central group can survey. Since components are built by
+  a core team rather than by every team, the catalog only stays relevant if that
+  team keeps harvesting from the applications teams are actually writing.
+- **An engineer can find out what exists, see what it looks like, and see it in
+  a real application** without asking anyone. Discovery failed in both earlier
+  attempts and is the first thing to get right.
+- **An engineer can go from nothing to a working, branded page without making
+  decisions they do not care about.** Usage was confusing in both earlier
+  attempts, and it blocked people before contribution ever became the issue.
 - **The catalog an AI assistant reads is always current and accurate.** A
   component that exists in code but is missing or wrong in the catalog is a bug,
   not a documentation gap.
@@ -102,8 +107,9 @@ learning cost, and an engineer who declines is right to.
 - Three or more internal projects depend on it within two quarters, and no new
   internal project writes its own callout, card, or table.
 - Two teams build separately and the results look related.
-- Later, and only once the above are true: an engineer who has never seen the
-  repository adds a component in a day, with no help from a maintainer.
+Not a goal: engineers outside the core team contributing components. That was
+tried and it did not work, and people were stuck on discovery and usage long
+before they got that far.
 
 **Exit criteria.** Two ways this project should stop:
 
