@@ -412,6 +412,38 @@ them. See [`lessons.md`](lessons.md).
   working, branded page. If that is not clearly better than asking an assistant
   to invent one, the project has not earned its learning cost.
 
+### D15 — The skill is the entry point; everything else is what it points at
+
+Interviews found discovery and usage were the two failures. The question was how
+people would reach a catalog or a reference site at all.
+
+- **Options:**
+  - **A. A documentation website is the front door** — conventional, and it is
+    what both earlier attempts assumed. It requires the engineer to know the site
+    exists, go there, and read it. Neither earlier attempt got that far.
+  - **B. The skill is the front door**, distributed through skills-pack, which
+    engineers already use. They ask their assistant and it answers.
+- **Chose B.** Engineers here already work through Claude, Codex or OpenCode. The
+  skill reaches them where they are, and it is already a solved distribution
+  problem internally. A static reference site still exists, but as something the
+  skill links to when someone asks what a thing looks like — not as the way
+  people find out atk-ui exists.
+- **Consequences, and they are significant:**
+  - **The skill is the product surface.** Its quality is the product's quality.
+    That justifies investing in the generator well beyond what a documentation
+    file would deserve.
+  - **The skill has to cover starting a project, not just the catalog.** What we
+    generate today is components and patterns only. It needs the same reference
+    sections Web Awesome ships — installation, usage, per-stack recipes, layouts
+    — or it answers "what exists" while leaving "how do I start" unanswered,
+    which is exactly the gap the interviews found.
+  - **Publishing the skill is a release step**, not an afterthought. If the
+    published skill is stale, every engineer's assistant is wrong at once.
+  - The reference site can be cheap, and may be Storybook, because it is no
+    longer the entry point. That decision can be made late.
+  - Our skill should tell the assistant to install Web Awesome's two skills as
+    well, the way theirs tell people to install their companion skill.
+
 ## What is volatile, and where the seam is
 
 The test: if this is replaced next year, what has to be rewritten?
