@@ -309,6 +309,30 @@ across them, and the difference is not obvious from the outside.
   on the TypeScript compiler API and predates 7. This is a constraint on this
   repository only, not a recommendation to consumers.
 
+**Version floors, checked against the OSV advisory database on 2026-08-08.**
+Recheck before publishing a recipe; these move.
+
+| | Minimum | Reason |
+|---|---|---|
+| React | 19.0.0 | Custom element support. No advisories at any 19.x. |
+| Next.js | **16.2.11**, or 15.5.21 on the 15 line | Security, not features |
+| Bun | 1.2.0 | 1.1.x had command injection and prototype pollution |
+| TypeScript | any current | No advisories |
+
+React is not the risk here; Next.js is. `next@16.2.10` carries nine open
+advisories and `16.2.11` carries none, so **a recipe must pin the patch
+version — `^16.2` can resolve to a vulnerable build.** The critical advisory
+that reads as a React problem ("RCE in the React flight protocol") is in
+Next.js's implementation of that protocol, not in React.
+
+**This is also an argument for preferring a static stack.** Nearly every
+Next.js advisory concerns middleware and proxy bypass, server-side request
+forgery, cache poisoning, or Server Actions — server-side attack surface that
+an Astro or Hugo site does not have. Where a site does not genuinely need a
+server, the static stacks avoid that whole category and the patching treadmill
+that comes with it. Recommend them first, and treat Next.js as the choice for
+applications that actually need what it does.
+
 ## What is volatile, and where the seam is
 
 The test: if this is replaced next year, what has to be rewritten?
