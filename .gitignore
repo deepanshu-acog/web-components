@@ -5,3 +5,4 @@ dist/
 # Skills are installed by skills-pack, recorded in skills-pack.lock.json
 .claude/skills/
 .agents/skills/
+docs/handoff.md
