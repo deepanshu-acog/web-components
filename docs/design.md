@@ -493,6 +493,60 @@ different moments.
   - A shared place to publish and share content is ecosystem, not this
     repository. `atk-ui-content` can target it once it exists.
 
+### D17 — A project may build its own components; they stay in the project
+
+D9 covers what the core team builds for the shared catalog. It says nothing
+about a project's one-off need — something too specific to a single application
+to belong in the shared catalog, or needed before the core team could get to it.
+Without an answer, a team in that position writes something unrelated to atk-ui,
+which is exactly how the angiosarcoma portal ended up with `dw-`, `tl-`, and
+`gantt-` as five unrelated CSS vocabularies in one page (see `lessons.md`).
+
+- **Options:**
+  - **A. Local, one-off needs must go through the core team** (simplest rule) —
+    but it forces a wait on every urgent or narrow need, and a team that will not
+    wait writes something disconnected instead. This is the failure already
+    observed.
+  - **B. No guidance** — the status quo every project is already in, and the
+    reason the portal has five naming schemes on one page.
+  - **C. Publish the base class and token conventions as something any project
+    can build against directly, without joining the shared catalog.**
+- **Chose C.** `AganithaComponent`, `define()`, and the `--wa-` token vocabulary
+  are already plain exports with no dependency on being catalogued. A project
+  writes its own `AtkThing` locally, in its own repository, the same way a core
+  team member would, and it never enters the shared package unless the core team
+  later harvests it (D9's amended reasoning, D14).
+- **Consequences:**
+  - **A local component still looks and behaves like ours** — same base class,
+    same tokens, same server-render safety — even though it is not in the
+    catalog. This is the direct fix for the divergence the portal shows: teams
+    were never wrong to need something of their own, they had no on-brand way to
+    build it.
+  - **Each starter template needs a short recipe for this**, because "write a
+    custom element" means something different per stack. See below.
+  - **A local component is not silently promoted.** It stays private until a
+    core team member notices the same shape elsewhere and harvests it. No
+    automatic mechanism moves it; harvesting stays a human judgement call.
+
+**Per stack:**
+
+- **Astro.** No special path needed. A plain `.ts` file exporting a
+  `AganithaComponent` subclass, imported into an `.astro` file or a script tag.
+  Astro's bundler (Vite) handles it like any other module. The template's own
+  `src/components/` is where a project's local components live, parallel to
+  atk-ui's own layout but never merged into it.
+- **Hugo.** Hugo has no bundler of its own, so this needs its own step on the
+  slope, mirroring the no-build-then-build progression the CDN preview already
+  uses (D10):
+  1. **No build.** Hand-write the element as a plain script, no TypeScript, no
+     bundler, loaded with a `<script type="module" src="...">` tag. This is the
+     smallest possible step and should be the one the Hugo template demonstrates
+     first.
+  2. **Hugo Pipes.** The extended Hugo binary bundles TypeScript through
+     `js.Build`, which is esbuild under the hood, with no separate esbuild
+     install required. This is the recipe for a project that has outgrown step 1.
+  Document both. Do not require step 2 for a project's first local component.
+
 ## What is volatile, and where the seam is
 
 The test: if this is replaced next year, what has to be rewritten?
