@@ -1,0 +1,12 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist"],
+  "compilerOptions": {
+    // Lit 3's decorators (used by src/components/site-note.ts, and by any
+    // local component you add the same way) need the old class-field
+    // semantics — see atk-ui's own tsconfig.json for why.
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false
+  }
+}

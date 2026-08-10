@@ -1,0 +1,35 @@
+/*
+ * Aganitha's brand theme: values for Web Awesome's design tokens, not new
+ * token names (D4). Load Web Awesome's own theme first — this file only
+ * overrides the tokens where Aganitha's brand differs from the default.
+ *
+ *   import '@awesome.me/webawesome/dist/styles/themes/default.css';
+ *   import '@aganitha/atk-ui/theme.css';
+ *
+ * Then add the class below to <html>, next to Web Awesome's own theme class:
+ *
+ *   <html class="wa-theme-default atk-theme">
+ *
+ * PLACEHOLDER: Aganitha's brand colours are not decided yet (a separate
+ * effort owns them). Until they land, brand tokens point at Web Awesome's
+ * "indigo" hue so the theme is visibly not the untouched default. Swapping in
+ * the real values touches only the block below.
+ */
+
+@layer wa-theme {
+  .atk-theme {
+    --wa-color-brand-95: var(--wa-color-indigo-95);
+    --wa-color-brand-90: var(--wa-color-indigo-90);
+    --wa-color-brand-80: var(--wa-color-indigo-80);
+    --wa-color-brand-70: var(--wa-color-indigo-70);
+    --wa-color-brand-60: var(--wa-color-indigo-60);
+    --wa-color-brand-50: var(--wa-color-indigo-50);
+    --wa-color-brand-40: var(--wa-color-indigo-40);
+    --wa-color-brand-30: var(--wa-color-indigo-30);
+    --wa-color-brand-20: var(--wa-color-indigo-20);
+    --wa-color-brand-10: var(--wa-color-indigo-10);
+    --wa-color-brand-05: var(--wa-color-indigo-05);
+    --wa-color-brand: var(--wa-color-indigo);
+    --wa-color-brand-on: var(--wa-color-indigo-on);
+  }
+}

@@ -14,6 +14,7 @@
  * inside components, because a component's styles are just as much our CSS.
  */
 import { readdir, readFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { join, relative } from "node:path";
 
 const ROOT = new URL("..", import.meta.url).pathname;
@@ -43,13 +44,21 @@ interface Source {
   css: string;
 }
 
-/** Collect the CSS we own: pattern stylesheets and component `css` blocks. */
+const EXCLUDED_DIRS = new Set(["node_modules", "dist", ".astro"]);
+
+/**
+ * Collect the CSS we own: pattern stylesheets and component `css` blocks —
+ * in `src/` (the package itself) and `templates/` (starter templates, D18).
+ * A local component in a template is still our CSS the moment someone
+ * copies it, so it follows the same rule as everything else here.
+ */
 async function collect_sources(): Promise<Source[]> {
   const sources: Source[] = [];
 
   const walk = async (dir: string): Promise<string[]> => {
     const out: string[] = [];
     for (const entry of await readdir(dir, { withFileTypes: true })) {
+      if (entry.isDirectory() && EXCLUDED_DIRS.has(entry.name)) continue;
       const full = join(dir, entry.name);
       if (entry.isDirectory()) out.push(...(await walk(full)));
       else out.push(full);
@@ -57,15 +66,19 @@ async function collect_sources(): Promise<Source[]> {
     return out;
   };
 
-  for (const file of await walk(join(ROOT, "src"))) {
-    if (file.endsWith(".css")) {
-      sources.push({ path: file, css: await readFile(file, "utf8") });
-    } else if (file.endsWith(".ts")) {
-      const text = await readFile(file, "utf8");
-      // Only the contents of css`...` blocks are CSS. Everything else in a
-      // .ts file is TypeScript and would produce nonsense matches.
-      const blocks = [...text.matchAll(/\bcss`([\s\S]*?)`/g)].map((m) => m[1]!);
-      if (blocks.length) sources.push({ path: file, css: blocks.join("\n") });
+  for (const root of ["src", "templates"]) {
+    const dir = join(ROOT, root);
+    if (!existsSync(dir)) continue;
+    for (const file of await walk(dir)) {
+      if (file.endsWith(".css")) {
+        sources.push({ path: file, css: await readFile(file, "utf8") });
+      } else if (file.endsWith(".ts")) {
+        const text = await readFile(file, "utf8");
+        // Only the contents of css`...` blocks are CSS. Everything else in a
+        // .ts file is TypeScript and would produce nonsense matches.
+        const blocks = [...text.matchAll(/\bcss`([\s\S]*?)`/g)].map((m) => m[1]!);
+        if (blocks.length) sources.push({ path: file, css: blocks.join("\n") });
+      }
     }
   }
 

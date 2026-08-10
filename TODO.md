@@ -107,27 +107,148 @@ against Web Awesome's paid data grid before deciding.
 
 The whole thesis, proven once. Nothing after this matters if this does not work.
 
-- [ ] **Theme mechanism.** Which `--wa-` tokens we set, how it is applied and
-      loaded. Placeholders until brand values land.
-- [ ] **Astro starter template.** Builds, runs, themed, with a page worth
-      copying. Good rather than minimal — it doubles as the example application
-      people asked to see.
-- [ ] **Astro local-component recipe (D17).** A plain `.ts` file extending
-      `AganithaComponent`, in the template's own `src/components/`, imported
-      into an `.astro` file. No special Astro config — its bundler handles it
-      like any module. Show one in the template so it is discovered by example,
-      not just documented.
-- [ ] **`atk-ui` skill — widen past the catalog.** It generates components and
-      patterns today, which answers "what exists" and leaves "how do I use it
-      here" unanswered. Add installation and usage references, following the
-      layout Web Awesome uses. Still generated.
-- [ ] **`atk-ui-start` skill.** Start a new project, or add atk-ui to an
-      existing one. Drives the Astro template. Hand-written, kept thin.
-- [ ] **Tell the assistant to install Web Awesome's two skills too**, the way
-      theirs tell people to install their companion.
-- [ ] **Set up the pack and publish it through skills-pack.** Publishing becomes
-      part of release — a stale published pack makes every assistant wrong at the
-      same moment.
+- [x] **Theme mechanism.** `src/theme/theme.css`: a `.atk-theme` class for
+      `<html>` that overrides Web Awesome's `--wa-color-brand-*` tokens.
+      Placeholder values (Web Awesome's "indigo" hue) until brand values land
+      — swapping them touches only that file.
+- [x] **`atk-ui` CLI skeleton (D18).** `src/cli/`, git-style, Commander,
+      built as a standalone binary by `make build-cli`; it is not an npm
+      package entry point.
+      Follows `aganitha-cli-writing`: `--help` with examples at every level,
+      `--json`, `--port`, exit code `2` on a bad flag, `Ctrl+C`/`SIGTERM` to
+      stop. `make run ARGS="..."` for local use.
+- [x] **`atk-ui preview` (D18).** Serves the catalog locally — no hosted CDN,
+      no build step. `tools/generate.ts` now also writes
+      `skills/atk-ui/catalog.json` (name/kind/group/summary/use/avoid/example/
+      module/body), the single source both the skill and the preview page
+      read. Closes the "where does preview live" question left open by
+      D10/D15.
+- [x] **`@example` capture.** `custom-elements-manifest.config.mjs`'s
+      `atk_tags_plugin` now also reads `@example` (fenced code, whitespace
+      preserved) into `atkExample`. Fixes a real gap — the generated reference
+      docs had no usage example at all — and gives `atk-ui preview` runnable
+      markup to render, not just descriptions. Patterns reuse their existing
+      "## Markup" fence instead of duplicating it.
+- [x] **CLI distribution, revised (D18).** No npm-registry publish for the
+      CLI (the library keeps its own, unrelated, npm publish) — matches
+      `commands/ADMIN-GUIDE.md`'s doctrine of no separate publish step.
+      `make build-cli` cross-compiles a standalone binary for
+      darwin-arm64/x64 and linux-x64/arm64 from one machine, no CI.
+      `make release VERSION=x.y.z` tags, pushes, and runs `gh release
+      create`, kept as a separate step from `build-cli` so a local build
+      never risks a publish. `tools/bundle_preview.ts` and
+      `src/core/embeds.d.ts` exist because a standalone binary has no
+      sibling `dist/`/`skills/` to read at runtime — verified end to end by
+      running the compiled binary from an empty directory with no
+      `node_modules` anywhere nearby.
+- [ ] **`commands/bin/atk-ui` shim.** A different, shared repo — out of
+      scope here. Fetches the right platform binary via `gh release
+      download --repo aganitha/atk-ui` when missing or stale, execs it. This
+      is what makes `atk-ui` appear in `atk list` with zero setup.
+- [x] **`atk-ui update`.** `src/core/update.ts` + `src/cli/commands/update.ts`.
+      Reuses `gh` (already a required prerequisite, already authenticated)
+      rather than talking to the GitHub API directly — the same tool `make
+      release` itself uses. `--check` reports without installing. Refuses to
+      self-update when not actually running the compiled binary (`bun run`
+      launches `bun` itself — overwriting that would be a real hazard), a
+      guard covered by `tests/update.test.ts`. Verified end to end from the
+      real compiled binary against the real (currently release-less)
+      `aganitha/atk-ui` — reports "already up to date" rather than crashing,
+      since there is nothing to compare against yet.
+      **Not built: the throttled background check** — `atk-ui update` today
+      is invoke-it-yourself, not automatic like `atk update`'s weekly
+      pattern. Automatic background checking belongs in the
+      `commands/bin/atk-ui` shim (D18) once that exists, not duplicated here.
+- [x] **`atk-ui start astro`.** `src/core/start.ts` + `src/cli/commands/start.ts`.
+      Fetches `templates/astro` from the atk-ui repo with a shallow git clone
+      (not embedded in the binary — unlike the catalog, template content
+      should be free to change without forcing a CLI release), copies it into
+      an empty/new directory, `bun install`s, starts the dev server. One
+      command end to end, matching vision.md's measure. `--no-install`/
+      `--no-dev`/`--repo` for testing and CI. `hugo` correctly rejected as
+      not-yet-supported (exit 2), not silently attempted.
+- [x] **Astro starter template.** `templates/astro/` — builds, runs, themed,
+      with a real page (`atk-metric`, the record-list pattern, `wa-badge`,
+      the local component). Verified with a production `astro build` and by
+      actually running the dev server in a browser — found and fixed a real
+      bug along the way: importing Web Awesome's/atk-ui's component modules
+      from an `.astro` file's frontmatter crashes the static build
+      (`MutationObserver is not defined` — frontmatter runs during Astro's
+      SSR prerender, and those modules touch browser globals at import time).
+      Fixed by moving them to a `<script>` tag in the page body, which Astro
+      only ever runs in the browser; CSS imports stay in frontmatter. Also
+      dropped Web Awesome's autoloader in favour of explicit per-component
+      imports — the autoloader can't self-locate its assets once Vite bundles
+      it, and installation.md recommends explicit imports for npm anyway.
+- [x] **Content layout, for plain Markdown pages.** `templates/astro/src/
+      layouts/Content.astro` + `src/pages/example-report.md`. Found by
+      testing it, not assumed: a bare `.md` page has no `<html>`/theme/JS at
+      all — `<atk-metric>` in raw Markdown rendered as an inert, unstyled
+      tag. `Content.astro` fixes this — add `layout: ../layouts/Content.astro`
+      to a page's front matter and it gets the theme, every atk-ui component
+      (registered unconditionally — a content page can't declare its own
+      imports, and the catalog is small by design), and Web Awesome's own
+      CDN autoloader for whichever `wa-*` elements actually appear (a real
+      `<script src>` tag, not bundled — that's what makes autoloading work,
+      unlike `index.astro`'s case). Verified end to end in a browser:
+      `<atk-metric>` and an unimported `<wa-badge>` both render correctly.
+      This is template completeness, not the content-authoring pipeline
+      D16 defers to `atk-ui-content` (Phase 2) — the layout doesn't teach
+      anyone what to write, it just makes what they write work.
+      **Code review found the hardcoded component list itself could drift
+      from the catalog** — the same bug, one layer up. `tools/
+      check_content_layout.ts` now fails `make check` if a catalogued
+      component has no matching import here; verified it actually catches
+      drift, not just that it runs.
+- [x] **Code review fixes.** `check_for_update` was swallowing every `gh`
+      failure (bad auth, network down) as "already up to date" — confirmed
+      against a real 401 that it now surfaces correctly instead. `atk-ui
+      start --json` hung until the dev server was killed, because scaffolding
+      and running the dev server were one blocking call — split into
+      `scaffold_project` (returns) and `start_dev_server` (blocks); verified
+      the JSON line now prints before the dev server ever starts.
+      `UpdateStatus` is a discriminated union now, not an optional field plus
+      a `!`. D10 amended with the one place `templates/astro/` deliberately
+      uses the CDN outside preview, and why.
+- [x] **`atk-metric`'s history array order, documented.** Found via an
+      independent test (a fresh agent, given only the skill files, asked to
+      write a page): the array's chronological order was correct in the
+      code and in a property-level comment the doc generator drops (`series`
+      has no HTML attribute, so it gets no attribute-table row), but never
+      reached the generated reference. Moved the note to the class-level doc
+      comment, which does render, after confirming the actual order against
+      `sparkline.ts` rather than trusting the old comment on faith.
+- [x] **Astro local-component recipe (D17).** `templates/astro/src/components/
+      site-note.ts` — a plain `.ts` file extending `AganithaComponent`,
+      imported into `index.astro` like any other module, no special Astro
+      config. Tagged `site-note`, not `atk-note`, deliberately — the README
+      says to rename the prefix, so it never reads as part of the shared
+      catalog. `tools/check_css.ts` now also scans `templates/`, not just
+      `src/` — the same no-literal-colours rule applies the moment someone
+      copies this file into their own project.
+- [x] **`atk-ui` skill — widen past the catalog.** Added a "Quick start" (npm
+      install line, link to `references/installation.md`) and a "Usage"
+      section (components vs. patterns, tokens, the local-component recipe,
+      link to `references/usage.md`) to the generated `SKILL.md`, following
+      Web Awesome's own skill layout. The two new reference pages are static
+      prose (`tools/skill-content/*.md`), copied verbatim by `tools/generate.ts`
+      with the same "generated, do not edit" marker and staleness check as
+      everything else — no second source of truth for install/usage steps.
+- [x] **`atk-ui-start` skill.** Hand-written, thin (`skills/atk-ui-start/`) —
+      tells the assistant to run `atk-ui start astro <dir>`, not how
+      scaffolding works; says plainly there is no command yet for adding
+      atk-ui to an existing project.
+- [x] **Tell the assistant to install Web Awesome's two skills too.** A
+      callout near the top of the generated `SKILL.md`, matching the shape
+      Web Awesome's own skill uses for its `webawesome-design` companion.
+- [x] **Set up the pack.** `packs/atk-ui.pack`, in this repo — validated
+      against `skills-pack`'s own parser (`skills-pack info atk-ui --from .`
+      and `preview pack atk-ui --from .`), not just written and assumed
+      correct. **Publishing it is a separate step**, not done here: it needs
+      either `skills-pack source add github:aganitha/atk-ui` by whoever
+      wants it, or landing in `agent-skills`'s own discovery list — a
+      cross-repo change, out of scope the same way the `commands/bin/atk-ui`
+      shim is.
 
 Only these two skills in Phase 1. `atk-ui-design`, `atk-ui-content` and the
 existing `atk-ui-contribute` are Phase 2 and later (D16).

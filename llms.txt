@@ -1,0 +1,56 @@
+# @aganitha/atk-ui
+
+> Aganitha's shared UI layer: a Web Awesome theme, a small catalog of custom
+> elements and patterns, and support for project-local components.
+
+## Install
+
+```bash
+npm install @aganitha/atk-ui @awesome.me/webawesome lit
+```
+
+Load Web Awesome's theme before atk-ui's theme and add `atk-theme` to the
+document root:
+
+```ts
+import "@awesome.me/webawesome/dist/styles/themes/default.css";
+import "@aganitha/atk-ui/theme.css";
+import "@aganitha/atk-ui/patterns.css";
+```
+
+```html
+<html class="wa-theme-default atk-theme"></html>
+```
+
+## API
+
+`AganithaComponent extends LitElement`
+  Base class for project-local and shared atk-ui custom elements. Set `static
+  css` rather than Lit's `styles` so the common host styles remain active.
+
+`define(tag: string, ctor: CustomElementConstructor): void`
+  Registers a custom element when running in a browser. It is a no-op during
+  server rendering and when the tag was already registered.
+
+`<atk-metric>`
+  Displays one labeled measurement with optional historical values and normal
+  range. Import with `@aganitha/atk-ui/components/metric`.
+
+`<atk-go-ribbon>`
+  Displays a Gene Ontology ribbon through its maintained upstream component.
+  Import with `@aganitha/atk-ui/components/go-ribbon`.
+
+## Examples
+
+```ts
+import "@aganitha/atk-ui/components/metric";
+```
+
+```html
+<atk-metric label="Hemoglobin" value="10.2" unit="g/dL" low="13.5" high="17.5">
+  <script type="application/json">[11.8, 11.2, 10.9, 10.4, 10.2]</script>
+</atk-metric>
+```
+
+For the generated component catalog and usage guidance, install the `atk-ui`
+skill pack from this repository.

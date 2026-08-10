@@ -1,0 +1,51 @@
+---
+// A layout for plain Markdown pages — add `layout: ../layouts/Content.astro`
+// to a page's front matter and it gets the theme, Web Awesome, and every
+// atk-ui component for free.
+//
+// Markdown content can't declare its own imports the way an .astro file's
+// frontmatter or script tag can (see index.astro's comment on that), so this
+// layout can't cherry-pick which components a given page needs — it has no
+// way to know in advance. Two different answers for the two libraries:
+//
+// - **atk-ui's own components** register unconditionally, explicitly listed
+//   below. The catalog is small and curated on purpose (D9/D14) — the whole
+//   thing costs little enough that "always load it" is the simpler, more
+//   reliable choice over trying to detect usage per page.
+// - **Web Awesome components** load through its own CDN autoloader instead,
+//   which scans the page for whichever `wa-*` tags actually appear and
+//   fetches only those. Loading it as a real `<script src>` tag rather than
+//   a bundled import is what makes autoloading actually work — Vite
+//   bundling breaks its self-location, which is exactly the bug
+//   index.astro's own component script works around by not using it there.
+import "@awesome.me/webawesome/dist/styles/themes/default.css";
+import "@awesome.me/webawesome/dist/styles/utilities.css";
+import "@aganitha/atk-ui/theme.css";
+import "@aganitha/atk-ui/patterns.css";
+import webawesome_package from "@awesome.me/webawesome/package.json";
+
+interface Props {
+  frontmatter?: { title?: string };
+}
+
+const title = Astro.props.frontmatter?.title ?? "atk-ui";
+const wa_cdn = `https://ka-f.webawesome.com/webawesome@${webawesome_package.version}`;
+---
+
+<html lang="en" class="wa-theme-default atk-theme">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <main style="max-width: 60rem; margin-inline: auto; padding: var(--wa-space-xl) var(--wa-space-l);">
+      <slot />
+    </main>
+    <script type="module" src={`${wa_cdn}/webawesome.loader.js`}></script>
+    <script>
+      import "@aganitha/atk-ui/components/metric";
+      import "@aganitha/atk-ui/components/go-ribbon";
+    </script>
+  </body>
+</html>

@@ -15,3 +15,5 @@ export { define } from "./define.js";
 export { AtkMetric } from "./components/metric/metric.js";
 export { sparkline_geometry } from "./components/metric/sparkline.js";
 export type { SparklineGeometry, SparklineOptions } from "./components/metric/sparkline.js";
+
+export { AtkGoRibbon } from "./components/go-ribbon/go-ribbon.js";

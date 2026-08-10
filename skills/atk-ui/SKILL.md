@@ -17,14 +17,31 @@ Aganitha's additions to Web Awesome. **Web Awesome comes first**: if it has a
 component for what you need, use `wa-` directly and do not look here. This
 skill covers only what Web Awesome does not provide.
 
+> **Also install Web Awesome's own skills** — `webawesome` (the component
+> reference) and `webawesome-design` (page layout, theming, brand
+> composition). This skill assumes both and only covers what they do not.
+
 **Do not write these from memory.** Both Web Awesome and this package appear
 in training data at older versions. Read the reference file before using
 anything below — the attribute names have changed.
+
+## Quick start
+
+```bash
+npm install @aganitha/atk-ui @awesome.me/webawesome lit
+```
+
+Starting a new project instead of adding to one? Use the `atk-ui start`
+command — see the `atk-ui-start` skill. Full install and styling steps for
+an existing project: [Installation](references/installation.md).
 
 Two kinds of thing:
 
 - **Components** are custom elements. Write the tag.
 - **Patterns** are markup plus our CSS classes. Copy the markup.
+
+How to use either one, plus local one-off components (D17 — for a need
+specific to your project, not the shared catalog): [Usage](references/usage.md).
 
 ## data-display
 

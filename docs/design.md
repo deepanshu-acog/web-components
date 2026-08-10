@@ -27,6 +27,18 @@ they change at different speeds and are used by different people.
 
 Build tooling lives in the repository as scripts. It is not a published package.
 
+**Two more things exist alongside the package, added by D18 — distributed
+differently, on purpose, so neither is a fifth thing inside it:**
+
+- **the `atk-ui` CLI** (`src/cli/`, `src/core/`) — `start`, `preview`,
+  `update`. Compiled to a standalone binary per platform (`make build-cli`),
+  published as GitHub releases, not to the npm registry — the library and
+  the CLI have separate distribution stories because they reach a developer
+  through separate channels (a project dependency vs. a command on `PATH`).
+- **starter templates** (`templates/`) — fetched live via git by `atk-ui
+  start`, not embedded in the CLI binary or the npm package. Content should
+  be free to change on its own cadence without forcing a release of either.
+
 ## Decisions
 
 ### D1 — Build on Web Awesome instead of building our own components
@@ -239,6 +251,19 @@ and none are reliably caught in review.
   removes what the previous repository listed as its largest blocker. It creates
   a different obligation: a working, documented build recipe for each stack, since
   teams will follow whatever we demonstrate.
+- **One deliberate exception, added when the Astro template's content layout
+  was built (D18):** `templates/astro/src/layouts/Content.astro` loads Web
+  Awesome's own components through its CDN autoloader, in a page that is
+  part of a deployed site, not a preview. The reason is D17's problem in a
+  different shape — a Markdown page cannot declare its own imports the way
+  an `.astro` file can, so there is no way to bundle only what a given
+  content page uses. atk-ui's own components still register explicitly
+  (the catalog is small and curated, D9/D14, so "always load it" costs
+  little); Web Awesome's 50+ components are too many to load unconditionally
+  the same way, so its autoloader — built for exactly this "don't know in
+  advance what's used" case — carries them instead. Bundled pages
+  (`index.astro` and every real application page) are unaffected and still
+  follow B above; this exception is scoped to Markdown content specifically.
 
 ### D11 — Fill gaps by curating third-party libraries, not by building
 
@@ -547,6 +572,95 @@ which is exactly how the angiosarcoma portal ended up with `dw-`, `tl-`, and
      install required. This is the recipe for a project that has outgrown step 1.
   Document both. Do not require step 2 for a project's first local component.
 
+### D18 — One CLI backs the skills; preview runs locally, not hosted
+
+D15 made the skill the entry point, but a skill still has to *do* something
+when it starts a project or shows what exists. Without a single place for that
+to live, `atk-ui-start` would end up shelling out to ad hoc scripts, and a
+human typing commands by hand would get a different, undocumented path from an
+assistant following the skill.
+
+- **Options:**
+  - **A. Package-manager scripts** (`bun run start`, `bun run preview`) — no
+    name an assistant or a person can invoke the same way twice, and nothing
+    that reads as one product.
+  - **B. One CLI, git-style subcommands** (`atk-ui start`, `atk-ui preview`),
+    shipped from the same package.
+- **Chose B.** It matches the one-package pattern already set by D5 — one
+  thing to install, not several. The skills describe *when* to reach for it;
+  the CLI is what they invoke, so `atk-ui-start` stays thin (D16) instead of
+  restating scaffolding logic in prose.
+- **Distribution — revised after reading how `commands` and `skills-pack`
+  actually work, not assumed.** The library (`@aganitha/atk-ui`, imported by
+  projects as a dependency) still publishes to the internal npm registry —
+  that part is unchanged. The **CLI** does not: `commands/ADMIN-GUIDE.md`
+  states the house doctrine outright — "land it in this repo, `atk update`
+  (a `git pull`) delivers it to every machine, **no separate publish step**."
+  An npm-registry publish for the CLI would be a second distribution
+  mechanism nobody asked for, competing with one that already works for
+  everything else Aganitha ships this way.
+  - **Options:**
+    - **A. Publish `@aganitha/atk-ui` to the internal npm registry, `bun add
+      -g` it.** Works, but is not how any other Aganitha command reaches a
+      developer's machine, and needs its own update story invented from
+      scratch.
+    - **B. Compile to a standalone binary (`bun build --compile`, one target
+      per platform), published as GitHub release assets, fetched by a thin
+      shim in `commands/bin/atk-ui`.**
+  - **Chose B.** `bun build --compile` cross-compiles for every target from
+    one machine (`darwin-arm64`, `darwin-x64`, `linux-x64`, `linux-arm64`) —
+    no CI, no runner matrix, just `make build-cli`. `make release
+    VERSION=x.y.z` verifies that `VERSION` matches `package.json`, requires a
+    clean worktree before and after building, then tags, pushes, and runs `gh
+    release create`. This makes the source tag, reported binary version, and
+    published asset one release identity. It remains a deliberate human-run
+    step, kept separate from `build-cli` so testing a build never risks
+    publishing one. `commands/bin/atk-ui` (a different repo, changed
+    separately, not by this decision alone) fetches the right binary via `gh
+    release download` when missing or stale and execs it — the same shape as
+    `bin/sp`, so it shows up in `atk list` for free.
+  - **Consequences — a compiled binary has no sibling files.** Once
+    `atk-ui` lives alone in `~/.aganitha/bin/`, there is no `dist/`,
+    `skills/`, or `node_modules` beside it to read at runtime, which broke
+    the first version of `atk-ui preview` (it resolved catalog and asset
+    paths relative to its own install location). Fixed by embedding what the
+    binary needs at *compile* time with Bun's `with { type: "file" }`, which
+    requires a static, known path — `tools/bundle_preview.ts` exists
+    because of this: it regenerates one fixed file,
+    `dist/preview/components.embed`, bundling whatever components the
+    catalog currently lists, so the binary only ever needs one static import
+    regardless of how many components exist. `catalog.json` now carries each
+    entry's full reference body inline for the same reason — no per-file
+    fetch a standalone binary has no way to make. Web Awesome itself stays on
+    its CDN rather than being embedded (it is large, 50+ components), which
+    D10 already allows for preview use; its version is read from
+    `@awesome.me/webawesome`'s own `package.json` at build time so the CDN
+    link always matches the peer version the binary was built against.
+- **Hugo and Astro are assumed present on a developer's machine.** Getting
+  them there company-wide is a different effort's job, not this repository's.
+  The CLI shells out to whichever the chosen stack needs and never tries to
+  detect, install, or vendor either.
+- **`atk-ui start [astro|hugo]`** scaffolds the template, installs
+  dependencies, and starts the dev server — one command end to end, so it
+  matches the number vision.md is actually measured against. `astro` is
+  built and verified (`templates/astro/`); `hugo` is not yet started (see
+  TODO.md). Templates are fetched live via git at run time, not embedded in
+  the binary — unlike the catalog, they should be free to change on their
+  own cadence without forcing a CLI release.
+- **`atk-ui preview` closes the open question D10 and D15 both left hanging**
+  ("where is the CDN hosted," "the reference site can be cheap"). It serves
+  the catalog locally instead of hosting it anywhere, generated from the same
+  step that already builds `skills/atk-ui/`.
+- **Consequences:** nothing to host, version, or cache-bust, because the
+  catalog is embedded from whatever the binary was built from. It cannot
+  drift the way a hosted reference site could, and it cannot go down,
+  because nobody runs a server for it. The trade-off is narrower reach — it
+  shows the version of atk-ui that was current when that binary was built,
+  not a live shared canonical one — which is acceptable because staleness
+  was the larger risk D15 flagged for any hand-written reference material,
+  and `atk update`/`atk-ui`'s own update check keep that version recent in
+  practice.
+
 ## What is volatile, and where the seam is
 
 The test: if this is replaced next year, what has to be rewritten?
@@ -579,7 +693,11 @@ The test: if this is replaced next year, what has to be rewritten?
   shipped by the upstream library. Building any of these would be duplicating
   what we already depend on.
 - **Our own icon set** — the upstream library's icon component covers it.
-- **A command-line tool for querying the catalog** — D7. Files are enough.
+- **A command-line tool for the *skill* to query the catalog through** — D7.
+  Files are enough for that specific job. (D18 later built a CLI for a
+  different job — starting and previewing projects — which does not read
+  the catalog through a command either; the skill still reads files
+  directly, exactly as D7 chose.)
 - **Multiple npm packages** — D5.
 - **Static site generator plugins** — a documented, working recipe per stack is
   what teams need. A plugin is only worth writing if a recipe proves insufficient.
@@ -589,8 +707,8 @@ The test: if this is replaced next year, what has to be rewritten?
 1. **Where the data grid and charts come from.** Both are paid in the upstream
    library. D11 says curate rather than build, but the specific choices are not
    made, and licences need checking before they are.
-2. **Whether preview is a documentation site or a hosted bundle.** Lower
-   priority than it was, since nothing in production depends on it.
-3. **The account of why the two earlier attempts stopped.** Being re-examined
-   from interviews. Until that is done, [`lessons.md`](lessons.md) should not be
-   written and its earlier conclusions should not be relied on.
+
+Resolved since these were last written: "whether preview is a documentation
+site or a hosted bundle" — D18, it is neither, a locally-run embedded binary;
+"the account of why the two earlier attempts stopped" — written, see
+[`lessons.md`](lessons.md).

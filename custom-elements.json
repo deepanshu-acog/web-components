@@ -4,6 +4,319 @@
   "modules": [
     {
       "kind": "javascript-module",
+      "path": "src/cli/index.ts",
+      "declarations": [],
+      "exports": []
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/core/preview.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "start_preview",
+          "return": {
+            "type": {
+              "text": "Promise<PreviewServer>"
+            }
+          },
+          "parameters": [
+            {
+              "name": "options",
+              "default": "{}",
+              "type": {
+                "text": "{ port?: number }"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "start_preview",
+          "declaration": {
+            "name": "start_preview",
+            "module": "src/core/preview.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/core/start.ts",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "SUPPORTED_STACKS",
+          "type": {
+            "text": "[\"astro\"]"
+          },
+          "default": "[\"astro\"]"
+        },
+        {
+          "kind": "function",
+          "name": "scaffold_project",
+          "return": {
+            "type": {
+              "text": "Promise<ScaffoldResult>"
+            }
+          },
+          "parameters": [
+            {
+              "name": "options",
+              "type": {
+                "text": "ScaffoldOptions"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "function",
+          "name": "start_dev_server",
+          "return": {
+            "type": {
+              "text": "Promise<void>"
+            }
+          },
+          "parameters": [
+            {
+              "name": "dir",
+              "type": {
+                "text": "string"
+              }
+            }
+          ],
+          "description": "Blocks until the dev server exits (the user stops it)."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "SUPPORTED_STACKS",
+          "declaration": {
+            "name": "SUPPORTED_STACKS",
+            "module": "src/core/start.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "scaffold_project",
+          "declaration": {
+            "name": "scaffold_project",
+            "module": "src/core/start.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "start_dev_server",
+          "declaration": {
+            "name": "start_dev_server",
+            "module": "src/core/start.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/core/update.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "is_newer_version",
+          "return": {
+            "type": {
+              "text": "boolean"
+            }
+          },
+          "parameters": [
+            {
+              "name": "current_version",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "name": "latest_tag",
+              "type": {
+                "text": "string"
+              }
+            }
+          ],
+          "description": "Whether a GitHub release tag represents a strictly newer CLI version."
+        },
+        {
+          "kind": "function",
+          "name": "is_compiled_binary",
+          "return": {
+            "type": {
+              "text": "boolean"
+            }
+          }
+        },
+        {
+          "kind": "function",
+          "name": "check_for_update",
+          "return": {
+            "type": {
+              "text": "Promise<UpdateStatus>"
+            }
+          }
+        },
+        {
+          "kind": "function",
+          "name": "apply_update",
+          "return": {
+            "type": {
+              "text": "Promise<{ version: string }>"
+            }
+          },
+          "parameters": [
+            {
+              "name": "latest_tag",
+              "type": {
+                "text": "string"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "is_newer_version",
+          "declaration": {
+            "name": "is_newer_version",
+            "module": "src/core/update.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "is_compiled_binary",
+          "declaration": {
+            "name": "is_compiled_binary",
+            "module": "src/core/update.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "check_for_update",
+          "declaration": {
+            "name": "check_for_update",
+            "module": "src/core/update.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "apply_update",
+          "declaration": {
+            "name": "apply_update",
+            "module": "src/core/update.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/cli/commands/preview.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "register_preview",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          },
+          "parameters": [
+            {
+              "name": "program",
+              "type": {
+                "text": "Command"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "register_preview",
+          "declaration": {
+            "name": "register_preview",
+            "module": "src/cli/commands/preview.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/cli/commands/start.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "register_start",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          },
+          "parameters": [
+            {
+              "name": "program",
+              "type": {
+                "text": "Command"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "register_start",
+          "declaration": {
+            "name": "register_start",
+            "module": "src/cli/commands/start.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/cli/commands/update.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "register_update",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          },
+          "parameters": [
+            {
+              "name": "program",
+              "type": {
+                "text": "Command"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "register_update",
+          "declaration": {
+            "name": "register_update",
+            "module": "src/cli/commands/update.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/components/go-ribbon/go-ribbon.ts",
       "declarations": [
         {
@@ -84,7 +397,8 @@
           "customElement": true,
           "summary": "Gene Ontology annotations for a gene or protein.",
           "atkUse": "Showing GO annotations for one gene or protein, when the reader wants to see which functional categories are annotated at a glance.",
-          "atkAvoid": "Do not use it as a general chart. It only understands Gene Ontology subject identifiers. For arbitrary category data, use a table."
+          "atkAvoid": "Do not use it as a general chart. It only understands Gene Ontology subject identifiers. For arbitrary category data, use a table.",
+          "atkExample": "```html\n<atk-go-ribbon subject=\"UniProtKB:Q8NER5\"></atk-go-ribbon>\n```"
         }
       ],
       "exports": [
@@ -104,7 +418,7 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "A single measured value, with its recent history and normal range.\n\nPass the history as a JSON array in a `<script type=\"application/json\">`\nchild. Scalars go in attributes. This is how every atk-ui component takes\ncomplex data — it works in plain HTML, in templates, and in AI-generated\nmarkup, with nothing to serialise.",
+          "description": "A single measured value, with its recent history and normal range.\n\nPass the history as a JSON array in a `<script type=\"application/json\">`\nchild. Scalars go in attributes. This is how every atk-ui component takes\ncomplex data — it works in plain HTML, in templates, and in AI-generated\nmarkup, with nothing to serialise.\n\nThe array is oldest first, newest last — the last value is what gets\nmarked as the current point on the chart, and should match `value`.",
           "name": "AtkMetric",
           "cssProperties": [
             {
@@ -296,7 +610,8 @@
           "customElement": true,
           "summary": "A labelled value with its recent trend and normal range.",
           "atkUse": "Showing one measurement that a reader needs to judge at a glance: is it normal, and which way is it moving. Lab results, system metrics, counts tracked over time.",
-          "atkAvoid": "Do not use it to show several measurements at once — use a record list, or a table if they need comparing. Do not use it for a value with no history and no normal range; that is a definition list, not a metric."
+          "atkAvoid": "Do not use it to show several measurements at once — use a record list, or a table if they need comparing. Do not use it for a value with no history and no normal range; that is a definition list, not a metric.",
+          "atkExample": "```html\n<atk-metric label=\"Hemoglobin\" value=\"10.2\" unit=\"g/dL\" low=\"13.5\" high=\"17.5\">\n  <script type=\"application/json\">[11.8, 11.2, 10.9, 10.4, 10.2]</script>\n</atk-metric>\n```"
         }
       ],
       "exports": [

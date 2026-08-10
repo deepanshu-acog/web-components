@@ -8,6 +8,14 @@ A labelled value with its recent trend and normal range.
 
 **Do not use it when:** Do not use it to show several measurements at once — use a record list, or a table if they need comparing. Do not use it for a value with no history and no normal range; that is a definition list, not a metric.
 
+## Example
+
+```html
+<atk-metric label="Hemoglobin" value="10.2" unit="g/dL" low="13.5" high="17.5">
+  <script type="application/json">[11.8, 11.2, 10.9, 10.4, 10.2]</script>
+</atk-metric>
+```
+
 ## Attributes
 
 | Name | Description |
@@ -45,3 +53,6 @@ Pass the history as a JSON array in a `<script type="application/json">`
 child. Scalars go in attributes. This is how every atk-ui component takes
 complex data — it works in plain HTML, in templates, and in AI-generated
 markup, with nothing to serialise.
+
+The array is oldest first, newest last — the last value is what gets
+marked as the current point on the chart, and should match `value`.

@@ -8,6 +8,12 @@ Gene Ontology annotations for a gene or protein.
 
 **Do not use it when:** Do not use it as a general chart. It only understands Gene Ontology subject identifiers. For arbitrary category data, use a table.
 
+## Example
+
+```html
+<atk-go-ribbon subject="UniProtKB:Q8NER5"></atk-go-ribbon>
+```
+
 ## Attributes
 
 | Name | Description |

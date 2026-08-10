@@ -1,25 +1,44 @@
 {
   "name": "@aganitha/atk-ui",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Aganitha's shared UI layer: brand theme, our components, and agent skills.",
   "type": "module",
   "license": "UNLICENSED",
+  "private": false,
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://npm.aganitha.ai/"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "customElements": "custom-elements.json",
   "files": [
-    "dist",
+    "dist/base.d.ts",
+    "dist/base.js",
+    "dist/define.d.ts",
+    "dist/define.js",
+    "dist/index.d.ts",
+    "dist/index.js",
+    "dist/components",
+    "dist/theme",
+    "dist/patterns",
     "custom-elements.json",
-    "skills"
+    "skills",
+    "README.md",
+    "llms.txt",
+    "CHANGELOG.md"
   ],
+  "scripts": {
+    "prepublishOnly": "bun run build"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
     "./components/*": {
-      "types": "./dist/components/*/index.d.ts",
-      "import": "./dist/components/*/index.js"
+      "types": "./dist/components/*/*.d.ts",
+      "import": "./dist/components/*/*.js"
     },
     "./theme.css": "./dist/theme/theme.css",
     "./patterns.css": "./dist/patterns/patterns.css",
@@ -38,5 +57,8 @@
     "happy-dom": "20.11.1",
     "lit": "^3.3.3",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "commander": "^15.0.0"
   }
 }

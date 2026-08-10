@@ -13,15 +13,17 @@ export default {
 };
 
 /**
- * Capture the two tags the standard does not have.
+ * Capture the three tags the standard does not have.
  *
  * The Custom Elements Manifest describes what an element *is*. It has no way
- * to say when to choose it over another element, which is the thing an AI
- * assistant most needs and gets wrong most often. Web Awesome hit the same
- * problem and ships a whole "choosing components" document for it.
+ * to say when to choose it over another element, or what using it looks like,
+ * which are the two things an AI assistant most needs and gets wrong most
+ * often. Web Awesome hit the "when" problem and ships a whole "choosing
+ * components" document for it; `@example` is what closes the "what it looks
+ * like" gap without a second document to keep in sync.
  */
 function atk_tags_plugin() {
-  const wanted = { "atk-use": "atkUse", "atk-avoid": "atkAvoid" };
+  const collapsed = { "atk-use": "atkUse", "atk-avoid": "atkAvoid" };
 
   return {
     name: "atk-tags",
@@ -34,13 +36,18 @@ function atk_tags_plugin() {
 
       for (const jsdoc of node.jsDoc ?? []) {
         for (const tag of jsdoc.tags ?? []) {
-          const key = wanted[tag.tagName?.getText()];
-          if (!key) continue;
+          const tag_name = tag.tagName?.getText();
           const text =
             typeof tag.comment === "string"
               ? tag.comment
               : (tag.comment ?? []).map((part) => part.text).join("");
-          declaration[key] = text.trim().replace(/\s+/g, " ");
+
+          if (collapsed[tag_name]) {
+            declaration[collapsed[tag_name]] = text.trim().replace(/\s+/g, " ");
+          } else if (tag_name === "example") {
+            // Markup, not prose — collapsing whitespace would destroy it.
+            declaration.atkExample = text.trim();
+          }
         }
       }
     },

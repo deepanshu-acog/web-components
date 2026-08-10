@@ -15,6 +15,9 @@ const VIEW_HEIGHT = 28;
  * complex data — it works in plain HTML, in templates, and in AI-generated
  * markup, with nothing to serialise.
  *
+ * The array is oldest first, newest last — the last value is what gets
+ * marked as the current point on the chart, and should match `value`.
+ *
  * @customElement atk-metric
  * @summary A labelled value with its recent trend and normal range.
  *

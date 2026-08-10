@@ -1,13 +1,19 @@
 # atk-ui
 
 Aganitha's shared UI layer: our brand theme, the components we need that our
-upstream library does not provide, and the agent skills that let an AI assistant
-use both correctly.
+upstream library does not provide, the `atk-ui` CLI, and the agent skills that
+let an AI assistant use all of it correctly.
 
-**Status: design in progress. Nothing is built yet.**
+**Status: Phase 1 (an engineer with an assistant can start) is essentially
+done.** Theme, CLI (`preview`, `start astro`, `update`), the Astro starter
+template (including a Markdown content layout), and both Phase 1 skills are
+built and verified. See [TODO.md](TODO.md) for exact status and what's next.
 
-Start with [docs/vision.md](docs/vision.md). Design decisions will follow in
-`docs/design.md`.
+**New to this repository? Start with [docs/onboarding.md](docs/onboarding.md).**
+It sequences everything below and gives you commands to run before you read
+anything. [docs/vision.md](docs/vision.md) is why this exists,
+[docs/design.md](docs/design.md) is every decision and why, and
+[AGENTS.md](AGENTS.md) is the map for working in this repo.
 
 ## History
 

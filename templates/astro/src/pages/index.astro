@@ -1,0 +1,79 @@
+---
+// Styles only here — this frontmatter runs during Astro's server-side
+// prerender, and Web Awesome's and atk-ui's component modules touch
+// browser-only globals (MutationObserver) at import time, which crashes a
+// static build. The component modules load from a <script> tag in the body
+// below instead, which Astro only ever runs in the browser.
+import "@awesome.me/webawesome/dist/styles/themes/default.css";
+import "@awesome.me/webawesome/dist/styles/utilities.css";
+import "@aganitha/atk-ui/theme.css";
+import "@aganitha/atk-ui/patterns.css";
+---
+
+<html lang="en" class="wa-theme-default atk-theme">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>atk-ui starter</title>
+  </head>
+  <body>
+    <main style="max-width: 60rem; margin-inline: auto; padding: var(--wa-space-xl) var(--wa-space-l);">
+      <h1>Project dashboard</h1>
+
+      <site-note label="Starting point">
+        This page is the Astro starter template from <code>atk-ui</code>. Everything
+        on it — the theme, <code>&lt;atk-metric&gt;</code>, the record list — is
+        real atk-ui, not a mockup. <code>&lt;site-note&gt;</code> itself is a
+        local component (see <code>src/components/site-note.ts</code>): it
+        never leaves this project unless the core team harvests it.
+      </site-note>
+
+      <section style="margin-block-start: var(--wa-space-xl);">
+        <h2>Recent measurements</h2>
+        <div style="display: flex; gap: var(--wa-space-xl); flex-wrap: wrap;">
+          <atk-metric label="Hemoglobin" value="10.2" unit="g/dL" low="13.5" high="17.5">
+            <script type="application/json">[11.8, 11.2, 10.9, 10.4, 10.2]</script>
+          </atk-metric>
+          <atk-metric label="Platelets" value="230" unit="x10³/µL" low="150" high="400">
+            <script type="application/json">[210, 245, 260, 225, 230]</script>
+          </atk-metric>
+        </div>
+      </section>
+
+      <section style="margin-block-start: var(--wa-space-xl);">
+        <h2>Open items</h2>
+        <ul class="atk-record-list">
+          <li class="atk-record">
+            <div class="atk-record-heading">
+              <span class="atk-record-name">Hypokalemia</span>
+              <wa-badge variant="warning">Moderate</wa-badge>
+            </div>
+            <span class="atk-record-meta">Metabolic</span>
+            <p class="atk-record-detail">
+              Documented as a relevant active condition. Requires ongoing monitoring.
+            </p>
+          </li>
+          <li class="atk-record">
+            <div class="atk-record-heading">
+              <span class="atk-record-name">Follow-up review</span>
+              <wa-badge variant="neutral">Low</wa-badge>
+            </div>
+            <span class="atk-record-meta">Administrative</span>
+            <p class="atk-record-detail">Scheduled for next quarter.</p>
+          </li>
+        </ul>
+      </section>
+    </main>
+    <script>
+      // Explicit per-component imports, not the Web Awesome autoloader —
+      // this is what installation.md itself recommends for a bundled npm
+      // project (the autoloader is for the CDN, no-build path, D10). It also
+      // sidesteps a real bug: the autoloader tries to self-locate its assets
+      // from its own script URL, which does not survive Vite's bundling and
+      // 404s trying to fetch "/components/badge/badge.js" at the site root.
+      import "@awesome.me/webawesome/dist/components/badge/badge.js";
+      import "@aganitha/atk-ui/components/metric";
+      import "../components/site-note.ts";
+    </script>
+  </body>
+</html>

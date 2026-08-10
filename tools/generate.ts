@@ -29,7 +29,16 @@ interface Entry {
   summary: string;
   use: string;
   avoid: string;
+  /** Runnable markup, for `atk-ui preview`. A component may not have one yet. */
+  example?: string;
+  /** Compiled JS, relative to the package root. Components only. */
+  module?: string;
   body: string;
+}
+
+/** "src/components/metric/metric.ts" -> "dist/components/metric/metric.js" */
+function to_dist_path(src_path: string): string {
+  return src_path.replace(/^src\//, "dist/").replace(/\.ts$/, ".js");
 }
 
 // --- components ---------------------------------------------------------
@@ -42,6 +51,7 @@ interface ManifestDeclaration {
   description?: string;
   atkUse?: string;
   atkAvoid?: string;
+  atkExample?: string;
   attributes?: { name: string; description?: string; type?: { text?: string } }[];
   slots?: { name: string; description?: string }[];
   cssParts?: { name: string; description?: string }[];
@@ -86,6 +96,8 @@ async function read_components(): Promise<Entry[]> {
         summary: declaration.summary ?? declaration.description?.split("\n")[0] ?? "",
         use: declaration.atkUse ?? "",
         avoid: declaration.atkAvoid ?? "",
+        example: extract_example(declaration.atkExample),
+        module: to_dist_path(module.path),
         body: render_component(tag, declaration),
       });
     }
@@ -97,11 +109,21 @@ async function read_components(): Promise<Entry[]> {
 const GENERATED_NOTE =
   "<!-- Generated from the component source. Do not edit; run `make generate`. -->";
 
+/** `@example` is written as a fenced code block; keep only the markup inside it. */
+function extract_example(raw: string | undefined): string | undefined {
+  if (!raw) return undefined;
+  const fenced = raw.match(/```(?:html)?\n?([\s\S]*?)```/);
+  return (fenced ? fenced[1]! : raw).trim() || undefined;
+}
+
 function render_component(tag: string, d: ManifestDeclaration): string {
   const lines: string[] = [GENERATED_NOTE, "", `# \`<${tag}>\``, "", d.summary ?? "", ""];
 
   if (d.atkUse) lines.push(`**Use it when:** ${d.atkUse}`, "");
   if (d.atkAvoid) lines.push(`**Do not use it when:** ${d.atkAvoid}`, "");
+
+  const example = extract_example(d.atkExample);
+  if (example) lines.push("## Example", "", "```html", example, "```", "");
 
   const table = (
     title: string,
@@ -159,6 +181,9 @@ async function read_patterns(): Promise<Entry[]> {
       summary: meta["summary"]!,
       use: meta["use"]!,
       avoid: meta["avoid"]!,
+      // The pattern's own "## Markup" section is already a worked example —
+      // reuse it rather than asking contributors to write the same markup twice.
+      example: extract_example(match[2]),
       body:
         `${GENERATED_NOTE}\n\n` +
         `# ${meta["name"]} (pattern)\n\n${meta["summary"]}\n\n` +
@@ -234,14 +259,31 @@ function render_skill(entries: Entry[]): string {
     "component for what you need, use `wa-` directly and do not look here. This",
     "skill covers only what Web Awesome does not provide.",
     "",
+    "> **Also install Web Awesome's own skills** — `webawesome` (the component",
+    "> reference) and `webawesome-design` (page layout, theming, brand",
+    "> composition). This skill assumes both and only covers what they do not.",
+    "",
     "**Do not write these from memory.** Both Web Awesome and this package appear",
     "in training data at older versions. Read the reference file before using",
     "anything below — the attribute names have changed.",
+    "",
+    "## Quick start",
+    "",
+    "```bash",
+    "npm install @aganitha/atk-ui @awesome.me/webawesome lit",
+    "```",
+    "",
+    "Starting a new project instead of adding to one? Use the `atk-ui start`",
+    "command — see the `atk-ui-start` skill. Full install and styling steps for",
+    "an existing project: [Installation](references/installation.md).",
     "",
     "Two kinds of thing:",
     "",
     "- **Components** are custom elements. Write the tag.",
     "- **Patterns** are markup plus our CSS classes. Copy the markup.",
+    "",
+    "How to use either one, plus local one-off components (D17 — for a need",
+    "specific to your project, not the shared catalog): [Usage](references/usage.md).",
     "",
   ];
 
@@ -268,8 +310,45 @@ await $`bunx cem analyze --config custom-elements-manifest.config.mjs`.quiet();
 
 const entries = [...(await read_components()), ...(await read_patterns())];
 
+/**
+ * The same entries, as JSON. `atk-ui preview` reads this — a browsable
+ * catalog is a different presentation of what the skill already says, not a
+ * second source of truth to keep in sync by hand.
+ */
+function render_catalog(entries: Entry[]): string {
+  const catalog = entries.map(({ name, kind, group, summary, use, avoid, example, module, body }) => ({
+    name,
+    kind,
+    group,
+    summary,
+    use,
+    avoid,
+    example,
+    module,
+    // The full reference doc, inline. `atk-ui preview` ships as a standalone
+    // binary with no sibling files (D18) — this is what lets it show the
+    // full reference without a per-file fetch it has no way to make.
+    body,
+  }));
+  return JSON.stringify(catalog, null, 2) + "\n";
+}
+
+/**
+ * Static prose, not derived from component/pattern sources — installation
+ * and usage do not vary per entry. Still "generated" in the sense that
+ * matters here: the committed output must match this source, checked the
+ * same way as everything else, so it cannot drift silently.
+ */
+async function read_static(name: string): Promise<string> {
+  const source = await readFile(join(ROOT, "tools/skill-content", `${name}.md`), "utf8");
+  return `${GENERATED_NOTE}\n\n${source}`;
+}
+
 const files = new Map<string, string>([
   [join(SKILL_DIR, "SKILL.md"), render_skill(entries)],
+  [join(SKILL_DIR, "catalog.json"), render_catalog(entries)],
+  [join(SKILL_DIR, "references", "installation.md"), await read_static("installation")],
+  [join(SKILL_DIR, "references", "usage.md"), await read_static("usage")],
   ...entries.map(
     (e) => [join(SKILL_DIR, "references", `${e.name}.md`), e.body] as [string, string],
   ),
