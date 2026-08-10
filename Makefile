@@ -38,6 +38,7 @@ check: build test ## Full gate: build, standalone CLI, test, CSS rules, and gene
 	bun run tools/check_css.ts
 	bun run tools/generate.ts --check
 	bun run tools/check_content_layout.ts
+	bun run tools/check_template_version.ts
 	$(MAKE) build-cli
 	@echo "✓ check passed"
 

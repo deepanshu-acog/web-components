@@ -688,6 +688,32 @@ components.
   changing atk-ui components. The starter deliberately does not add routing,
   authentication, data fetching, or a second navigation system.
 
+### D20 — A published `0.x` version bump needs its consumers checked, not just remembered
+
+Publishing `0.2.0` (D4's placeholder theme values getting their first real
+update) did not reach `templates/astro/` — it still pinned `"@aganitha/atk-ui":
+"^0.1.0"`. Under semver, `^` on a `0.x` package only covers patch releases
+(`^0.1.0` is `>=0.1.0 <0.2.0`); a minor bump always falls outside a template's
+existing range, and `bun install` there silently keeps resolving the old
+version. Same failure class as D6a: something a machine can check, that review
+will not reliably catch, especially once publishing is routine rather than rare.
+
+- **Options:**
+  - **A. Add a step to `aganitha-npm-publish`'s checklist** — free, but a
+    remembered step is exactly what gets skipped under frequent, routine use,
+    which is the same failure mode as this bug.
+  - **B. A check that fails `make check`** if the package's current version
+    doesn't satisfy any template's declared range for it.
+- **Chose B.** `tools/check_template_version.ts`, run inside `make check`.
+  `publish: check` was already the dependency, so this runs before every
+  publish without needing to be remembered — and before any other command that
+  runs `make check`.
+- **Consequences:** every template's `@aganitha/atk-ui` range must be bumped in
+  the same commit as a version bump that a template needs, or `make check` (and
+  therefore `make publish`) fails with the exact range to fix. Verified by
+  temporarily reverting the range and confirming the check fails with that
+  message, then confirming it passes once fixed.
+
 ## What is volatile, and where the seam is
 
 The test: if this is replaced next year, what has to be rewritten?

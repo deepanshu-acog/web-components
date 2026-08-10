@@ -59,3 +59,26 @@ exception.
 (D18), not built as part of the parent package's own pipeline, so there's no
 real root-level operation to delegate — the template's Makefile stands alone,
 used only after scaffolding onto a user's machine.
+
+**What:** Bumped `templates/astro/package.json`'s `@aganitha/atk-ui` dependency
+from `^0.1.0` to `^0.2.0`, and added `tools/check_template_version.ts` — run as
+part of `make check`, and therefore before every `make publish` (`publish:
+check` was already the dependency) — which fails if the package's current
+version doesn't satisfy any template's declared range for it.
+
+**Why:** Publishing `0.2.0` (the theme/font/shape token work above) didn't
+actually reach the template. For a `0.x` package, semver's caret only allows
+patch bumps — `^0.1.0` means `>=0.1.0 <0.2.0`, so `0.2.0` never satisfied it
+and `bun install` kept resolving the old version, silently. Verified the range
+bump with a clean `rm -rf node_modules && bun install`: resolves to `0.2.0`,
+and the brand color/font/radius tokens all render correctly in a browser — not
+just that the version number moved. Verified the check itself catches the
+exact regression by temporarily reverting the range and confirming it fails
+with a message naming the fix, then reverting back.
+
+**Rejected:** A manual checklist step in `aganitha-npm-publish` instead. Ruled
+out because this repo will publish often (per the person driving this work),
+and a step that has to be remembered is exactly the kind of thing that gets
+skipped under routine, repeated use — the same failure mode this bug was. An
+automated gate that already runs on every publish path costs nothing extra to
+keep correct.
