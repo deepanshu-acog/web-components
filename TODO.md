@@ -301,6 +301,15 @@ page from nothing, stop and fix it before starting Phase 2.
       one. Verified the resulting `--wa-shadow-m` value and rendered corner
       radius directly in a browser (`site-note`'s border-radius went 6px →
       9px; `wa-card`'s `--wa-shadow-m` reflects the deeper offset/blur).
+- [ ] **Bug: `/search` shows no search input.** Reported after the work above
+      shipped (`fcc7e06`, `14e379a`). Contradicts this session's own browser
+      verification, which found a working `pagefind-input` on a local
+      `astro build && astro preview` — so either that environment differed
+      from what the reporter saw (a fresh `atk-ui start astro` scaffold, a
+      different browser, a build without the Pagefind step run first, a CDN
+      asset the local check didn't exercise) or something regressed since.
+      Needs a fresh repro from an actual `atk-ui start astro` scaffold before
+      guessing further.
 - [ ] **A visual reference.** What each thing looks like. Can be cheap, and can
       be Storybook, because under D15 it is not the entry point — the skill links
       to it when someone asks what something looks like.
