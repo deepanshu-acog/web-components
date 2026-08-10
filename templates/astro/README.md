@@ -5,9 +5,13 @@ Scaffolded by `atk-ui start astro`. Builds, runs, and is already themed —
 a worked example.
 
 ```
-bun install
-bun run dev
+make install
+make run
 ```
+
+`make help` lists every other target — `build` (production build + search
+index), `test` (type-check), `preview` (serve the production build, needed
+for search), `clean`/`distclean`.
 
 ## What's on the page
 
@@ -23,8 +27,9 @@ bun run dev
   other module. No special Astro configuration needed. Rename the `site-`
   prefix to your own project's.
 - **Search** (`/search`, `Ctrl+K`/`⌘K` from anywhere) — Pagefind, indexing the
-  built site. It only works after `bun run build`; `bun run dev` has no index
-  to query yet, since Pagefind reads static HTML output, not live content.
+  built site. It only works after `make build` (then `make preview` to serve
+  it); `make run`'s dev server has no index to query yet, since Pagefind reads
+  static HTML output, not live content.
 
 ## Writing content, not just pages
 

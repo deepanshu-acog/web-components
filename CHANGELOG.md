@@ -42,3 +42,20 @@ shadows, its own bright color palette, and an `@import` of Crimson Pro/Quicksand
 from an external font CDN — a different, bolder design language than the blue/
 Plex Sans pairing chosen here, and an unwanted third-party network request on
 every page load. Took only its shape *values* into our own theme file instead.
+
+**What:** Added a Makefile to the Astro starter (`help`, `install`, `build`,
+`test`, `run`, `preview`, `clean`, `distclean`), matching the standard verb
+set used across other Aganitha repos. `test` runs `astro check`, which needed
+`@astrojs/check` and `typescript` added as devDependencies — the template had
+no typecheck script before this.
+
+**Why:** `make` is the org-wide entry point so automation and agents never
+have to guess how to build, test, or run a project; a scaffolded starter
+should follow the same contract as everything else, not be a `bun run`-only
+exception.
+
+**Rejected:** Delegating from the root `atk-ui` Makefile into
+`templates/astro/`. Templates are fetched live via git at `atk-ui start` time
+(D18), not built as part of the parent package's own pipeline, so there's no
+real root-level operation to delegate — the template's Makefile stands alone,
+used only after scaffolding onto a user's machine.
