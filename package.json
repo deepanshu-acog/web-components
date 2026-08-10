@@ -29,6 +29,7 @@
     "CHANGELOG.md"
   ],
   "scripts": {
+    "build": "make build",
     "prepublishOnly": "bun run build"
   },
   "exports": {
