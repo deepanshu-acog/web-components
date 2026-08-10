@@ -23,3 +23,22 @@ GitHub-release binary supplies project setup and catalog preview.
 binaries through GitHub releases so it can be installed and updated by the
 shared commands repository without a second npm-based command distribution
 path.
+
+**What:** Astro starter first-impression pass, guided by the `training` repo's
+site. Moved the placeholder brand hue from "indigo" to "blue", added
+placeholder font-family tokens naming IBM Plex Sans / JetBrains Mono (names
+only, no bundled files), and added shape tokens (`--wa-border-radius-scale`,
+deeper shadow offset/blur) borrowed from Web Awesome's own "awesome" theme
+values. The Astro starter self-hosts the two fonts and adds Pagefind search
+(`/search`, `Ctrl+K`/`⌘K`).
+
+**Why:** All still placeholder values and still Web Awesome's own token
+vocabulary (D4) — the goal was a template that makes a good impression without
+growing a second design system alongside Web Awesome's.
+
+**Rejected:** Switching the Astro starter's base theme to Web Awesome's
+`themes/awesome.css` wholesale. It carries a 2x border-width, flat blur-free
+shadows, its own bright color palette, and an `@import` of Crimson Pro/Quicksand
+from an external font CDN — a different, bolder design language than the blue/
+Plex Sans pairing chosen here, and an unwanted third-party network request on
+every page load. Took only its shape *values* into our own theme file instead.

@@ -12,24 +12,48 @@
  *
  * PLACEHOLDER: Aganitha's brand colours are not decided yet (a separate
  * effort owns them). Until they land, brand tokens point at Web Awesome's
- * "indigo" hue so the theme is visibly not the untouched default. Swapping in
- * the real values touches only the block below.
+ * "blue" hue — closer to the training site's brand blue than the previous
+ * "indigo" placeholder, and still a stock Web Awesome scale, not a new one.
+ * Swapping in the real values touches only the block below.
+ *
+ * Font family is a placeholder for the same reason: names only, no bundled
+ * font files, so every consumer keeps choosing whether to self-host them.
+ * A consuming app that wants the exact look (e.g. the Astro starter) imports
+ * the font files itself; this file only points Web Awesome's font tokens at
+ * the right names when they're present, falling back to system fonts when
+ * they're not.
+ *
+ * Shape tokens borrow Web Awesome's own "awesome" theme values rather than
+ * inventing new ones — its border-radius-scale, specifically. Not the rest
+ * of that theme: its 2x border width and flat, blur-free shadows are tuned
+ * for that theme's own bold color palette and its externally-loaded Crimson
+ * Pro/Quicksand fonts, and would clash with the blue/Plex Sans pairing here.
+ * Shadow depth instead goes further within the default theme's own soft,
+ * blurred-shadow language, not awesome.css's flat one.
  */
 
 @layer wa-theme {
   .atk-theme {
-    --wa-color-brand-95: var(--wa-color-indigo-95);
-    --wa-color-brand-90: var(--wa-color-indigo-90);
-    --wa-color-brand-80: var(--wa-color-indigo-80);
-    --wa-color-brand-70: var(--wa-color-indigo-70);
-    --wa-color-brand-60: var(--wa-color-indigo-60);
-    --wa-color-brand-50: var(--wa-color-indigo-50);
-    --wa-color-brand-40: var(--wa-color-indigo-40);
-    --wa-color-brand-30: var(--wa-color-indigo-30);
-    --wa-color-brand-20: var(--wa-color-indigo-20);
-    --wa-color-brand-10: var(--wa-color-indigo-10);
-    --wa-color-brand-05: var(--wa-color-indigo-05);
-    --wa-color-brand: var(--wa-color-indigo);
-    --wa-color-brand-on: var(--wa-color-indigo-on);
+    --wa-color-brand-95: var(--wa-color-blue-95);
+    --wa-color-brand-90: var(--wa-color-blue-90);
+    --wa-color-brand-80: var(--wa-color-blue-80);
+    --wa-color-brand-70: var(--wa-color-blue-70);
+    --wa-color-brand-60: var(--wa-color-blue-60);
+    --wa-color-brand-50: var(--wa-color-blue-50);
+    --wa-color-brand-40: var(--wa-color-blue-40);
+    --wa-color-brand-30: var(--wa-color-blue-30);
+    --wa-color-brand-20: var(--wa-color-blue-20);
+    --wa-color-brand-10: var(--wa-color-blue-10);
+    --wa-color-brand-05: var(--wa-color-blue-05);
+    --wa-color-brand: var(--wa-color-blue);
+    --wa-color-brand-on: var(--wa-color-blue-on);
+
+    --wa-font-family-body: "IBM Plex Sans Variable", "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    --wa-font-family-heading: var(--wa-font-family-body);
+    --wa-font-family-code: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+    --wa-border-radius-scale: 1.5;
+    --wa-shadow-offset-y-scale: 1.5;
+    --wa-shadow-blur-scale: 2;
   }
 }

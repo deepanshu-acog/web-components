@@ -1,0 +1,27 @@
+---
+import App from "../layouts/App.astro";
+// Pagefind assets are generated into /pagefind by `pagefind --site dist`
+// during `bun run build` (see package.json). Search only works on a built
+// site — `astro dev` has no index to query yet.
+---
+<App title="Search">
+  <div class="wa-stack wa-gap-xl">
+    <h1>Search</h1>
+    <div data-pagefind-ignore>
+      <pagefind-config bundle-path="/pagefind/"></pagefind-config>
+      <pagefind-input placeholder="Search this dashboard"></pagefind-input>
+      <pagefind-summary></pagefind-summary>
+      <pagefind-results></pagefind-results>
+    </div>
+  </div>
+
+  <link rel="stylesheet" href="/pagefind/pagefind-component-ui.css" />
+  <script type="module" is:inline src="/pagefind/pagefind-component-ui.js"></script>
+  <script is:inline>
+    if (new URLSearchParams(window.location.search).has("focus")) {
+      const focusSearch = () => document.querySelector("pagefind-input input")?.focus();
+      setTimeout(focusSearch, 100);
+      setTimeout(focusSearch, 400);
+    }
+  </script>
+</App>

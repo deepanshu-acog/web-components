@@ -1,4 +1,9 @@
 ---
+// Self-hosted fonts before the theme, so --wa-font-family-* (set by
+// @aganitha/atk-ui/theme.css) resolve to real files instead of falling
+// back to system fonts.
+import "@fontsource-variable/ibm-plex-sans";
+import "@fontsource-variable/jetbrains-mono";
 import "@awesome.me/webawesome/dist/styles/themes/default.css";
 import "@awesome.me/webawesome/dist/styles/utilities.css";
 import "@aganitha/atk-ui/theme.css";
@@ -10,11 +15,28 @@ const build_time = new Date().toISOString();
 ---
 <html lang="en" class="wa-theme-default atk-theme"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><title>{title}</title></head>
 <body><wa-page mobile-breakpoint="768">
-  <header slot="header" class="wa-split"><a href="/" class="brand"><wa-icon name="layer-group"></wa-icon> Project dashboard</a><wa-button href="/help" appearance="plain"><wa-icon slot="start" name="circle-question"></wa-icon>Help</wa-button></header>
-  <nav slot="navigation" class="wa-stack"><a href="/">Dashboard</a><a href="/help">Help</a></nav>
+  <header slot="header" class="wa-split"><a href="/" class="brand"><wa-icon name="layer-group"></wa-icon> Project dashboard</a><span class="wa-cluster"><a class="search-link" href="/search">Search <kbd data-shortcut-hint>⌘K</kbd></a><wa-button href="/help" appearance="plain"><wa-icon slot="start" name="circle-question"></wa-icon>Help</wa-button></span></header>
+  <nav slot="navigation" class="wa-stack"><a href="/">Dashboard</a><a href="/help">Help</a><a href="/search">Search</a></nav>
   <main><slot /></main>
   <footer slot="footer"><small>v{package_json.version} · Built {build_time}</small></footer>
 </wa-page>
 <script>import "@awesome.me/webawesome/dist/components/page/page.js"; import "@awesome.me/webawesome/dist/components/button/button.js"; import "@awesome.me/webawesome/dist/components/icon/icon.js"; import "@awesome.me/webawesome/dist/components/card/card.js"; import "@awesome.me/webawesome/dist/components/badge/badge.js"; import "@aganitha/atk-ui/components/metric"; import "../components/site-note.ts";</script>
-<style>html,body{min-height:100%;margin:0;padding:0}wa-page{--menu-width:14rem}wa-page::part(main-content){padding:var(--wa-space-xl)}.brand{color:inherit;font-weight:var(--wa-font-weight-semibold);text-decoration:none}.wa-stack a{padding:var(--wa-space-xs) var(--wa-space-s);color:var(--wa-color-text-normal);text-decoration:none;border-radius:var(--wa-border-radius-s)}.wa-stack a:hover{background:var(--wa-color-surface-raised)}</style>
+<script is:inline>
+  const is_mac = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
+  document.querySelectorAll("[data-shortcut-hint]").forEach((el) => {
+    el.textContent = is_mac ? "⌘K" : "Ctrl+K";
+  });
+  document.addEventListener("keydown", (event) => {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+      event.preventDefault();
+      const on_search_page = location.pathname === "/search" || location.pathname === "/search/";
+      if (on_search_page) {
+        document.querySelector("pagefind-input input")?.focus();
+      } else {
+        window.location.assign("/search?focus=1");
+      }
+    }
+  });
+</script>
+<style>html,body{min-height:100%;margin:0;padding:0}wa-page{--menu-width:14rem}wa-page::part(main-content){padding:var(--wa-space-xl)}.brand{color:inherit;font-weight:var(--wa-font-weight-semibold);text-decoration:none}.wa-stack a{padding:var(--wa-space-xs) var(--wa-space-s);color:var(--wa-color-text-normal);text-decoration:none;border-radius:var(--wa-border-radius-s)}.wa-stack a:hover{background:var(--wa-color-surface-raised)}.search-link{color:var(--wa-color-text-normal);text-decoration:none;font-size:var(--wa-font-size-s)}.search-link kbd{font-family:var(--wa-font-family-code);border:1px solid var(--wa-color-surface-border);border-radius:var(--wa-border-radius-s);padding:0 var(--wa-space-2xs)}</style>
 </body></html>

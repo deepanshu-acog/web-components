@@ -22,6 +22,9 @@ bun run dev
   an `AganithaComponent` subclass, imported into an `.astro` file like any
   other module. No special Astro configuration needed. Rename the `site-`
   prefix to your own project's.
+- **Search** (`/search`, `Ctrl+K`/`⌘K` from anywhere) — Pagefind, indexing the
+  built site. It only works after `bun run build`; `bun run dev` has no index
+  to query yet, since Pagefind reads static HTML output, not live content.
 
 ## Writing content, not just pages
 

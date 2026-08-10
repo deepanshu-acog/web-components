@@ -264,6 +264,43 @@ page from nothing, stop and fix it before starting Phase 2.
       `atk-sidenote`, `atk-process`/`atk-step`, `atk-timeline`/`atk-timeline-item`
       (renamed against the collision above). Four components, following the same
       contract as the three Phase 0 examples.
+- [x] **Astro starter, first-impression pass.** Guided by `training/packages/web`
+      (a mature, working sibling site), not copied wholesale — see the seam
+      note below. `src/theme/theme.css`: placeholder brand hue moved from
+      Web Awesome's "indigo" to "blue" (`#0071ec`), closer to training's brand
+      blue while staying a stock Web Awesome scale, not a new one (D4).
+      `--wa-font-family-body/heading/code` now name IBM Plex Sans Variable /
+      JetBrains Mono Variable, with system-font fallback — names only, no
+      bundled files, so every consumer still chooses whether to self-host
+      (kept the "thin" theme contract; a font-file dependency stays local to
+      whichever app wants the exact look). `templates/astro/`: added the two
+      `@fontsource-variable` packages so the starter actually renders the
+      look, and wired Pagefind (`astro build && pagefind --site dist`,
+      `/search` page, `⌘K` from the header) the same way training does it.
+      Verified end to end: `astro build` indexes 4 pages, `astro preview`
+      returns real results for light-DOM text (e.g. "Hypokalemia").
+      **Known limitation, not fixed here:** Pagefind indexes static HTML at
+      build time, so content rendered into a Lit component's shadow DOM
+      (`<atk-metric>`'s own label/value) is invisible to search — same
+      constraint any static-HTML indexer has against client-hydrated web
+      components. Worth a documented callout if this surprises someone later,
+      not a blocker now.
+
+      **Second pass — shape tokens, for richness.** `src/theme/theme.css`
+      also now sets `--wa-border-radius-scale: 1.5`, `--wa-shadow-offset-y-scale:
+      1.5`, and `--wa-shadow-blur-scale: 2`. Sourced from Web Awesome's own
+      "awesome" theme (`themes/awesome.css`) rather than invented — but only
+      its shape numbers, not the whole file: that theme also carries a 2x
+      border-width, flat blur-free shadows, its own bright color palette, and
+      an `@import` of Crimson Pro/Quicksand from an external font CDN, all of
+      which read as a different, bolder design language than the blue/Plex
+      Sans pairing already chosen and would have meant an unwanted third-party
+      network request on every page load. Took the radius scale as-is (safe,
+      unambiguously "richer"); pushed shadow depth further within the default
+      theme's own soft/blurred-shadow family instead of switching to the flat
+      one. Verified the resulting `--wa-shadow-m` value and rendered corner
+      radius directly in a browser (`site-note`'s border-radius went 6px →
+      9px; `wa-card`'s `--wa-shadow-m` reflects the deeper offset/blur).
 - [ ] **A visual reference.** What each thing looks like. Can be cheap, and can
       be Storybook, because under D15 it is not the entry point — the skill links
       to it when someone asks what something looks like.
