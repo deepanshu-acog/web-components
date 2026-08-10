@@ -152,7 +152,7 @@ are plain Markdown.
 - **`skills/atk-ui-contribute/`** — hand-written. The checklist for adding a
   component or pattern. Read this fully before you add anything — see the
   next section.
-- **`packs/atk-ui.pack`** — installs the `atk-ui` and `atk-ui-start` skills
+- **`packs/atk-ui-skills.pack`** — installs the `atk-ui` and `atk-ui-start` skills
   together, through `skills-pack`.
 
 `skills/atk-ui/SKILL.md` also tells an assistant to install Web Awesome's own

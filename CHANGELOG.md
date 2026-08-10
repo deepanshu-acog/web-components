@@ -2,6 +2,15 @@
 
 ## 2026-08-09
 
+**What:** Renamed the skills pack from `atk-ui` to `atk-ui-skills` so the pack
+name does not conflict with the generated `atk-ui` skill.
+
+**Why:** Developers can now distinguish installing both atk-ui skills from
+installing or referring to the catalog skill itself.
+
+**Rejected:** Keeping the shared `atk-ui` name for both artifacts. It made
+commands and instructions ambiguous without adding any useful grouping.
+
 **What:** Added Phase 1 of atk-ui: the theme, generated catalog and skills,
 Astro starter, local preview and project-start CLI, standalone CLI release
 build, and the library publication contract.

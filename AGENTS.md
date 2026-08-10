@@ -17,7 +17,7 @@ provides, and the agent skills that make both usable by an AI assistant.
 | tools/ | Generation and checks. Dev only, never shipped. |
 | skills/atk-ui/ | **Generated.** The catalog an assistant reads. Never edit. |
 | skills/atk-ui-start/, skills/atk-ui-contribute/ | Hand-written skills — starting a project, and the contributor checklist. |
-| packs/atk-ui.pack | The skills-pack manifest for installing the two skills above together. |
+| packs/atk-ui-skills.pack | The skills-pack manifest for installing the two skills above together. |
 | docs/ | vision, design, and lessons |
 | TODO.md | open work, in priority order |
 

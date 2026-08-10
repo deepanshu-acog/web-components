@@ -241,9 +241,9 @@ The whole thesis, proven once. Nothing after this matters if this does not work.
 - [x] **Tell the assistant to install Web Awesome's two skills too.** A
       callout near the top of the generated `SKILL.md`, matching the shape
       Web Awesome's own skill uses for its `webawesome-design` companion.
-- [x] **Set up the pack.** `packs/atk-ui.pack`, in this repo — validated
-      against `skills-pack`'s own parser (`skills-pack info atk-ui --from .`
-      and `preview pack atk-ui --from .`), not just written and assumed
+- [x] **Set up the pack.** `packs/atk-ui-skills.pack`, in this repo — validated
+      against `skills-pack`'s own parser (`skills-pack info atk-ui-skills --from .`
+      and `preview pack atk-ui-skills --from .`), not just written and assumed
       correct. **Publishing it is a separate step**, not done here: it needs
       either `skills-pack source add github:aganitha/atk-ui` by whoever
       wants it, or landing in `agent-skills`'s own discovery list — a
