@@ -1,6 +1,6 @@
 {
   "name": "@aganitha/atk-ui",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Aganitha's shared UI layer: brand theme, our components, and agent skills.",
   "type": "module",
   "license": "UNLICENSED",
