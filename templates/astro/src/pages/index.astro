@@ -1,23 +1,12 @@
 ---
+import App from "../layouts/App.astro";
 // Styles only here — this frontmatter runs during Astro's server-side
 // prerender, and Web Awesome's and atk-ui's component modules touch
 // browser-only globals (MutationObserver) at import time, which crashes a
 // static build. The component modules load from a <script> tag in the body
 // below instead, which Astro only ever runs in the browser.
-import "@awesome.me/webawesome/dist/styles/themes/default.css";
-import "@awesome.me/webawesome/dist/styles/utilities.css";
-import "@aganitha/atk-ui/theme.css";
-import "@aganitha/atk-ui/patterns.css";
 ---
-
-<html lang="en" class="wa-theme-default atk-theme">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>atk-ui starter</title>
-  </head>
-  <body>
-    <main style="max-width: 60rem; margin-inline: auto; padding: var(--wa-space-xl) var(--wa-space-l);">
+<App title="Project dashboard"><div class="wa-stack wa-gap-xl">
       <h1>Project dashboard</h1>
 
       <site-note label="Starting point">
@@ -63,9 +52,9 @@ import "@aganitha/atk-ui/patterns.css";
           </li>
         </ul>
       </section>
-    </main>
-    <script>
-      // Explicit per-component imports, not the Web Awesome autoloader —
+    <wa-card with-header><h2 slot="header">Start here</h2><p>Use the sidebar to move between dashboard work and help.</p></wa-card>
+    </div>
+      <!-- Explicit per-component imports, not the Web Awesome autoloader —
       // this is what installation.md itself recommends for a bundled npm
       // project (the autoloader is for the CDN, no-build path, D10). It also
       // sidesteps a real bug: the autoloader tries to self-locate its assets
@@ -74,6 +63,4 @@ import "@aganitha/atk-ui/patterns.css";
       import "@awesome.me/webawesome/dist/components/badge/badge.js";
       import "@aganitha/atk-ui/components/metric";
       import "../components/site-note.ts";
-    </script>
-  </body>
-</html>
+    --></App>

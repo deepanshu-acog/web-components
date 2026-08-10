@@ -661,6 +661,33 @@ assistant following the skill.
   and `atk update`/`atk-ui`'s own update check keep that version recent in
   practice.
 
+### D19 — The Astro starter is an internal application shell
+
+The starter is the first real application an engineer sees. It must demonstrate
+the page structure they will actually need, rather than a collection of isolated
+components.
+
+- **Options:**
+  - **A. Keep one free-form dashboard page.** Smallest template, but each new
+    page has to recreate navigation, layout, and product metadata.
+  - **B. Build a custom Aganitha layout component.** Centralises the shell but
+    duplicates Web Awesome's responsive application page and makes atk-ui own
+    another layout primitive.
+  - **C. Use Web Awesome's `<wa-page>` as the shared shell.** It supplies the
+    responsive sidebar/drawer and named header, navigation, main, and footer
+    regions; the template provides the application-specific content.
+- **Chose C.** The Astro starter becomes an internal dashboard with one
+  navigation slot, a header for identity and utility actions, dashboard and
+  Help routes, and a footer that shows the application version and build time.
+  Web Awesome supplies page, button, card, icon, and divider elements directly.
+- **Build metadata:** Astro derives the application version from the starter's
+  `package.json` and the build time when it builds. It is display metadata, not
+  a release service and not persisted state.
+- **Consequences:** project pages use the starter shell rather than copying
+  layout markup. A team can replace the shell in its own project without
+  changing atk-ui components. The starter deliberately does not add routing,
+  authentication, data fetching, or a second navigation system.
+
 ## What is volatile, and where the seam is
 
 The test: if this is replaced next year, what has to be rewritten?
