@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # atk-ui CLI Installer
-# Builds, compiles, and installs `atk-ui` and `atk` CLI binaries globally.
+# Builds, compiles, and installs `atk-ui` CLI binary globally.
 # ==============================================================================
 
 set -e
@@ -22,6 +22,12 @@ bun run tools/generate.ts 2>/dev/null || true
 bun run build
 bun run tools/bundle_preview.ts
 
+# 3. Ensure template dependencies are installed for Hugo Pipes
+if [ -d "templates/hugo" ]; then
+  echo "  ↳ Preparing Hugo template assets..."
+  (cd templates/hugo && bun install 2>/dev/null || true)
+fi
+
 # 3. Compile standalone native binary
 mkdir -p dist/bin
 echo "  ↳ Compiling standalone executable with bun..."
@@ -41,9 +47,13 @@ fi
 
 echo "🚀 Installing CLI binary to ${INSTALL_DIR}..."
 
-# Copy atk-ui
+# Copy atk-ui binary
 cp "dist/bin/atk-ui" "${INSTALL_DIR}/atk-ui"
 chmod +x "${INSTALL_DIR}/atk-ui"
+
+# Copy starter templates to user share directory for global preview support
+mkdir -p "$HOME/.local/share/atk-ui/templates"
+cp -R templates/* "$HOME/.local/share/atk-ui/templates/" 2>/dev/null || true
 
 # Remove old atk alias if present
 rm -f "${INSTALL_DIR}/atk"

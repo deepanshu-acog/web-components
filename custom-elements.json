@@ -57,6 +57,174 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/core/hugo_server.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "resolve_hugo_template_dir",
+          "return": {
+            "type": {
+              "text": "string"
+            }
+          },
+          "description": "Locate the Hugo starter template directory."
+        },
+        {
+          "kind": "function",
+          "name": "build_hugo_site",
+          "return": {
+            "type": {
+              "text": "Promise<void>"
+            }
+          },
+          "parameters": [
+            {
+              "name": "options",
+              "type": {
+                "text": "HugoBuildOptions"
+              }
+            }
+          ],
+          "description": "Execute a one-shot Hugo build into a destination directory."
+        },
+        {
+          "kind": "function",
+          "name": "start_static_preview_server",
+          "return": {
+            "type": {
+              "text": "PreviewServerInstance"
+            }
+          },
+          "parameters": [
+            {
+              "name": "options",
+              "type": {
+                "text": "{\n  rootDir: string;\n  port?: number;\n  targetPath?: string;\n}"
+              }
+            }
+          ],
+          "description": "Start a unified static web server using Bun.serve() for a compiled directory."
+        },
+        {
+          "kind": "function",
+          "name": "start_hugo_watch_server",
+          "return": {
+            "type": {
+              "text": "Promise<PreviewServerInstance>"
+            }
+          },
+          "parameters": [
+            {
+              "name": "options",
+              "type": {
+                "text": "HugoServerOptions"
+              }
+            }
+          ],
+          "description": "Run Hugo in live watch/server mode (`hugo server -D`) with polling readiness wait."
+        },
+        {
+          "kind": "function",
+          "name": "link_content",
+          "return": {
+            "type": {
+              "text": "Promise<string>"
+            }
+          },
+          "parameters": [
+            {
+              "name": "file_path",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "name": "hugo_dir",
+              "type": {
+                "text": "string"
+              }
+            }
+          ],
+          "description": "Isolate single Markdown file into Hugo reports directory."
+        },
+        {
+          "kind": "function",
+          "name": "link_directory",
+          "return": {
+            "type": {
+              "text": "Promise<void>"
+            }
+          },
+          "parameters": [
+            {
+              "name": "dir_path",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "name": "hugo_dir",
+              "type": {
+                "text": "string"
+              }
+            }
+          ],
+          "description": "Link directory of Markdown files into Hugo reports directory."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "resolve_hugo_template_dir",
+          "declaration": {
+            "name": "resolve_hugo_template_dir",
+            "module": "src/core/hugo_server.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "build_hugo_site",
+          "declaration": {
+            "name": "build_hugo_site",
+            "module": "src/core/hugo_server.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "start_static_preview_server",
+          "declaration": {
+            "name": "start_static_preview_server",
+            "module": "src/core/hugo_server.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "start_hugo_watch_server",
+          "declaration": {
+            "name": "start_hugo_watch_server",
+            "module": "src/core/hugo_server.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "link_content",
+          "declaration": {
+            "name": "link_content",
+            "module": "src/core/hugo_server.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "link_directory",
+          "declaration": {
+            "name": "link_directory",
+            "module": "src/core/hugo_server.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/core/preview.ts",
       "declarations": [
         {
@@ -1764,6 +1932,115 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/components/timeline-item/timeline-item.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A declarative milestone item child for `<atk-timeline>`.",
+          "name": "AtkTimelineItem",
+          "slots": [
+            {
+              "description": "Description or details for this milestone.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "date",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "attribute": "date"
+            },
+            {
+              "kind": "field",
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "attribute": "title"
+            },
+            {
+              "kind": "field",
+              "name": "status",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"planned\"",
+              "attribute": "status"
+            },
+            {
+              "kind": "field",
+              "name": "tag",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "attribute": "tag"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "date",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "fieldName": "date"
+            },
+            {
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "fieldName": "title"
+            },
+            {
+              "name": "status",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"planned\"",
+              "fieldName": "status"
+            },
+            {
+              "name": "tag",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "fieldName": "tag"
+            }
+          ],
+          "superclass": {
+            "name": "AganithaComponent",
+            "module": "/src/base.js"
+          },
+          "tagName": "atk-timeline-item",
+          "customElement": true,
+          "summary": "A single milestone item in an atk-timeline.",
+          "atkUse": "Specifying an individual milestone with date, title, status, and description.",
+          "atkAvoid": "Do not use outside of an `<atk-timeline>`.",
+          "atkExample": "```html\n<atk-timeline-item date=\"Q1 2025\" title=\"Phase I Safety\" status=\"complete\">\n  Primary safety endpoints met.\n</atk-timeline-item>\n```"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AtkTimelineItem",
+          "declaration": {
+            "name": "AtkTimelineItem",
+            "module": "src/components/timeline-item/timeline-item.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/components/well-plate/well-plate.ts",
       "declarations": [
         {
@@ -1921,115 +2198,6 @@
           "declaration": {
             "name": "AtkWellPlate",
             "module": "src/components/well-plate/well-plate.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/timeline-item/timeline-item.ts",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "A declarative milestone item child for `<atk-timeline>`.",
-          "name": "AtkTimelineItem",
-          "slots": [
-            {
-              "description": "Description or details for this milestone.",
-              "name": ""
-            }
-          ],
-          "members": [
-            {
-              "kind": "field",
-              "name": "date",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\"",
-              "attribute": "date"
-            },
-            {
-              "kind": "field",
-              "name": "title",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\"",
-              "attribute": "title"
-            },
-            {
-              "kind": "field",
-              "name": "status",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"planned\"",
-              "attribute": "status"
-            },
-            {
-              "kind": "field",
-              "name": "tag",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\"",
-              "attribute": "tag"
-            }
-          ],
-          "attributes": [
-            {
-              "name": "date",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\"",
-              "fieldName": "date"
-            },
-            {
-              "name": "title",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\"",
-              "fieldName": "title"
-            },
-            {
-              "name": "status",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"planned\"",
-              "fieldName": "status"
-            },
-            {
-              "name": "tag",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\"",
-              "fieldName": "tag"
-            }
-          ],
-          "superclass": {
-            "name": "AganithaComponent",
-            "module": "/src/base.js"
-          },
-          "tagName": "atk-timeline-item",
-          "customElement": true,
-          "summary": "A single milestone item in an atk-timeline.",
-          "atkUse": "Specifying an individual milestone with date, title, status, and description.",
-          "atkAvoid": "Do not use outside of an `<atk-timeline>`.",
-          "atkExample": "```html\n<atk-timeline-item date=\"Q1 2025\" title=\"Phase I Safety\" status=\"complete\">\n  Primary safety endpoints met.\n</atk-timeline-item>\n```"
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "AtkTimelineItem",
-          "declaration": {
-            "name": "AtkTimelineItem",
-            "module": "src/components/timeline-item/timeline-item.ts"
           }
         }
       ]

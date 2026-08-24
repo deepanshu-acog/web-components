@@ -40,7 +40,7 @@ interface CatalogEntry {
 
 export interface PreviewServer {
   url: string;
-  entry_count: number;
+  entry_count?: number;
   stop: () => void;
 }
 
@@ -148,7 +148,9 @@ const ASSETS: Record<string, { path: string; type: string }> = {
   "/atk/components.js": { path: components_embed_path, type: "text/javascript; charset=utf-8" },
 };
 
-export async function start_preview(options: { port?: number } = {}): Promise<PreviewServer> {
+export async function start_preview(
+  options: { port?: number } = {},
+): Promise<PreviewServer> {
   const entries = await read_catalog();
   const page = render_page(entries);
 

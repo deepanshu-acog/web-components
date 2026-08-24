@@ -20,7 +20,7 @@
 >    - `layout: tabbed` — **Executive Tabbed Briefing:** Hero KPI cards + Web Awesome tabs with smooth panel switching.
 >    - `layout: dashboard` — **Live Executive KPI Dashboard:** Real-time metrics grid and status badges.
 >    - `layout: dossier` — **Company & Entity Intelligence Dossier:** Comprehensive deep-dive with hero metadata header.
->    - `layout: landing` — **Marketing / Homepage:** Frontmatter-driven hero, CTAs, and stat cards, for a platform's own front page — not for reports. No left sidebar and no right TOC.
+>    - `layout: website` — **Marketing / Website Homepage:** Frontmatter-driven hero, CTAs, and stat cards, for a platform's own front page — not for reports. No left sidebar and no right TOC. (Alias: `landing`).
 >    - *(leave empty)* — **Clean Linear Document:** Optimal reading width, breadcrumbs, and metadata strip.
 >    *(See [Report Templates](references/report-templates.md) for full copy-paste ready examples).* 
 >
@@ -86,4 +86,4 @@ When generating or rewriting a report, consult [Report Templates](references/rep
 - [Real-Time Executive KPI Dashboard (`layout: dashboard`)](references/report-templates.md#3-real-time-executive-kpi-dashboard-layout-dashboard)
 - [Standard Scientific Report (`single`)](references/report-templates.md#5-standard-scientific-report-single--default)
 - [Company & Entity Intelligence Dossier (`layout: dossier`)](references/report-templates.md#6-company--entity-intelligence-dossier-layout-dossier)
-- [Marketing / Homepage (`layout: landing`)](references/report-templates.md#7-marketing-landing-page-layout-landing)
+- [Marketing / Website Homepage (`layout: website`)](references/report-templates.md#7-marketing-landing-page-layout-landing)

@@ -34,19 +34,45 @@
 
 @layer wa-theme {
   .atk-theme {
-    --wa-color-brand-95: var(--wa-color-blue-95);
-    --wa-color-brand-90: var(--wa-color-blue-90);
-    --wa-color-brand-80: var(--wa-color-blue-80);
-    --wa-color-brand-70: var(--wa-color-blue-70);
-    --wa-color-brand-60: var(--wa-color-blue-60);
-    --wa-color-brand-50: var(--wa-color-blue-50);
-    --wa-color-brand-40: var(--wa-color-blue-40);
-    --wa-color-brand-30: var(--wa-color-blue-30);
-    --wa-color-brand-20: var(--wa-color-blue-20);
-    --wa-color-brand-10: var(--wa-color-blue-10);
-    --wa-color-brand-05: var(--wa-color-blue-05);
-    --wa-color-brand: var(--wa-color-blue);
-    --wa-color-brand-on: var(--wa-color-blue-on);
+    /* Primary / Brand scale (#476EAE) */
+    --wa-color-brand-95: #eef3fc;
+    --wa-color-brand-90: #dce5f8;
+    --wa-color-brand-80: #b9ccf0;
+    --wa-color-brand-70: #89a7e1;
+    --wa-color-brand-60: #678bc9;
+    --wa-color-brand-50: #476eae;
+    --wa-color-brand-40: #345388;
+    --wa-color-brand-30: #22375c;
+    --wa-color-brand-20: #182741;
+    --wa-color-brand-10: #0c1421;
+    --wa-color-brand-05: #060a11;
+    --wa-color-brand: #476eae;
+    --wa-color-brand-on: #ffffff;
+
+    --wa-color-brand-border-loud: #476eae;
+    --wa-color-brand-fill-quiet: rgba(71, 110, 174, 0.12);
+    --wa-color-brand-on-quiet: #476eae;
+
+    /* Secondary / Neutral scale (#2E9A9B) */
+    --wa-color-secondary: #2e9a9b;
+    --wa-color-secondary-on: #ffffff;
+
+    --wa-color-neutral-95: #e6f5f5;
+    --wa-color-neutral-90: #ccebeb;
+    --wa-color-neutral-80: #99d6d7;
+    --wa-color-neutral-70: #66c2c3;
+    --wa-color-neutral-60: #40afb0;
+    --wa-color-neutral-50: #2e9a9b;
+    --wa-color-neutral-40: #247b7c;
+    --wa-color-neutral-30: #1a5c5d;
+    --wa-color-neutral-20: #103d3e;
+    --wa-color-neutral-10: #081f1f;
+    --wa-color-neutral: #2e9a9b;
+    --wa-color-neutral-on: #ffffff;
+
+    --wa-color-neutral-border-loud: #2e9a9b;
+    --wa-color-neutral-fill-quiet: rgba(46, 154, 155, 0.12);
+    --wa-color-neutral-on-quiet: #2e9a9b;
 
     --wa-font-family-body: "IBM Plex Sans Variable", "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
     --wa-font-family-heading: var(--wa-font-family-body);
