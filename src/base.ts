@@ -44,3 +44,7 @@ export class AganithaComponent extends LitElement {
     return [host_styles, this.css ?? []].flat();
   }
 }
+
+/** Alias for AganithaComponent matching Web Awesome's WebAwesomeElement naming pattern. */
+export class ATKElement extends AganithaComponent {}
+

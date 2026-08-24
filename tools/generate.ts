@@ -26,6 +26,14 @@ interface Entry {
   name: string;
   kind: "component" | "pattern";
   group: string;
+  /**
+   * Which references/<pack>.md file documents this entry. "core" is the
+   * default for anything generally useful; a component declares a more
+   * specific pack (e.g. "bio") with an `@atk-pack` doc tag so a reader
+   * building in that domain can go straight to the matching reference
+   * file instead of reading the whole catalog.
+   */
+  pack: string;
   summary: string;
   use: string;
   avoid: string;
@@ -35,6 +43,12 @@ interface Entry {
   module?: string;
   body: string;
 }
+
+/** One line per pack, shown in SKILL.md's pack list. */
+const PACK_DESCRIPTIONS: Record<string, string> = {
+  core: "General-purpose components and patterns — not tied to one domain.",
+  bio: "Components for biological and chemical structure data — molecular viewers, plate layouts.",
+};
 
 /** "src/components/metric/metric.ts" -> "dist/components/metric/metric.js" */
 function to_dist_path(src_path: string): string {
@@ -52,6 +66,7 @@ interface ManifestDeclaration {
   atkUse?: string;
   atkAvoid?: string;
   atkExample?: string;
+  atkPack?: string;
   attributes?: { name: string; description?: string; type?: { text?: string } }[];
   slots?: { name: string; description?: string }[];
   cssParts?: { name: string; description?: string }[];
@@ -93,6 +108,7 @@ async function read_components(): Promise<Entry[]> {
         name: tag,
         kind: "component",
         group: "data-display",
+        pack: declaration.atkPack || "core",
         summary: declaration.summary ?? declaration.description?.split("\n")[0] ?? "",
         use: declaration.atkUse ?? "",
         avoid: declaration.atkAvoid ?? "",
@@ -178,6 +194,7 @@ async function read_patterns(): Promise<Entry[]> {
       name: meta["name"]!,
       kind: "pattern",
       group: meta["group"]!,
+      pack: meta["pack"] || "core",
       summary: meta["summary"]!,
       use: meta["use"]!,
       avoid: meta["avoid"]!,
@@ -231,12 +248,14 @@ function parse_front_matter(text: string): Record<string, string> {
 
 // --- skill --------------------------------------------------------------
 
-function render_skill(entries: Entry[]): string {
-  const by_group = new Map<string, Entry[]>();
+async function render_skill(entries: Entry[]): Promise<string> {
+  const agent_rules = (await readFile(join(ROOT, "tools/skill-content/agent-rules.md"), "utf8")).trimEnd();
+
+  const by_pack = new Map<string, Entry[]>();
   for (const entry of entries) {
-    const list = by_group.get(entry.group) ?? [];
+    const list = by_pack.get(entry.pack) ?? [];
     list.push(entry);
-    by_group.set(entry.group, list);
+    by_pack.set(entry.pack, list);
   }
 
   const lines = [
@@ -255,17 +274,28 @@ function render_skill(entries: Entry[]): string {
     "",
     "# atk-ui",
     "",
-    "Aganitha's additions to Web Awesome. **Web Awesome comes first**: if it has a",
-    "component for what you need, use `wa-` directly and do not look here. This",
-    "skill covers only what Web Awesome does not provide.",
+    "Aganitha's shared UI layer, built on top of Web Awesome. Engineers already",
+    "know how to ask an assistant to invent a page from nothing — this only",
+    "earns its place if it gets to a working, on-brand page faster than that.",
+    "So: check Web Awesome first, always, for anything generic. What's left —",
+    "Aganitha's brand theme and the small set of components Web Awesome",
+    "genuinely doesn't have — is what this skill covers.",
     "",
-    "> **Also install Web Awesome's own skills** — `webawesome` (the component",
-    "> reference) and `webawesome-design` (page layout, theming, brand",
-    "> composition). This skill assumes both and only covers what they do not.",
+    "**This file is an index. Go to the reference that matches what you're",
+    "building, not the whole catalog:**",
     "",
-    "**Do not write these from memory.** Both Web Awesome and this package appear",
-    "in training data at older versions. Read the reference file before using",
-    "anything below — the attribute names have changed.",
+    "| Building... | Go to |",
+    "|---|---|",
+    "| A generic UI need — button, input, dialog, tabs, card, badge, tooltip, ... | **`webawesome`** skill's [choosing-components](../webawesome/references/choosing-components.md) decision tree. Covers 50+ components; check here first. |",
+    "| Page layout, `<wa-page>`, theming, or brand composition | **`webawesome-design`** skill. Read before hand-rolling any layout grid. |",
+    "| A general-purpose Aganitha component or pattern Web Awesome has no equivalent for | [references/core.md](references/core.md) |",
+    "| A biological or chemical structure need — molecular viewers, plate layouts | [references/bio.md](references/bio.md) |",
+    "",
+    "Picking `atk-*` without checking `webawesome` first is the most common",
+    "mistake — see [Packs](#packs) below for the full, current list of what",
+    "this skill actually adds; don't assume it from memory or an older answer.",
+    "",
+    agent_rules,
     "",
     "## Quick start",
     "",
@@ -285,6 +315,49 @@ function render_skill(entries: Entry[]): string {
     "How to use either one, plus local one-off components (D17 — for a need",
     "specific to your project, not the shared catalog): [Usage](references/usage.md).",
     "",
+    "## Packs",
+    "",
+    "The catalog is organized into packs so this file stays short as more get",
+    "added. Read only the pack(s) that match what you're building — not every",
+    "reference file every time.",
+    "",
+  ];
+
+  for (const [pack, pack_entries] of [...by_pack].sort()) {
+    const description = PACK_DESCRIPTIONS[pack] ?? "";
+    const names = pack_entries
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((e) => (e.kind === "component" ? `\`<${e.name}>\`` : `\`${e.name}\``))
+      .join(", ");
+    lines.push(
+      `- **[${pack}](references/${pack}.md)** — ${description}`,
+      `  (${pack_entries.length}: ${names})`,
+    );
+  }
+  lines.push("");
+
+  return lines.join("\n");
+}
+
+/**
+ * One references/<pack>.md per pack — the same shape the old inline SKILL.md
+ * listing had, just moved out so adding a pack never grows SKILL.md itself.
+ */
+function render_pack(pack: string, entries: Entry[]): string {
+  const by_group = new Map<string, Entry[]>();
+  for (const entry of entries) {
+    const list = by_group.get(entry.group) ?? [];
+    list.push(entry);
+    by_group.set(entry.group, list);
+  }
+
+  const lines = [
+    GENERATED_NOTE,
+    "",
+    `# ${pack} pack`,
+    "",
+    PACK_DESCRIPTIONS[pack] ?? "",
+    "",
   ];
 
   for (const [group, group_entries] of [...by_group].sort()) {
@@ -292,7 +365,7 @@ function render_skill(entries: Entry[]): string {
     for (const entry of group_entries.sort((a, b) => a.name.localeCompare(b.name))) {
       const label = entry.kind === "component" ? `\`<${entry.name}>\`` : `\`${entry.name}\``;
       lines.push(
-        `- [${label}](references/${entry.name}.md) — ${entry.summary}`,
+        `- [${label}](${entry.name}.md) — ${entry.summary}`,
         `  - Use when: ${entry.use}`,
       );
     }
@@ -316,10 +389,12 @@ const entries = [...(await read_components()), ...(await read_patterns())];
  * second source of truth to keep in sync by hand.
  */
 function render_catalog(entries: Entry[]): string {
-  const catalog = entries.map(({ name, kind, group, summary, use, avoid, example, module, body }) => ({
+  const sorted = [...entries].sort((a, b) => a.name.localeCompare(b.name));
+  const catalog = sorted.map(({ name, kind, group, pack, summary, use, avoid, example, module, body }) => ({
     name,
     kind,
     group,
+    pack,
     summary,
     use,
     avoid,
@@ -344,11 +419,21 @@ async function read_static(name: string): Promise<string> {
   return `${GENERATED_NOTE}\n\n${source}`;
 }
 
+const by_pack = new Map<string, Entry[]>();
+for (const entry of entries) {
+  const list = by_pack.get(entry.pack) ?? [];
+  list.push(entry);
+  by_pack.set(entry.pack, list);
+}
+
 const files = new Map<string, string>([
-  [join(SKILL_DIR, "SKILL.md"), render_skill(entries)],
+  [join(SKILL_DIR, "SKILL.md"), await render_skill(entries)],
   [join(SKILL_DIR, "catalog.json"), render_catalog(entries)],
   [join(SKILL_DIR, "references", "installation.md"), await read_static("installation")],
   [join(SKILL_DIR, "references", "usage.md"), await read_static("usage")],
+  ...[...by_pack].map(
+    ([pack, pack_entries]) => [join(SKILL_DIR, "references", `${pack}.md`), render_pack(pack, pack_entries)] as [string, string],
+  ),
   ...entries.map(
     (e) => [join(SKILL_DIR, "references", `${e.name}.md`), e.body] as [string, string],
   ),

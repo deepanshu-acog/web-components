@@ -1,27 +1,62 @@
 ---
+import { getCollection } from "astro:content";
 import App from "../layouts/App.astro";
-// Pagefind assets are generated into /pagefind by `pagefind --site dist`
-// during `bun run build` (see package.json). Search only works on a built
-// site — `astro dev` has no index to query yet.
+
+const reports = await getCollection("reports");
 ---
 <App title="Search">
-  <div class="wa-stack wa-gap-xl">
+  <div class="wa-stack wa-gap-xl" style="max-width: 48rem;">
     <h1>Search</h1>
-    <div data-pagefind-ignore>
+
+    <!-- Pagefind UI (loaded in production build) -->
+    <div data-pagefind-ignore id="pagefind-container">
       <pagefind-config bundle-path="/pagefind/"></pagefind-config>
-      <pagefind-input placeholder="Search this dashboard"></pagefind-input>
+      <pagefind-input placeholder="Search reports and documentation..."></pagefind-input>
       <pagefind-summary></pagefind-summary>
       <pagefind-results></pagefind-results>
+    </div>
+
+    <!-- Dev Mode / Instant Filter Fallback -->
+    <div id="dev-search-fallback" class="wa-stack wa-gap-m" style="margin-top: var(--wa-space-m);">
+      <wa-input id="live-search-input" placeholder="Type to filter reports..." clearable>
+        <wa-icon slot="start" name="magnifying-glass"></wa-icon>
+      </wa-input>
+
+      <div id="reports-list" class="wa-stack wa-gap-s">
+        {reports.map((r) => (
+          <wa-card class="report-item" data-title={r.data.title.toLowerCase()}>
+            <a href={`/reports/${r.id}`} style="text-decoration: none; color: inherit;">
+              <h3 style="margin: 0 0 var(--wa-space-xs) 0;">{r.data.title}</h3>
+              <p style="margin: 0; color: var(--wa-color-text-subtle); font-size: var(--wa-font-size-s);">
+                View full intelligence report →
+              </p>
+            </a>
+          </wa-card>
+        ))}
+      </div>
     </div>
   </div>
 
   <link rel="stylesheet" href="/pagefind/pagefind-component-ui.css" />
   <script type="module" is:inline src="/pagefind/pagefind-component-ui.js"></script>
   <script is:inline>
+    // Live filter fallback for dev mode
+    const searchInput = document.getElementById("live-search-input");
+    const reportItems = document.querySelectorAll(".report-item");
+
+    if (searchInput) {
+      searchInput.addEventListener("wa-input", (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        reportItems.forEach((item) => {
+          const title = item.getAttribute("data-title") || "";
+          item.style.display = title.includes(query) ? "block" : "none";
+        });
+      });
+    }
+
     if (new URLSearchParams(window.location.search).has("focus")) {
-      const focusSearch = () => document.querySelector("pagefind-input input")?.focus();
-      setTimeout(focusSearch, 100);
-      setTimeout(focusSearch, 400);
+      setTimeout(() => searchInput?.focus(), 150);
     }
   </script>
 </App>
+

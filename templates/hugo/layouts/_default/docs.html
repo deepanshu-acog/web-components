@@ -1,0 +1,45 @@
+{{ define "main" }}
+<article class="docs-layout wa-stack wa-gap-l">
+  {{ partial "breadcrumbs.html" . }}
+
+  <header class="docs-header">
+    <div class="wa-split docs-header__row">
+      <h1 class="docs-title">{{ .LinkTitle }}</h1>
+      <wa-badge variant="brand">Documentation</wa-badge>
+    </div>
+    {{ partial "meta.html" . }}
+  </header>
+
+  <div class="wa-prose docs-content">
+    {{ .Content }}
+  </div>
+
+  {{/* Previous / next page within this docs section, ordered by weight. */}}
+  {{ if or .PrevInSection .NextInSection }}
+    <nav class="docs-pager wa-split">
+      <div>
+        {{ with .PrevInSection }}
+          <a href="{{ .RelPermalink }}" class="docs-pager__link docs-pager__link--prev">
+            <wa-icon name="arrow-left"></wa-icon>
+            <span class="wa-stack docs-pager__text">
+              <span class="docs-pager__label">Previous</span>
+              <span class="docs-pager__title">{{ .LinkTitle }}</span>
+            </span>
+          </a>
+        {{ end }}
+      </div>
+      <div>
+        {{ with .NextInSection }}
+          <a href="{{ .RelPermalink }}" class="docs-pager__link docs-pager__link--next">
+            <span class="wa-stack docs-pager__text">
+              <span class="docs-pager__label">Next</span>
+              <span class="docs-pager__title">{{ .LinkTitle }}</span>
+            </span>
+            <wa-icon name="arrow-right"></wa-icon>
+          </a>
+        {{ end }}
+      </div>
+    </nav>
+  {{ end }}
+</article>
+{{ end }}

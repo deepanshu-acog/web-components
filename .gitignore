@@ -1,8 +1,10 @@
 node_modules/
 dist/
 *.tsbuildinfo
-
-# Skills are installed by skills-pack, recorded in skills-pack.lock.json
-.claude/skills/
-.agents/skills/
+theme-builder.html
+skills-lock.json
+skills-pack.lock.json
 docs/handoff.md
+docs/plan-*.md
+docs/*-plan.md
+.roles

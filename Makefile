@@ -34,6 +34,14 @@ generate: ## Regenerate custom-elements.json and the agent skill
 run: ## Run the atk-ui CLI (pass ARGS="preview" etc.)
 	bun run src/cli/index.ts $(ARGS)
 
+preview-hugo: ## Run Hugo preview server for template (optional: FILE=component_showcase.md)
+	@if [ -n "$(FILE)" ]; then \
+		slug=$$(basename "$(FILE)" .md); \
+		echo "Target URL: http://localhost:1313/reports/$$slug/"; \
+	fi
+	cd templates/hugo && hugo server -D
+
+
 check: build test ## Full gate: build, standalone CLI, test, CSS rules, and generated files
 	bun run tools/check_css.ts
 	bun run tools/generate.ts --check

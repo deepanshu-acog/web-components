@@ -1,0 +1,133 @@
+buildDrafts = true
+buildFuture = true
+buildExpired = true
+baseURL = 'http://example.org/'
+locale = 'en-us'
+title = 'Aganitha Report Portal'
+disableKinds = ['taxonomy', 'term']
+
+[security]
+  enableInlineShortcodes = false
+  [security.exec]
+    allow = ['^go$', '^git$']
+  [security.funcs]
+    getenv = ['^HUGO_']
+  [security.http]
+    methods = ['(?i)GET|POST']
+
+[markup]
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 4
+    ordered = false
+
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+[params]
+  version = "0.2.0"
+  # Path under /static (or a full URL) for the header logo. Swap per
+  # deployment — this file, not header.html, is where a client site sets its
+  # own brand identity.
+  logo = "/images/aganitha-logo.png"
+  helpURL = "/help/"
+
+# Top navbar (site shell). `pre` is a Web Awesome icon name. Nest an item
+# under another by setting `parent` to the parent's `identifier`.
+[[menu.main]]
+  name = "Home"
+  url = "/"
+  weight = 10
+  pre = "house"
+
+[[menu.main]]
+  name = "Reports"
+  url = "/reports/"
+  weight = 20
+  pre = "layer-group"
+
+[[menu.main]]
+  name = "Docs"
+  url = "/docs/"
+  weight = 30
+  pre = "book"
+
+[[menu.main]]
+  identifier = "resources"
+  name = "Resources"
+  weight = 40
+  pre = "compass"
+
+  [[menu.main]]
+    name = "Getting Started"
+    url = "/docs/getting-started/"
+    parent = "resources"
+    weight = 10
+    pre = "rocket"
+
+  [[menu.main]]
+    name = "Help"
+    url = "/help/"
+    parent = "resources"
+    weight = 20
+    pre = "circle-question"
+
+# Footer navigation columns. `parent` groups links under a column heading.
+[[menu.footer]]
+  identifier = "explore"
+  name = "Explore"
+  weight = 10
+
+  [[menu.footer]]
+    name = "All Reports"
+    url = "/reports/"
+    parent = "explore"
+
+  [[menu.footer]]
+    name = "Documentation"
+    url = "/docs/"
+    parent = "explore"
+
+[[menu.footer]]
+  identifier = "help"
+  name = "Help"
+  weight = 20
+
+  [[menu.footer]]
+    name = "Getting Started"
+    url = "/docs/getting-started/"
+    parent = "help"
+
+  [[menu.footer]]
+    name = "Help Center"
+    url = "/help/"
+    parent = "help"
+
+[[module.mounts]]
+  source = "layouts"
+  target = "layouts"
+
+[[module.mounts]]
+  source = "assets"
+  target = "assets"
+
+[[module.mounts]]
+  source = "static"
+  target = "static"
+
+[[module.mounts]]
+  source = "node_modules/@awesome.me/webawesome/dist"
+  target = "static/webawesome"
+
+[[module.mounts]]
+  source = "node_modules/@aganitha/atk-ui/dist"
+  target = "static/atk-ui"
+
+[[module.mounts]]
+  source = "node_modules/@fontsource-variable"
+  target = "static/fonts"
+
+[[module.mounts]]
+  source = "node_modules/molstar/build/viewer"
+  target = "static/molstar"

@@ -1,0 +1,28 @@
+{{/* Flat page list for the sidebar. Automatically discovers current section (or all content pages) */}}
+{{ $section := or .FirstSection (site.GetPage .Section) }}
+{{ $sectionTitle := cond (ne $section nil) $section.LinkTitle "Reports" }}
+{{ $pages := cond (ne $section nil) $section.Pages (where site.RegularPages "Section" "!=" "") }}
+<nav slot="navigation" class="report-nav wa-stack">
+  <div class="report-nav__heading">
+    <span class="nav-heading">{{ $sectionTitle }}</span>
+    <wa-badge variant="neutral" size="small">{{ len $pages }}</wa-badge>
+  </div>
+
+  <div id="nav-reports-list" class="wa-stack wa-gap-3xs">
+    <a href="/" class="nav-item {{ if .IsHome }}active-report{{ end }}">
+      <wa-icon name="house"></wa-icon>
+      <span>Overview &amp; Index</span>
+    </a>
+
+    {{ range $pages.ByTitle }}
+      <a
+        href="{{ .RelPermalink }}"
+        class="nav-item {{ if eq $.RelPermalink .RelPermalink }}active-report{{ end }}"
+        data-title="{{ .LinkTitle | lower }}"
+      >
+        <wa-icon name="{{ .Params.icon | default "file-lines" }}"></wa-icon>
+        <span class="nav-item__label">{{ .LinkTitle }}</span>
+      </a>
+    {{ end }}
+  </div>
+</nav>

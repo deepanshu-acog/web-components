@@ -1,0 +1,17 @@
+{{ if not (or (eq .Params.layout "landing") (eq .Params.layout "website")) }}
+{{ if ne .Params.toc false }}
+{{ if .TableOfContents }}
+<aside slot="aside" class="toc-sidebar">
+  <div class="toc-sticky-box">
+    <div class="toc-header">
+      <wa-icon name="list-ul"></wa-icon>
+      <span>On This Page</span>
+    </div>
+    <nav id="TableOfContents" class="toc-nav">
+      {{ .TableOfContents }}
+    </nav>
+  </div>
+</aside>
+{{ end }}
+{{ end }}
+{{ end }}

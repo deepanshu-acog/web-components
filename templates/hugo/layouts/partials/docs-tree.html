@@ -1,0 +1,20 @@
+{{/* Renders one docs page as a <wa-tree-item>, recursing into its children.
+     Context: (dict "page" <page> "current" <current page>).
+     The current page is `selected`; every ancestor of it is `expanded`. */}}
+{{ $page := .page }}
+{{ $current := .current }}
+{{ $isCurrent := eq $page $current }}
+{{ $isAncestor := $page.IsAncestor $current }}
+{{ $children := where $page.Pages "Params.hidden" "!=" true }}
+<wa-tree-item
+  {{ if $isCurrent }}selected{{ end }}
+  {{ if or $isCurrent $isAncestor }}expanded{{ end }}
+>
+  <a href="{{ $page.RelPermalink }}" class="docs-tree-link{{ if $isCurrent }} docs-tree-link--current{{ end }}">
+    {{ with $page.Params.icon }}<wa-icon name="{{ . }}"></wa-icon>{{ end }}
+    <span>{{ $page.LinkTitle }}</span>
+  </a>
+  {{ range $children.ByWeight }}
+    {{ partial "docs-tree.html" (dict "page" . "current" $current) }}
+  {{ end }}
+</wa-tree-item>

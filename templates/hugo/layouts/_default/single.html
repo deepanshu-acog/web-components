@@ -1,0 +1,16 @@
+{{ define "main" }}
+<article class="report-article wa-stack wa-gap-m">
+  {{ partial "breadcrumbs.html" . }}
+
+  <header class="report-header">
+    <h1 style="font-family: var(--wa-font-family-heading); font-size: var(--wa-font-size-2xl); font-weight: var(--wa-font-weight-bold); margin-block-end: var(--wa-space-xs);">
+      {{ .LinkTitle }}
+    </h1>
+    {{ partial "meta.html" . }}
+  </header>
+
+  <div class="report-content">
+    {{ .Content }}
+  </div>
+</article>
+{{ end }}

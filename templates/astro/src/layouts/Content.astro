@@ -37,6 +37,15 @@ const wa_cdn = `https://ka-f.webawesome.com/webawesome@${webawesome_package.vers
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>{title}</title>
+    <script is:inline>
+      (() => {
+        const saved = localStorage.getItem('wa-theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (saved === 'dark' || (!saved && prefersDark)) {
+          document.documentElement.classList.add('wa-dark');
+        }
+      })();
+    </script>
   </head>
   <body>
     <main style="max-width: 60rem; margin-inline: auto; padding: var(--wa-space-xl) var(--wa-space-l);">
@@ -46,6 +55,16 @@ const wa_cdn = `https://ka-f.webawesome.com/webawesome@${webawesome_package.vers
     <script>
       import "@aganitha/atk-ui/components/metric";
       import "@aganitha/atk-ui/components/go-ribbon";
+      import "@aganitha/atk-ui/components/sidenote";
+      import "@aganitha/atk-ui/components/timeline";
+      import "@aganitha/atk-ui/components/timeline-item";
+      import "@aganitha/atk-ui/components/mermaid";
+      import "@aganitha/atk-ui/components/molstar";
+      import "@aganitha/atk-ui/components/data-table";
+      import "@aganitha/atk-ui/components/chart";
+      import "@aganitha/atk-ui/components/process";
+      import "@aganitha/atk-ui/components/step";
+      import "@aganitha/atk-ui/components/well-plate";
     </script>
   </body>
 </html>

@@ -1,0 +1,11 @@
+<wa-breadcrumb class="report-breadcrumbs" style="margin-block-end: var(--wa-space-m);" aria-label="Breadcrumb">
+  <wa-breadcrumb-item href="/">
+    <wa-icon slot="start" name="house"></wa-icon>Home
+  </wa-breadcrumb-item>
+  {{ range .Ancestors.Reverse }}
+    {{ if and (ne .RelPermalink "/") (ne .RelPermalink $.RelPermalink) }}
+      <wa-breadcrumb-item href="{{ .RelPermalink }}">{{ .LinkTitle }}</wa-breadcrumb-item>
+    {{ end }}
+  {{ end }}
+  <wa-breadcrumb-item>{{ .LinkTitle }}</wa-breadcrumb-item>
+</wa-breadcrumb>

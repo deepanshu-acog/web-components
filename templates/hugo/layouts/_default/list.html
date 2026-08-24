@@ -1,0 +1,43 @@
+{{ define "main" }}
+<div class="list-layout-container wa-stack wa-gap-l">
+  <div class="wa-split" style="align-items: center; border-block-end: 2px solid var(--wa-color-surface-border); padding-block-end: var(--wa-space-m);">
+    <div>
+      <h1 style="font-family: var(--wa-font-family-heading); font-size: var(--wa-font-size-2xl); margin: 0;">
+        {{ .Title | default "Intelligence Reports & Briefings" }}
+      </h1>
+      <p style="color: var(--wa-color-text-quiet); margin: var(--wa-space-2xs) 0 0;">
+        Curated strategic dossiers, clinical landscapes, and market intelligence.
+      </p>
+    </div>
+    <wa-badge variant="brand" size="large">{{ len .Pages }} Available</wa-badge>
+  </div>
+
+  <div class="wa-grid wa-gap-l" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">
+    {{ range .Pages }}
+      <wa-card appearance="filled-outlined" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div class="wa-stack wa-gap-xs">
+          <div class="wa-split" style="align-items: center;">
+            <wa-badge variant="neutral" size="small">{{ .Params.layout | default "Report" }}</wa-badge>
+            <span style="font-size: var(--wa-font-size-xs); color: var(--wa-color-text-quiet);">{{ .ReadingTime }} min read</span>
+          </div>
+
+          <h3 style="margin: var(--wa-space-2xs) 0; font-size: var(--wa-font-size-l); font-family: var(--wa-font-family-heading);">
+            <a href="{{ .RelPermalink }}" style="color: inherit; text-decoration: none;">{{ .Title }}</a>
+          </h3>
+
+          <p style="color: var(--wa-color-text-quiet); font-size: var(--wa-font-size-s); margin: 0; line-height: 1.5;">
+            {{ .Description | default .Summary | plainify | truncate 140 }}
+          </p>
+        </div>
+
+        <div slot="footer" class="wa-split" style="align-items: center; padding-top: var(--wa-space-s); margin-top: var(--wa-space-s); border-top: 1px solid var(--wa-color-surface-border);">
+          <span style="font-size: var(--wa-font-size-xs); color: var(--wa-color-text-quiet);">{{ .Date.Format "Jan 02, 2006" }}</span>
+          <wa-button href="{{ .RelPermalink }}" variant="brand" size="small">
+            Read Report <wa-icon name="arrow-right" slot="end"></wa-icon>
+          </wa-button>
+        </div>
+      </wa-card>
+    {{ end }}
+  </div>
+</div>
+{{ end }}

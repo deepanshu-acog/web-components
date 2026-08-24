@@ -1,0 +1,19 @@
+<div class="report-meta-strip" style="display: flex; align-items: center; gap: var(--wa-space-m); flex-wrap: wrap; margin-block-end: var(--wa-space-l); padding-block-end: var(--wa-space-s); border-block-end: 1px solid var(--wa-color-surface-border); font-size: var(--wa-font-size-xs); color: var(--wa-color-text-quiet);">
+  <span style="display: inline-flex; align-items: center; gap: var(--wa-space-3xs);">
+    <wa-icon name="calendar-days"></wa-icon>
+    <span>{{ .Date.Format "Jan 02, 2006" | default (now.Format "Jan 02, 2006") }}</span>
+  </span>
+
+  <span style="display: inline-flex; align-items: center; gap: var(--wa-space-3xs);">
+    <wa-icon name="clock"></wa-icon>
+    <span>{{ .ReadingTime }} min read ({{ .WordCount }} words)</span>
+  </span>
+
+  {{ with .Params.layout }}
+    <wa-badge variant="brand" size="small" style="text-transform: capitalize;">{{ . }}</wa-badge>
+  {{ end }}
+
+  {{ range .Params.tags }}
+    <wa-badge variant="neutral" size="small">{{ . }}</wa-badge>
+  {{ end }}
+</div>

@@ -1,0 +1,203 @@
+{{/* Site shell top navbar — appears on every page. Menu comes from
+     hugo.toml [[menu.main]]; nested items (with children) render as a
+     wa-dropdown on desktop and an indented group in the mobile drawer. */}}
+<header slot="header" class="site-header wa-split">
+  <div class="site-header__start">
+    <a href="/" class="site-header__brand">
+      <img
+        src="{{ .Site.Params.logo | default "/images/aganitha-logo.png" }}"
+        alt="{{ .Site.Title }}"
+        onerror="this.style.display='none'; this.nextElementSibling.hidden=false;"
+      />
+      <span class="site-header__brand-fallback" hidden>
+        <wa-icon name="circle-nodes"></wa-icon> {{ .Site.Title }}
+      </span>
+    </a>
+
+    {{ $cur := .RelPermalink }}
+    {{ if or .Params.sections .Params.cta_primary }}
+      <nav class="site-header__nav" aria-label="Page sections">
+        <a href="#" class="site-header__nav-item">
+          <wa-icon name="house"></wa-icon>
+          <span>Overview</span>
+        </a>
+        {{ if .Params.sections }}
+          {{ range .Params.sections }}
+            <a href="{{ .url }}" class="site-header__nav-item">
+              {{ with .icon }}<wa-icon name="{{ . }}"></wa-icon>{{ end }}
+              <span>{{ .label }}</span>
+            </a>
+          {{ end }}
+        {{ else }}
+          {{ with .Params.cta_primary }}
+            <a href="{{ .url }}" class="site-header__nav-item">
+              <wa-icon name="{{ .icon | default "circle-dot" }}"></wa-icon>
+              <span>{{ .label }}</span>
+            </a>
+          {{ end }}
+          {{ with .Params.cta_secondary }}
+            <a href="{{ .url }}" class="site-header__nav-item">
+              <wa-icon name="{{ .icon | default "circle-dot" }}"></wa-icon>
+              <span>{{ .label }}</span>
+            </a>
+          {{ end }}
+          {{ with .Params.cta_tertiary }}
+            <a href="{{ .url }}" class="site-header__nav-item">
+              <wa-icon name="{{ .icon | default "circle-dot" }}"></wa-icon>
+              <span>{{ .label }}</span>
+            </a>
+          {{ end }}
+        {{ end }}
+      </nav>
+    {{ else }}
+      <nav class="site-header__nav" aria-label="Primary">
+        {{ range .Site.Menus.main.ByWeight }}
+          {{ if .HasChildren }}
+            {{/* Dropdown is active if any child URL prefixes the current page. */}}
+            {{ $active := false }}
+            {{ range .Children }}{{ if and (ne .URL "/") (hasPrefix $cur .URL) }}{{ $active = true }}{{ end }}{{ end }}
+            <wa-dropdown class="site-header__nav-dropdown">
+              <button slot="trigger" class="site-header__nav-item{{ if $active }} is-active{{ end }}" type="button">
+                {{ with .Pre }}<wa-icon name="{{ . }}"></wa-icon>{{ end }}
+                <span>{{ .Name }}</span>
+                <wa-icon name="chevron-down" class="site-header__nav-caret"></wa-icon>
+              </button>
+              {{ range .Children.ByWeight }}
+                <wa-dropdown-item href="{{ .URL }}">
+                  {{ with .Pre }}<wa-icon slot="icon" name="{{ . }}"></wa-icon>{{ end }}
+                  {{ .Name }}
+                </wa-dropdown-item>
+              {{ end }}
+            </wa-dropdown>
+          {{ else }}
+            {{ $active := cond (eq .URL "/") $.IsHome (hasPrefix $cur .URL) }}
+            <a href="{{ .URL }}" class="site-header__nav-item{{ if $active }} is-active{{ end }}">
+              {{ with .Pre }}<wa-icon name="{{ . }}"></wa-icon>{{ end }}
+              <span>{{ .Name }}</span>
+            </a>
+          {{ end }}
+        {{ end }}
+      </nav>
+    {{ end }}
+  </div>
+
+  <div class="site-header__end">
+    <wa-input
+      id="global-search-input"
+      size="small"
+      placeholder="Search... (⌘K)"
+      clearable
+      class="site-header__search"
+    >
+      <wa-icon name="magnifying-glass" slot="start"></wa-icon>
+    </wa-input>
+
+    <wa-button
+      id="theme-toggle"
+      appearance="plain"
+      size="small"
+      aria-label="Toggle dark mode"
+      title="Toggle dark mode"
+    >
+      <wa-icon name="moon" id="theme-toggle-icon"></wa-icon>
+    </wa-button>
+
+    <wa-button
+      class="site-header__menu-toggle"
+      appearance="plain"
+      size="small"
+      aria-label="Open menu"
+      data-open-site-menu
+    >
+      <wa-icon name="bars"></wa-icon>
+    </wa-button>
+  </div>
+</header>
+
+{{/* Mobile navigation drawer — mirrors navbar. */}}
+<wa-drawer id="site-menu-drawer" label="Menu" class="site-menu-drawer">
+  <nav class="site-menu-drawer__nav wa-stack wa-gap-2xs" aria-label="Menu (mobile)">
+    {{ if or .Params.sections .Params.cta_primary }}
+      <a href="#" class="site-menu-drawer__item">
+        <wa-icon name="house"></wa-icon>
+        <span>Overview</span>
+      </a>
+      {{ if .Params.sections }}
+        {{ range .Params.sections }}
+          <a href="{{ .url }}" class="site-menu-drawer__item">
+            {{ with .icon }}<wa-icon name="{{ . }}"></wa-icon>{{ end }}
+            <span>{{ .label }}</span>
+          </a>
+        {{ end }}
+      {{ else }}
+        {{ with .Params.cta_primary }}
+          <a href="{{ .url }}" class="site-menu-drawer__item">
+            <wa-icon name="{{ .icon | default "circle-dot" }}"></wa-icon>
+            <span>{{ .label }}</span>
+          </a>
+        {{ end }}
+        {{ with .Params.cta_secondary }}
+          <a href="{{ .url }}" class="site-menu-drawer__item">
+            <wa-icon name="{{ .icon | default "circle-dot" }}"></wa-icon>
+            <span>{{ .label }}</span>
+          </a>
+        {{ end }}
+        {{ with .Params.cta_tertiary }}
+          <a href="{{ .url }}" class="site-menu-drawer__item">
+            <wa-icon name="{{ .icon | default "circle-dot" }}"></wa-icon>
+            <span>{{ .label }}</span>
+          </a>
+        {{ end }}
+      {{ end }}
+    {{ else }}
+      {{ range .Site.Menus.main.ByWeight }}
+        {{ if .HasChildren }}
+          <span class="site-menu-drawer__group-label">
+            {{ with .Pre }}<wa-icon name="{{ . }}"></wa-icon>{{ end }} {{ .Name }}
+          </span>
+          {{ range .Children.ByWeight }}
+            <a href="{{ .URL }}" class="site-menu-drawer__item site-menu-drawer__item--child">
+              {{ with .Pre }}<wa-icon name="{{ . }}"></wa-icon>{{ end }}
+              <span>{{ .Name }}</span>
+            </a>
+          {{ end }}
+        {{ else }}
+          <a href="{{ .URL }}" class="site-menu-drawer__item">
+            {{ with .Pre }}<wa-icon name="{{ . }}"></wa-icon>{{ end }}
+            <span>{{ .Name }}</span>
+          </a>
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  </nav>
+</wa-drawer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const drawer = document.getElementById('site-menu-drawer');
+    const toggle = document.querySelector('[data-open-site-menu]');
+    if (drawer && toggle) {
+      toggle.addEventListener('click', () => { drawer.open = true; });
+      drawer.addEventListener('click', (e) => {
+        if (e.target.closest('a')) drawer.open = false;
+      });
+    }
+
+    // Dark mode toggle
+    const themeBtn = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-toggle-icon');
+    const isDark = () => document.documentElement.classList.contains('wa-dark');
+    const syncThemeIcon = () => {
+      if (themeIcon) themeIcon.setAttribute('name', isDark() ? 'sun' : 'moon');
+    };
+    syncThemeIcon();
+
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        const dark = document.documentElement.classList.toggle('wa-dark');
+        localStorage.setItem('wa-theme', dark ? 'dark' : 'light');
+        syncThemeIcon();
+      });
+    }
+  });
+</script>

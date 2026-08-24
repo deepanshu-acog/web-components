@@ -1,0 +1,19 @@
+{{ define "main" }}
+<div class="tabbed-layout-container wa-stack wa-gap-l">
+  {{ partial "breadcrumbs.html" . }}
+
+  <header class="tabbed-header">
+    <div class="wa-split" style="align-items: center; margin-block-end: var(--wa-space-2xs);">
+      <h1 style="font-family: var(--wa-font-family-heading); font-size: var(--wa-font-size-2xl); margin: 0;">
+        {{ .LinkTitle }}
+      </h1>
+      <wa-badge variant="brand">Executive Briefing</wa-badge>
+    </div>
+    {{ partial "meta.html" . }}
+  </header>
+
+  <div class="tabbed-content-area">
+    {{ .Content }}
+  </div>
+</div>
+{{ end }}

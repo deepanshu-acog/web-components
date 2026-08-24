@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en" class="wa-theme-default atk-theme">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ block "title" . }}{{ with .Title }}{{ . }} · {{ else }}{{ with .File }}{{ .BaseFileName | humanize }} · {{ end }}{{ end }}{{ .Site.Title }}{{ end }}</title>
+
+    <link rel="stylesheet" href="/webawesome/styles/themes/default.css" />
+    <link rel="stylesheet" href="/webawesome/styles/utilities.css" />
+    <link rel="stylesheet" href="/atk-ui/theme/theme.css" />
+    <link rel="stylesheet" href="/atk-ui/patterns/patterns.css" />
+    {{ $site_css := resources.Get "css/site.css" | minify }}
+    <link rel="stylesheet" href="{{ $site_css.RelPermalink }}" />
+
+    <link rel="stylesheet" href="/fonts/ibm-plex-sans/index.css" />
+    <link rel="stylesheet" href="/fonts/jetbrains-mono/index.css" />
+
+    <script>
+      (() => {
+        const saved = localStorage.getItem('wa-theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (saved === 'dark' || (!saved && prefersDark)) {
+          document.documentElement.classList.add('wa-dark');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <wa-page mobile-breakpoint="768">
+      {{ partial "header.html" . }}
+
+      {{/* Sidebar rules:
+           - Explicit `sidebar: false` hides sidebar on any page.
+           - `layout: docs` gets the doc tree sidebar (unless sidebar: false).
+           - `layout: dossier` or explicit `sidebar: true` gets the report list sidebar.
+           - Single file preview / default / single / landing / website: only that file (no folder sidebar). */}}
+      {{ if ne .Params.sidebar false }}
+        {{ if eq .Params.layout "docs" }}
+          {{ partial "docs-sidebar.html" . }}
+        {{ else if or (eq .Params.layout "dossier") (eq .Params.sidebar true) }}
+          {{ partial "sidebar.html" . }}
+        {{ end }}
+      {{ end }}
+
+      <main class="report-content-container" data-pagefind-body>
+        {{ block "main" . }}{{ end }}
+      </main>
+
+      {{ partial "toc.html" . }}
+      {{ partial "footer.html" . }}
+    </wa-page>
+
+    {{ $app_js := resources.Get "app.js" | js.Build (dict "minify" true "externals" (slice "molstar" "molstar/lib/apps/viewer/app")) }}
+    <script type="module" src="{{ $app_js.RelPermalink }}"></script>
+
+    <script>
+      // The header search box does two things: it filters the sidebar's own
+      // nav list live (a same-page jump aid), and Enter navigates to /search/
+      // for real full-text search across every report (Pagefind, indexed at
+      // build time — see package.json's "build" script).
+      document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('global-search-input');
+        if (searchInput) {
+          searchInput.addEventListener('wa-input', (e) => {
+            const query = (e.target.value || '').trim().toLowerCase();
+            const items = document.querySelectorAll('#nav-reports-list .nav-item');
+            items.forEach(item => {
+              const text = item.textContent.toLowerCase();
+              if (!query || text.includes(query)) {
+                item.style.display = 'flex';
+              } else {
+                item.style.display = 'none';
+              }
+            });
+          });
+
+          searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              const query = (searchInput.value || '').trim();
+              if (query) {
+                window.location.href = '/search/?q=' + encodeURIComponent(query);
+              }
+            }
+          });
+
+          // Keyboard shortcut ⌘K / Ctrl+K
+          window.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+              e.preventDefault();
+              searchInput.focus();
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

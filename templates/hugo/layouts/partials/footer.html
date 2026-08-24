@@ -1,0 +1,29 @@
+<footer slot="footer" class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <a href="/" class="site-footer__brand-link">
+        <wa-icon name="circle-nodes"></wa-icon>
+        <span>{{ .Site.Title }}</span>
+      </a>
+      <p class="site-footer__tagline">Built with Web Awesome &amp; atk-ui.</p>
+    </div>
+
+    {{ with .Site.Menus.footer }}
+      <div class="site-footer__columns">
+        {{ range .ByWeight }}
+          <div class="site-footer__column">
+            <span class="site-footer__column-heading">{{ .Name }}</span>
+            {{ range .Children.ByWeight }}
+              <a href="{{ .URL }}" class="site-footer__link">{{ .Name }}</a>
+            {{ end }}
+          </div>
+        {{ end }}
+      </div>
+    {{ end }}
+  </div>
+
+  <div class="site-footer__meta">
+    <span>{{ .Site.Title }} · v{{ .Site.Params.version | default "0.2.0" }}</span>
+    <span>© {{ now.Format "2006" }}</span>
+  </div>
+</footer>

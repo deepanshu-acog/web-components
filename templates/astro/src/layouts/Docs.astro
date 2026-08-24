@@ -1,0 +1,169 @@
+---
+// Help Manual & Documentation Layout with left navigation sidebar,
+// main article body, and optional right table-of-contents outline.
+import "@fontsource-variable/ibm-plex-sans";
+import "@fontsource-variable/jetbrains-mono";
+import "@awesome.me/webawesome/dist/styles/themes/default.css";
+import "@awesome.me/webawesome/dist/styles/utilities.css";
+import "@aganitha/atk-ui/theme.css";
+import "@aganitha/atk-ui/patterns.css";
+import { getCollection } from "astro:content";
+import package_json from "../../package.json";
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+const build_time = new Date().toISOString();
+const reports = await getCollection("reports");
+---
+
+<html lang="en" class="wa-theme-default atk-theme">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title}</title>
+    <script is:inline>
+      (() => {
+        const saved = localStorage.getItem('wa-theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (saved === 'dark' || (!saved && prefersDark)) {
+          document.documentElement.classList.add('wa-dark');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <wa-page mobile-breakpoint="768">
+      <header slot="header" class="wa-split">
+        <a href="/" class="brand">
+          <wa-icon name="book-open"></wa-icon> {title}
+        </a>
+        <span class="wa-cluster">
+          <a class="search-link" href="/search">Search <kbd data-shortcut-hint>⌘K</kbd></a>
+          <wa-button href="/" appearance="plain">
+            <wa-icon slot="start" name="house"></wa-icon>Dashboard
+          </wa-button>
+          <wa-button id="theme-toggle" appearance="plain" size="small" aria-label="Toggle dark mode" title="Toggle dark mode">
+            <wa-icon name="moon" id="theme-toggle-icon"></wa-icon>
+          </wa-button>
+        </span>
+      </header>
+
+      <nav slot="navigation" class="wa-stack">
+        <a href="/help">Getting Started</a>
+        <a href="/search">Search Portal</a>
+        {reports.length > 0 && (
+          <>
+            <small class="nav-heading">Reports</small>
+            {reports.map((r) => (
+              <a href={`/reports/${r.id}`}>{r.data.title}</a>
+            ))}
+          </>
+        )}
+        <slot name="navigation" />
+      </nav>
+
+      <main class="docs-container">
+        <article class="article-body">
+          <slot />
+        </article>
+      </main>
+
+      <footer slot="footer">
+        <small>v{package_json.version} · Built {build_time}</small>
+      </footer>
+    </wa-page>
+
+    <script>
+      import "@awesome.me/webawesome/dist/components/page/page.js";
+      import "@awesome.me/webawesome/dist/components/button/button.js";
+      import "@awesome.me/webawesome/dist/components/icon/icon.js";
+      import "@awesome.me/webawesome/dist/components/card/card.js";
+      import "@aganitha/atk-ui";
+      import "../components/site-note.ts";
+    </script>
+
+    <script is:inline>
+      const themeBtn = document.getElementById("theme-toggle");
+      const themeIcon = document.getElementById("theme-toggle-icon");
+      const isDark = () => document.documentElement.classList.contains("wa-dark");
+      const syncThemeIcon = () => {
+        if (themeIcon) themeIcon.setAttribute("name", isDark() ? "sun" : "moon");
+      };
+      syncThemeIcon();
+
+      if (themeBtn) {
+        themeBtn.addEventListener("click", () => {
+          const dark = document.documentElement.classList.toggle("wa-dark");
+          localStorage.setItem("wa-theme", dark ? "dark" : "light");
+          syncThemeIcon();
+        });
+      }
+    </script>
+
+    <style>
+      html, body {
+        min-height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      wa-page {
+        --menu-width: 13.5rem;
+      }
+
+      wa-page[view="mobile"] {
+        --menu-width: auto;
+      }
+
+      .brand {
+        color: inherit;
+        font-weight: var(--wa-font-weight-semibold);
+        text-decoration: none;
+      }
+
+      .docs-container {
+        max-width: 52rem;
+        margin-inline: auto;
+        padding: var(--wa-space-xl) var(--wa-space-l);
+      }
+
+      .nav-heading {
+        display: block;
+        padding: var(--wa-space-s) var(--wa-space-s) var(--wa-space-3xs);
+        margin-top: var(--wa-space-s);
+        font-size: var(--wa-font-size-xs);
+        font-weight: var(--wa-font-weight-semibold);
+        color: var(--wa-color-text-subtle);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .wa-stack a {
+        padding: var(--wa-space-xs) var(--wa-space-s);
+        color: var(--wa-color-text-normal);
+        text-decoration: none;
+        border-radius: var(--wa-border-radius-s);
+      }
+
+      .wa-stack a:hover {
+        background: var(--wa-color-surface-raised);
+      }
+
+      .search-link {
+        color: var(--wa-color-text-normal);
+        text-decoration: none;
+        font-size: var(--wa-font-size-s);
+      }
+
+      .search-link kbd {
+        font-family: var(--wa-font-family-code);
+        border: 1px solid var(--wa-color-surface-border);
+        border-radius: var(--wa-border-radius-s);
+        padding: 0 var(--wa-space-2xs);
+      }
+    </style>
+  </body>
+</html>

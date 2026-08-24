@@ -260,10 +260,16 @@ page from nothing, stop and fix it before starting Phase 2.
 
 ## Phase 2 — an engineer can discover what exists
 
-- [ ] **Close the confirmed `atk-doc-elements` gap** — `atk-mermaid`,
-      `atk-sidenote`, `atk-process`/`atk-step`, `atk-timeline`/`atk-timeline-item`
-      (renamed against the collision above). Four components, following the same
-      contract as the three Phase 0 examples.
+- [x] **Close the confirmed `atk-doc-elements` & harvested `wc-docs` gap** —
+      `atk-sidenote`, `atk-timeline`/`atk-timeline-item`, `atk-mermaid`,
+      `atk-molstar` (3D viewer), `atk-data-table` (AG-Grid integration).
+      Tested and verified inside Astro starter reports.
+- [ ] **Standardize Astro layout shapes with Nandini** — review and refine
+      `Content.astro`, `Docs.astro`, and `Workbench.astro` layouts to establish
+      official Aganitha report standards.
+- [ ] **Hugo preview & render path for scientists** — support zero-setup, instant
+      previewing of raw `.md` report files via Hugo/Pandoc without forcing an
+      Astro app setup.
 - [x] **Astro starter, first-impression pass.** Guided by `training/packages/web`
       (a mature, working sibling site), not copied wholesale — see the seam
       note below. `src/theme/theme.css`: placeholder brand hue moved from

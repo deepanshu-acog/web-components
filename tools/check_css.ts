@@ -44,7 +44,7 @@ interface Source {
   css: string;
 }
 
-const EXCLUDED_DIRS = new Set(["node_modules", "dist", ".astro"]);
+const EXCLUDED_DIRS = new Set(["node_modules", "dist", ".astro", "public", ".pagefind"]);
 
 /**
  * Collect the CSS we own: pattern stylesheets and component `css` blocks —
@@ -78,6 +78,16 @@ async function collect_sources(): Promise<Source[]> {
         // .ts file is TypeScript and would produce nonsense matches.
         const blocks = [...text.matchAll(/\bcss`([\s\S]*?)`/g)].map((m) => m[1]!);
         if (blocks.length) sources.push({ path: file, css: blocks.join("\n") });
+      } else if (file.endsWith(".html")) {
+        // Hugo layouts/partials/shortcodes: inline <style> blocks and
+        // style="..." attributes are CSS too — a hardcoded colour here is
+        // just as invisible as one in a component, and was going unchecked.
+        const text = await readFile(file, "utf8");
+        const blocks = [
+          ...[...text.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/gi)].map((m) => m[1]!),
+          ...[...text.matchAll(/\sstyle="([^"]*)"/gi)].map((m) => m[1]!),
+        ];
+        if (blocks.length) sources.push({ path: file, css: blocks.join("\n") });
       }
     }
   }
@@ -108,12 +118,61 @@ async function known_wa_tokens(): Promise<Set<string>> {
 
 const problems: string[] = [];
 
+/**
+ * WA_FALLBACK.brand (src/theme/fallbacks.ts) is a hex literal that must match
+ * what theme.css's --wa-color-brand-60 actually resolves to — a second
+ * source of truth that drifts silently otherwise. theme.css currently points
+ * brand-60 at Web Awesome's own --wa-color-blue-60 (a placeholder, per its
+ * own comment), so resolve one level of var() indirection against Web
+ * Awesome's default palette before comparing.
+ */
+async function check_brand_fallback_drift(): Promise<void> {
+  const theme_path = join(ROOT, "src/theme/theme.css");
+  const theme_css = await readFile(theme_path, "utf8");
+  const { WA_FALLBACK } = await import(join(ROOT, "src/theme/fallbacks.ts"));
+
+  const match = theme_css.match(/--wa-color-brand-60:\s*([^;]+);/);
+  if (!match) {
+    problems.push("src/theme/theme.css — expected to find --wa-color-brand-60, used by fallbacks.ts.brand.");
+    return;
+  }
+  const raw = match[1]!.trim();
+
+  let theme_value: string | undefined;
+  const literal = raw.match(/#[0-9a-f]{3,8}\b/i);
+  if (literal) {
+    theme_value = literal[0].toLowerCase();
+  } else {
+    const varMatch = raw.match(/var\(\s*(--wa-color-[a-z0-9-]+)\s*\)/i);
+    if (varMatch) {
+      const palette_path = join(WA_DIST, "styles/color/palettes/default.css");
+      const palette_css = await readFile(palette_path, "utf8");
+      const resolved = palette_css.match(new RegExp(`${varMatch[1]}:\\s*(#[0-9a-f]{3,8})`, "i"));
+      theme_value = resolved?.[1]?.toLowerCase();
+    }
+  }
+
+  if (!theme_value) {
+    problems.push(`src/theme/theme.css — could not resolve --wa-color-brand-60's value ("${raw}") to a hex colour.`);
+    return;
+  }
+
+  const fallback_value = String(WA_FALLBACK.brand).toLowerCase();
+  if (theme_value !== fallback_value) {
+    problems.push(
+      `src/theme/fallbacks.ts — WA_FALLBACK.brand is "${fallback_value}" but theme.css's ` +
+        `--wa-color-brand-60 resolves to "${theme_value}". Update fallbacks.ts to match.`,
+    );
+  }
+}
+
 function line_of(css: string, index: number): number {
   return css.slice(0, index).split("\n").length;
 }
 
 const sources = await collect_sources();
 const known = await known_wa_tokens();
+await check_brand_fallback_drift();
 
 if (known.size === 0) {
   console.error("Could not read Web Awesome's tokens. Run `make install` first.");

@@ -18,7 +18,7 @@ import { existsSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-export const SUPPORTED_STACKS = ["astro"] as const;
+export const SUPPORTED_STACKS = ["astro", "hugo"] as const;
 export type Stack = (typeof SUPPORTED_STACKS)[number];
 
 // HTTPS works with the Git credential helper configured by `gh auth setup-git`;

@@ -1,0 +1,21 @@
+---
+// Dynamic route: renders any report from the "reports" content collection.
+// Adding a new .md file to src/content/reports/ automatically creates
+// a page at /reports/<slug> — no manual wiring needed.
+import { getCollection, render } from "astro:content";
+import App from "../../layouts/App.astro";
+
+export async function getStaticPaths() {
+  const reports = await getCollection("reports");
+  return reports.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+<App title={entry.data.title}>
+  <Content />
+</App>

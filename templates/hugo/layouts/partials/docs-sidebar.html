@@ -1,0 +1,17 @@
+{{/* Left navigation tree for the docs layout — built automatically from the
+     content/docs/ section hierarchy (folders + page weight). Add a page and it
+     appears; no config to edit. Only rendered for layout: docs. */}}
+{{ $section := or .FirstSection (site.GetPage .Section) (site.GetPage "/docs") }}
+<nav slot="navigation" class="docs-nav wa-stack wa-gap-s">
+  <div class="docs-nav__heading">
+    <wa-icon name="book"></wa-icon>
+    <span>{{ with $section }}{{ .LinkTitle }}{{ else }}Documentation{{ end }}</span>
+  </div>
+  {{ with $section }}
+    <wa-tree class="docs-tree">
+      {{ range (where .Pages "Params.hidden" "!=" true).ByWeight }}
+        {{ partial "docs-tree.html" (dict "page" . "current" $) }}
+      {{ end }}
+    </wa-tree>
+  {{ end }}
+</nav>

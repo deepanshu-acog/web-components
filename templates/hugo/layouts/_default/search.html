@@ -1,0 +1,31 @@
+{{ define "main" }}
+<article class="report-article wa-stack wa-gap-m" data-pagefind-ignore>
+  <header class="report-header">
+    <h1 style="font-family: var(--wa-font-family-heading); font-size: var(--wa-font-size-2xl); font-weight: var(--wa-font-weight-bold); margin-block-end: var(--wa-space-xs);">
+      Search
+    </h1>
+  </header>
+
+  <div data-pagefind-ignore id="pagefind-container">
+    <pagefind-config bundle-path="/pagefind/"></pagefind-config>
+    <pagefind-input placeholder="Search reports..."></pagefind-input>
+    <pagefind-summary></pagefind-summary>
+    <pagefind-results></pagefind-results>
+  </div>
+
+  <link rel="stylesheet" href="/pagefind/pagefind-component-ui.css" />
+  <script type="module" src="/pagefind/pagefind-component-ui.js"></script>
+  <script>
+    const query = new URLSearchParams(window.location.search).get('q');
+    if (query) {
+      window.addEventListener('DOMContentLoaded', () => {
+        const input = document.querySelector('pagefind-input input, pagefind-input');
+        if (input) {
+          input.value = query;
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      });
+    }
+  </script>
+</article>
+{{ end }}

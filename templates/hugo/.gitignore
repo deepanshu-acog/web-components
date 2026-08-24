@@ -1,0 +1,12 @@
+# Hugo build output
+public/
+resources/
+
+# Dependencies
+node_modules/
+
+# Hugo lock file
+.hugo_build.lock
+
+# Molstar pre-build entry (generated helper, not source)
+molstar-entry.js

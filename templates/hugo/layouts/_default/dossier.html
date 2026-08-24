@@ -1,0 +1,354 @@
+{{ define "main" }}
+<div class="dossier-document-container wa-stack wa-gap-l">
+  {{ partial "breadcrumbs.html" . }}
+
+  <!-- Dossier Header Section -->
+  <header class="dossier-hero-header">
+    <div class="dossier-hero-top wa-split" style="align-items: flex-start; gap: var(--wa-space-m);">
+      <div class="wa-stack wa-gap-xs">
+        <div class="wa-cluster" style="align-items: center; gap: var(--wa-space-s);">
+          <span class="dossier-sector-tag">{{ .Params.sector | default "Enterprise Intelligence" }}</span>
+          <wa-badge variant="neutral">{{ .Params.legal_status | default "Private Entity" }}</wa-badge>
+          {{ with .Params.confidence_rating }}
+            <wa-badge variant="brand">Confidence: {{ . }}</wa-badge>
+          {{ end }}
+        </div>
+
+        <h1 class="dossier-title">{{ .Title }}</h1>
+        {{ with .Params.subtitle }}
+          <p class="dossier-thesis-lede">{{ . }}</p>
+        {{ end }}
+      </div>
+
+      <div class="dossier-meta-card">
+        <div class="meta-row"><span class="meta-label">Report Date:</span> <span class="meta-val">{{ .Date.Format "Jan 02, 2006" }}</span></div>
+        <div class="meta-row"><span class="meta-label">As-Of Date:</span> <span class="meta-val">{{ .Params.as_of_date | default (.Date.Format "Jan 02, 2006") }}</span></div>
+        <div class="meta-row"><span class="meta-label">HQ Location:</span> <span class="meta-val">{{ .Params.hq_location | default "Global" }}</span></div>
+        <div class="meta-row"><span class="meta-label">Founded:</span> <span class="meta-val">{{ .Params.founding_year | default "N/A" }}</span></div>
+      </div>
+    </div>
+
+    <!-- Source Classes Disclosure Strip -->
+    {{ with .Params.source_classes }}
+      <div class="dossier-source-classes-strip">
+        <span class="source-classes-label"><wa-icon name="shield-check"></wa-icon> Primary Source Classes:</span>
+        <div class="wa-cluster wa-gap-2xs">
+          {{ range . }}
+            <wa-tag size="small" variant="neutral">{{ . }}</wa-tag>
+          {{ end }}
+        </div>
+      </div>
+    {{ end }}
+  </header>
+
+  <!-- Main Dossier Content Body -->
+  <div class="dossier-content-body">
+    {{ .Content }}
+  </div>
+
+
+</div>
+
+<style>
+  /* Dossier Hero Header */
+  .dossier-hero-header {
+    background: var(--wa-color-surface-raised);
+    border: 1px solid var(--wa-color-surface-border);
+    border-radius: var(--wa-border-radius-l);
+    padding: var(--wa-space-l) var(--wa-space-xl);
+    box-shadow: var(--wa-shadow-s);
+  }
+
+  .dossier-sector-tag {
+    font-size: var(--wa-font-size-xs);
+    font-weight: var(--wa-font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--wa-color-brand-on-quiet);
+  }
+
+  .dossier-title {
+    font-family: var(--wa-font-family-heading);
+    font-size: var(--wa-font-size-3xl);
+    font-weight: var(--wa-font-weight-bold);
+    line-height: 1.15;
+    margin: var(--wa-space-3xs) 0 0;
+    color: var(--wa-color-text-normal);
+  }
+
+  .dossier-thesis-lede {
+    font-size: var(--wa-font-size-m);
+    line-height: 1.5;
+    color: var(--wa-color-text-quiet);
+    margin: var(--wa-space-xs) 0 0;
+  }
+
+  .dossier-meta-card {
+    background: var(--wa-color-surface-lowered);
+    border: 1px solid var(--wa-color-surface-border);
+    border-radius: var(--wa-border-radius-m);
+    padding: var(--wa-space-s) var(--wa-space-m);
+    font-size: var(--wa-font-size-xs);
+    min-width: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--wa-space-3xs);
+  }
+
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--wa-space-s);
+  }
+
+  .meta-label {
+    color: var(--wa-color-text-quiet);
+    font-weight: var(--wa-font-weight-semibold);
+  }
+
+  .meta-val {
+    font-weight: var(--wa-font-weight-bold);
+    color: var(--wa-color-text-normal);
+  }
+
+  .dossier-source-classes-strip {
+    margin-top: var(--wa-space-m);
+    padding-top: var(--wa-space-s);
+    border-top: 1px solid var(--wa-color-surface-border);
+    display: flex;
+    align-items: center;
+    gap: var(--wa-space-s);
+    flex-wrap: wrap;
+    font-size: var(--wa-font-size-xs);
+  }
+
+  .source-classes-label {
+    font-weight: var(--wa-font-weight-semibold);
+    color: var(--wa-color-text-quiet);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--wa-space-3xs);
+  }
+
+  /* Citations */
+  .dossier-cite-group {
+    display: inline-flex;
+    gap: 2px;
+    vertical-align: super;
+    margin-left: 2px;
+  }
+
+  .dossier-cite-marker a {
+    display: inline-block;
+    font-size: 0.72em;
+    font-weight: 700;
+    line-height: 1;
+    padding: 2px 4px;
+    background: var(--wa-color-brand-fill-quiet);
+    color: var(--wa-color-brand-on-quiet);
+    border-radius: var(--wa-border-radius-s);
+    text-decoration: none;
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+
+  .dossier-cite-marker a:hover {
+    background: var(--wa-color-brand-fill-loud);
+    color: var(--wa-color-brand-on-loud);
+    transform: scale(1.1);
+  }
+
+  /* Estimated Data Styling */
+  .dossier-estimated-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--wa-space-3xs);
+    background: var(--wa-color-warning-fill-quiet);
+    border: 1px dashed var(--wa-color-warning-border-quiet);
+    border-radius: var(--wa-border-radius-s);
+    padding: 1px 6px;
+    font-family: inherit;
+  }
+
+  .dossier-estimated-val {
+    font-weight: var(--wa-font-weight-semibold);
+  }
+
+  .dossier-estimated-badge {
+    font-size: 0.65em;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--wa-color-warning-fill-loud);
+    color: var(--wa-color-warning-on-loud);
+    padding: 1px 3px;
+    border-radius: 2px;
+  }
+
+  .dossier-estimated-note {
+    font-size: 0.75em;
+    color: var(--wa-color-text-quiet);
+    font-style: italic;
+  }
+
+  /* Key Facts Table */
+  .dossier-key-facts-wrapper {
+    background: var(--wa-color-surface-lowered);
+    border: 1px solid var(--wa-color-surface-border);
+    border-radius: var(--wa-border-radius-m);
+    padding: var(--wa-space-m);
+    margin-block: var(--wa-space-m);
+  }
+
+  .dossier-key-facts-header {
+    display: flex;
+    align-items: center;
+    gap: var(--wa-space-xs);
+    font-weight: var(--wa-font-weight-bold);
+    font-size: var(--wa-font-size-s);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--wa-color-text-quiet);
+    margin-block-end: var(--wa-space-s);
+    border-block-end: 1px solid var(--wa-color-surface-border);
+    padding-block-end: var(--wa-space-2xs);
+  }
+
+  .dossier-key-facts-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--wa-font-size-s);
+  }
+
+  .dossier-key-facts-table th.fact-label {
+    width: 30%;
+    padding: var(--wa-space-2xs) var(--wa-space-s);
+    text-align: left;
+    color: var(--wa-color-text-quiet);
+    font-weight: var(--wa-font-weight-semibold);
+    border-bottom: 1px solid var(--wa-color-surface-border);
+    background: transparent;
+  }
+
+  .dossier-key-facts-table td.fact-value {
+    padding: var(--wa-space-2xs) var(--wa-space-s);
+    font-weight: var(--wa-font-weight-normal);
+    border-bottom: 1px solid var(--wa-color-surface-border);
+  }
+
+  /* SWOT grid: src/patterns/swot-grid/ (shipped via patterns.css), not
+     defined here — see swot.html shortcode. */
+
+  /* Responsive Tables */
+  .dossier-table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--wa-color-surface-border);
+    border-radius: var(--wa-border-radius-m);
+  }
+
+  .dossier-risk-table, .dossier-entity-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--wa-font-size-s);
+    margin: 0;
+  }
+
+  .dossier-risk-table th, .dossier-entity-table th {
+    background-color: var(--wa-color-surface-raised);
+    padding: var(--wa-space-xs) var(--wa-space-s);
+    border-bottom: 2px solid var(--wa-color-surface-border);
+    text-align: left;
+    font-weight: var(--wa-font-weight-bold);
+  }
+
+  .dossier-risk-table td, .dossier-entity-table td {
+    padding: var(--wa-space-xs) var(--wa-space-s);
+    border-bottom: 1px solid var(--wa-color-surface-border);
+    vertical-align: top;
+  }
+
+  /* Sources & Bibliography */
+  .dossier-sources-list {
+    padding-left: var(--wa-space-l);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--wa-space-s);
+  }
+
+  .dossier-source-item {
+    font-size: var(--wa-font-size-s);
+    line-height: 1.5;
+  }
+
+  .dossier-source-title-row {
+    display: flex;
+    align-items: center;
+    gap: var(--wa-space-xs);
+    flex-wrap: wrap;
+  }
+
+  .dossier-source-num {
+    font-weight: var(--wa-font-weight-bold);
+    color: var(--wa-color-brand-on-quiet);
+  }
+
+  .dossier-source-link {
+    font-weight: var(--wa-font-weight-semibold);
+    color: var(--wa-color-text-normal);
+    text-decoration: none;
+  }
+
+  .dossier-source-link:hover {
+    color: var(--wa-color-brand-on-quiet);
+    text-decoration: underline;
+  }
+
+  .dossier-source-meta-row {
+    font-size: var(--wa-font-size-xs);
+    color: var(--wa-color-text-quiet);
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    gap: var(--wa-space-xs);
+  }
+
+  /* Print Stylesheet */
+  @media print {
+    wa-page::part(navigation),
+    wa-page::part(header),
+    wa-page::part(aside),
+    wa-page::part(footer),
+    .report-breadcrumbs,
+    #global-search-input {
+      display: none !important;
+    }
+
+    .dossier-hero-header {
+      border: 1px solid var(--wa-color-surface-border) !important;
+      box-shadow: none !important;
+      padding: 12pt !important;
+      page-break-after: avoid;
+    }
+
+    .atk-swot-grid {
+      grid-template-columns: 1fr 1fr !important;
+      page-break-inside: avoid;
+    }
+
+    .dossier-chart-canvas-box {
+      border: 1px solid var(--wa-color-surface-border) !important;
+      page-break-inside: avoid;
+    }
+
+    h2, h3 {
+      page-break-after: avoid;
+    }
+
+    table {
+      page-break-inside: avoid;
+    }
+  }
+</style>
+{{ end }}

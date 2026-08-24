@@ -4,6 +4,53 @@
   "modules": [
     {
       "kind": "javascript-module",
+      "path": "src/lazy.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "lazy_load",
+          "return": {
+            "type": {
+              "text": "() => void"
+            }
+          },
+          "parameters": [
+            {
+              "name": "element",
+              "type": {
+                "text": "HTMLElement"
+              }
+            },
+            {
+              "name": "callback",
+              "type": {
+                "text": "() => void | Promise<void>"
+              }
+            },
+            {
+              "name": "options",
+              "default": "{ rootMargin: \"200px\" }",
+              "type": {
+                "text": "IntersectionObserverInit"
+              }
+            }
+          ],
+          "description": "Triggers a callback once an element enters the viewport (or immediately if SSR / no IntersectionObserver).\nReturns a cleanup function to disconnect the observer if unmounted early."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "lazy_load",
+          "declaration": {
+            "name": "lazy_load",
+            "module": "src/lazy.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/cli/index.ts",
       "declarations": [],
       "exports": []
@@ -50,9 +97,9 @@
           "kind": "variable",
           "name": "SUPPORTED_STACKS",
           "type": {
-            "text": "[\"astro\"]"
+            "text": "[\"astro\", \"hugo\"]"
           },
-          "default": "[\"astro\"]"
+          "default": "[\"astro\", \"hugo\"]"
         },
         {
           "kind": "function",
@@ -218,6 +265,31 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/theme/fallbacks.ts",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "WA_FALLBACK",
+          "type": {
+            "text": "{\n  surfaceRaised: \"#ffffff\",\n  surfaceLowered: \"#f8fafc\",\n  surfaceBorder: \"#e2e8f0\",\n  textNormal: \"#0f172a\",\n  textQuiet: \"#64748b\",\n  brand: \"#3e96ff\",\n  secondary: \"#24b1b1\",\n  success: \"#22c55e\",\n  warning: \"#f59e0b\",\n  danger: \"#ef4444\",\n  purple: \"#a855f7\",\n  teal: \"#14b8a6\",\n  fontFamily: \"sans-serif\",\n}"
+          },
+          "default": "{ surfaceRaised: \"#ffffff\", surfaceLowered: \"#f8fafc\", surfaceBorder: \"#e2e8f0\", textNormal: \"#0f172a\", textQuiet: \"#64748b\", brand: \"#3e96ff\", secondary: \"#24b1b1\", success: \"#22c55e\", warning: \"#f59e0b\", danger: \"#ef4444\", purple: \"#a855f7\", teal: \"#14b8a6\", fontFamily: \"sans-serif\", }",
+          "description": "Fallback values used when Web Awesome CSS custom properties\ncannot be resolved from computed styles (e.g. before full theme paint or in headless contexts).\n\n`brand` mirrors `--wa-color-brand-60` in src/theme/theme.css (currently an\nalias for Web Awesome's own `--wa-color-blue-60` — the brand palette is a\nplaceholder, see theme.css's own comment) — `make check` fails if they\ndrift apart (see BRAND_FALLBACK_TOKENS in tools/check_css.ts)."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WA_FALLBACK",
+          "declaration": {
+            "name": "WA_FALLBACK",
+            "module": "src/theme/fallbacks.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/cli/commands/preview.ts",
       "declarations": [
         {
@@ -317,6 +389,301 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/components/chart/chart.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Interactive charting component powered by Apache ECharts, fully integrated\nwith Web Awesome design tokens and themes.\n\nUses `IntersectionObserver` to lazy-load ECharts. Chart configuration is\npassed via a child `<script type=\"application/json\">` tag.",
+          "name": "AtkChart",
+          "members": [
+            {
+              "kind": "field",
+              "name": "css",
+              "static": true,
+              "default": "css` :host { display: block; margin-block: var(--wa-space-m); width: 100%; } .container { width: 100%; min-height: 250px; background-color: var(--wa-color-surface-lowered); border-radius: var(--wa-border-radius-m); border: 1px solid var(--wa-color-surface-border); position: relative; overflow: hidden; } .chart-target { width: 100%; height: 100%; } .status { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--wa-color-text-quiet); font-size: var(--wa-font-size-s); padding: var(--wa-space-m); text-align: center; } .error-box { border: 1px dashed var(--wa-color-surface-border); padding: var(--wa-space-m); border-radius: var(--wa-border-radius-m); background: var(--wa-color-surface-raised); } `"
+            },
+            {
+              "kind": "field",
+              "name": "height",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"320px\"",
+              "description": "Height of the chart container (e.g., '300px', '400px').",
+              "attribute": "height"
+            },
+            {
+              "kind": "field",
+              "name": "options",
+              "type": {
+                "text": "Record<string, unknown> | undefined"
+              },
+              "description": "Direct chart options object if not using child script tag."
+            },
+            {
+              "kind": "field",
+              "name": "loading",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "true"
+            },
+            {
+              "kind": "field",
+              "name": "error",
+              "type": {
+                "text": "string"
+              },
+              "privacy": "private",
+              "default": "\"\""
+            },
+            {
+              "kind": "field",
+              "name": "cleanup_lazy_load",
+              "type": {
+                "text": "() => void | undefined"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "resizeObserver",
+              "type": {
+                "text": "ResizeObserver | undefined"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "chartInstance",
+              "type": {
+                "text": "any | undefined"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "get_wa_echarts_theme",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "styles",
+                  "type": {
+                    "text": "CSSStyleDeclaration"
+                  }
+                }
+              ],
+              "description": "Reads Web Awesome design tokens from CSS computed styles\nand creates a matching ECharts theme palette."
+            },
+            {
+              "kind": "method",
+              "name": "render_chart",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "Promise<void>"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "height",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"320px\"",
+              "description": "Height of the chart container (e.g., '300px', '400px').",
+              "fieldName": "height"
+            }
+          ],
+          "superclass": {
+            "name": "AganithaComponent",
+            "module": "/src/base.js"
+          },
+          "tagName": "atk-chart",
+          "customElement": true,
+          "summary": "Web Awesome themed ECharts visualization element.",
+          "atkUse": "Visualizing multi-series trends, clinical trial metrics, distributions, market shares, or comparative data in reports and dashboards.",
+          "atkAvoid": "Do not use for a single scalar value; use `<atk-metric>` instead.",
+          "atkExample": "```html\n<atk-chart height=\"320px\">\n  <script type=\"application/json\">\n    {\n      \"xAxis\": { \"type\": \"category\", \"data\": [\"Q1\", \"Q2\", \"Q3\", \"Q4\"] },\n      \"yAxis\": { \"type\": \"value\" },\n      \"series\": [{ \"name\": \"Adoption\", \"type\": \"bar\", \"data\": [45, 68, 85, 94] }]\n    }\n  </script>\n</atk-chart>\n```"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AtkChart",
+          "declaration": {
+            "name": "AtkChart",
+            "module": "src/components/chart/chart.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/data-table/data-table.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Enterprise data table component powered by AG-Grid themed to Web Awesome tokens.\n\nPass CSV data in a `<script type=\"text/csv\">` child or JSON rows in a\n`<script type=\"application/json\">` child. Supports column sorting, filtering,\npagination, and CSV exports.",
+          "name": "AtkDataTable",
+          "members": [
+            {
+              "kind": "field",
+              "name": "css",
+              "static": true,
+              "default": "css` :host { display: block; margin-block: var(--wa-space-l); } .wrapper { border: 1px solid var(--wa-color-surface-border); border-radius: var(--wa-border-radius-m); background-color: var(--wa-color-surface-raised); overflow: hidden; } .header { display: flex; align-items: center; justify-content: space-between; padding: var(--wa-space-m); border-bottom: 1px solid var(--wa-color-surface-border); background-color: var(--wa-color-surface-lowered); } .title { font-size: var(--wa-font-size-m); font-weight: var(--wa-font-weight-semibold); color: var(--wa-color-text-normal); } .grid-container { width: 100%; min-height: 200px; } .fallback-table { width: 100%; border-collapse: collapse; font-size: var(--wa-font-size-s); } .fallback-table th, .fallback-table td { padding: var(--wa-space-s) var(--wa-space-m); border-bottom: 1px solid var(--wa-color-surface-border); text-align: left; } .fallback-table th { font-weight: var(--wa-font-weight-semibold); background-color: var(--wa-color-surface-lowered); } .status { padding: var(--wa-space-l); text-align: center; font-size: var(--wa-font-size-s); color: var(--wa-color-text-quiet); } `"
+            },
+            {
+              "kind": "field",
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Section or table title shown in the header bar.",
+              "attribute": "title"
+            },
+            {
+              "kind": "field",
+              "name": "pageSize",
+              "type": {
+                "text": "number"
+              },
+              "default": "10",
+              "description": "Number of rows per page. Defaults to 10.",
+              "attribute": "page-size"
+            },
+            {
+              "kind": "field",
+              "name": "columns",
+              "type": {
+                "text": "ColumnDef[]"
+              },
+              "privacy": "private",
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "rows",
+              "type": {
+                "text": "Record<string, string>[]"
+              },
+              "privacy": "private",
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "loading",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "true"
+            },
+            {
+              "kind": "field",
+              "name": "gridApi",
+              "type": {
+                "text": "any"
+              },
+              "privacy": "private",
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "cleanup_lazy_load",
+              "type": {
+                "text": "() => void | undefined"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "read_data_children",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "parse_csv",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "csv",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "init_grid",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "Promise<void>"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Section or table title shown in the header bar.",
+              "fieldName": "title"
+            },
+            {
+              "name": "page-size",
+              "type": {
+                "text": "number"
+              },
+              "default": "10",
+              "description": "Number of rows per page. Defaults to 10.",
+              "fieldName": "pageSize"
+            }
+          ],
+          "superclass": {
+            "name": "AganithaComponent",
+            "module": "/src/base.js"
+          },
+          "tagName": "atk-data-table",
+          "customElement": true,
+          "summary": "AG-Grid enterprise data table themed to brand tokens.",
+          "atkUse": "Displaying multi-column tabular data, clinical trial patient lists, gene expression matrices, or large datasets requiring sorting and filtering.",
+          "atkAvoid": "Do not use for simple key-value pairs or small 2-3 row lists; use a definition list or record list instead.",
+          "atkExample": "```html\n<atk-data-table title=\"Phase III Patient Cohorts\" page-size=\"10\">\n  <script type=\"text/csv\">\n    Cohort,Dose,Patients,Status\n    Cohort A,15 mg,120,Active\n    Cohort B,30 mg,115,Active\n  </script>\n</atk-data-table>\n```"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AtkDataTable",
+          "declaration": {
+            "name": "AtkDataTable",
+            "module": "src/components/data-table/data-table.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/components/go-ribbon/go-ribbon.ts",
       "declarations": [
         {
@@ -408,6 +775,131 @@
           "declaration": {
             "name": "AtkGoRibbon",
             "module": "src/components/go-ribbon/go-ribbon.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/mermaid/mermaid.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Renders flowcharts, sequence diagrams, and process graphs using Mermaid.js.\n\nUses `IntersectionObserver` to lazy-load the Mermaid rendering engine on demand\nwhen scrolled into view. Diagram code can be passed via the `code` attribute\nor as text child content.",
+          "name": "AtkMermaid",
+          "members": [
+            {
+              "kind": "field",
+              "name": "css",
+              "static": true,
+              "default": "css` :host { display: block; margin-block: var(--wa-space-l); overflow-x: auto; } .container { display: flex; justify-content: center; align-items: center; min-height: 4rem; padding: var(--wa-space-m); background-color: var(--wa-color-surface-lowered); border-radius: var(--wa-border-radius-m); border: 1px solid var(--wa-color-surface-border); } .status { font-size: var(--wa-font-size-s); color: var(--wa-color-text-quiet); } .error { color: var(--wa-color-danger-fill-loud); } `"
+            },
+            {
+              "kind": "field",
+              "name": "code",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Mermaid diagram definition string (e.g. \"graph TD; A-->B;\").",
+              "attribute": "code"
+            },
+            {
+              "kind": "field",
+              "name": "svg",
+              "type": {
+                "text": "string"
+              },
+              "privacy": "private",
+              "default": "\"\""
+            },
+            {
+              "kind": "field",
+              "name": "loading",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "true"
+            },
+            {
+              "kind": "field",
+              "name": "error",
+              "type": {
+                "text": "string"
+              },
+              "privacy": "private",
+              "default": "\"\""
+            },
+            {
+              "kind": "field",
+              "name": "observer",
+              "type": {
+                "text": "IntersectionObserver | undefined"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "read_code_content",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "setup_lazy_load",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "render_mermaid",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "Promise<void>"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "code",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Mermaid diagram definition string (e.g. \"graph TD; A-->B;\").",
+              "fieldName": "code"
+            }
+          ],
+          "superclass": {
+            "name": "AganithaComponent",
+            "module": "/src/base.js"
+          },
+          "tagName": "atk-mermaid",
+          "customElement": true,
+          "summary": "Lazy-loaded Mermaid.js flowchart and diagram renderer.",
+          "atkUse": "Visualizing clinical pathways, biochemical reaction cascades, software architectures, or procedural flowcharts in reports.",
+          "atkAvoid": "Do not use for simple static lists or key-value data; use a timeline or table instead.",
+          "atkExample": "```html\n<atk-mermaid code=\"graph LR; Screening --> Phase1; Phase1 --> Phase2;\"></atk-mermaid>\n```"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AtkMermaid",
+          "declaration": {
+            "name": "AtkMermaid",
+            "module": "src/components/mermaid/mermaid.ts"
           }
         }
       ]
@@ -621,6 +1113,923 @@
           "declaration": {
             "name": "AtkMetric",
             "module": "src/components/metric/metric.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/molstar/molstar.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "3D molecular structure viewer powered by Mol* (Molstar).\n\nRenders macromolecular structures from RCSB PDB IDs or direct structure file URLs\nwith interactive 3D rotation, zooming, and representation styles.",
+          "name": "AtkMolstar",
+          "members": [
+            {
+              "kind": "field",
+              "name": "css",
+              "static": true,
+              "default": "css` :host { display: block; margin-block: var(--wa-space-l); } .container { position: relative; width: 100%; border-radius: var(--wa-border-radius-m); border: 1px solid var(--wa-color-surface-border); background-color: var(--wa-color-surface-lowered); overflow: hidden; } .canvas { width: 100%; height: 100%; } .status { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: var(--wa-space-s); font-size: var(--wa-font-size-s); color: var(--wa-color-text-quiet); padding: var(--wa-space-l); text-align: center; } .error { color: var(--wa-color-danger-fill-loud); } `"
+            },
+            {
+              "kind": "field",
+              "name": "pdbId",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "RCSB PDB accession code (e.g. \"1CRN\" or \"7KRN\").",
+              "attribute": "pdb-id"
+            },
+            {
+              "kind": "field",
+              "name": "url",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Direct URL to a structure file (.cif, .pdb, .sdf). Takes precedence over pdb-id.",
+              "attribute": "url"
+            },
+            {
+              "kind": "field",
+              "name": "format",
+              "type": {
+                "text": "MolFormat"
+              },
+              "default": "\"mmcif\"",
+              "description": "Structure file format. Inferred from URL when omitted.",
+              "attribute": "format"
+            },
+            {
+              "kind": "field",
+              "name": "height",
+              "type": {
+                "text": "number"
+              },
+              "default": "500",
+              "description": "Height of the 3D viewport in pixels. Defaults to 500.",
+              "attribute": "height"
+            },
+            {
+              "kind": "field",
+              "name": "loading",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "true"
+            },
+            {
+              "kind": "field",
+              "name": "missing",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "error",
+              "type": {
+                "text": "string"
+              },
+              "privacy": "private",
+              "default": "\"\""
+            },
+            {
+              "kind": "field",
+              "name": "viewer",
+              "type": {
+                "text": "any"
+              },
+              "privacy": "private",
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "cleanup_lazy_load",
+              "type": {
+                "text": "() => void | undefined"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "render_structure",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "Promise<void>"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "resolve_viewer_class",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "Promise<any>"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "inferFormat",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "MolFormat"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "url",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "name": "pdb-id",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "RCSB PDB accession code (e.g. \"1CRN\" or \"7KRN\").",
+              "fieldName": "pdbId"
+            },
+            {
+              "name": "url",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Direct URL to a structure file (.cif, .pdb, .sdf). Takes precedence over pdb-id.",
+              "fieldName": "url"
+            },
+            {
+              "name": "format",
+              "type": {
+                "text": "MolFormat"
+              },
+              "default": "\"mmcif\"",
+              "description": "Structure file format. Inferred from URL when omitted.",
+              "fieldName": "format"
+            },
+            {
+              "name": "height",
+              "type": {
+                "text": "number"
+              },
+              "default": "500",
+              "description": "Height of the 3D viewport in pixels. Defaults to 500.",
+              "fieldName": "height"
+            }
+          ],
+          "superclass": {
+            "name": "AganithaComponent",
+            "module": "/src/base.js"
+          },
+          "tagName": "atk-molstar",
+          "customElement": true,
+          "summary": "Interactive 3D macromolecular structure viewer.",
+          "atkPack": "bio",
+          "atkUse": "Displaying 3D protein, ligand, or nucleic acid structures in biological and chemical research reports.",
+          "atkAvoid": "Do not use for 2D chemical structure diagrams (use SMILES/2D drawer) or non-molecular 3D graphics.",
+          "atkExample": "```html\n<atk-molstar pdb-id=\"1CRN\" height=\"400\"></atk-molstar>\n```"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AtkMolstar",
+          "declaration": {
+            "name": "AtkMolstar",
+            "module": "src/components/molstar/molstar.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/process/process.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A numbered, directionally-connected sequence of steps — an ordered\nprocedure or interaction model, not a chronology.\n\nUnlike `<atk-timeline>` (dated milestones with status), `<atk-process>` has\nno dates and no status — every step is equally \"done\"; only order matters.",
+          "name": "AtkProcess",
+          "slots": [
+            {
+              "description": "Child `<atk-step>` elements, or `<script type=\"application/json\">`.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "css",
+              "static": true,
+              "default": "css` :host { display: block; margin-block: var(--wa-space-l); font-family: var(--wa-font-family-body); } .header { margin-block-end: var(--wa-space-m); } .title { font-family: var(--wa-font-family-heading); font-size: var(--wa-font-size-m); font-weight: var(--wa-font-weight-semibold); color: var(--wa-color-text-normal); margin: 0; } .subtitle { font-size: var(--wa-font-size-xs); color: var(--wa-color-text-quiet); margin: var(--wa-space-3xs) 0 0; } .steps { display: flex; flex-wrap: wrap; align-items: stretch; gap: var(--wa-space-m); } .step { position: relative; flex: 1 1 180px; display: flex; flex-direction: column; gap: var(--wa-space-2xs); padding: var(--wa-space-s) var(--wa-space-m); background: var(--wa-color-surface-raised); border: var(--wa-border-width-s) solid var(--wa-color-surface-border); border-radius: var(--wa-border-radius-m); } /* Connector to the next step, hidden on the last one and when wrapped */ .step:not(:last-child)::after { content: \"\"; position: absolute; inset-inline-end: calc(-1 * var(--wa-space-m) / 2 - 1px); top: 50%; transform: translateY(-50%); width: var(--wa-space-m); height: 2px; background: var(--wa-color-surface-border); } .step-head { display: flex; align-items: center; gap: var(--wa-space-xs); } .step-number { flex: none; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: var(--wa-border-radius-circle); background: var(--wa-color-brand-fill-loud); color: var(--wa-color-brand-on-loud); font-size: var(--wa-font-size-2xs); font-weight: var(--wa-font-weight-bold); } .step-title { font-size: var(--wa-font-size-s); font-weight: var(--wa-font-weight-semibold); color: var(--wa-color-text-normal); } .step-tag { font-size: var(--wa-font-size-2xs); color: var(--wa-color-text-quiet); background: var(--wa-color-surface-lowered); border-radius: var(--wa-border-radius-pill); padding: var(--wa-space-3xs) var(--wa-space-xs); margin-inline-start: auto; } .step-desc { font-size: var(--wa-font-size-xs); color: var(--wa-color-text-quiet); margin: 0; line-height: 1.5; } `"
+            },
+            {
+              "kind": "field",
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Section title for the process.",
+              "attribute": "title"
+            },
+            {
+              "kind": "field",
+              "name": "subtitle",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional subtitle or description.",
+              "attribute": "subtitle"
+            },
+            {
+              "kind": "field",
+              "name": "parsedSteps",
+              "type": {
+                "text": "ProcessStepData[]"
+              },
+              "privacy": "private",
+              "default": "[]"
+            },
+            {
+              "kind": "method",
+              "name": "handleSlotChange",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "parseContent",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Section title for the process.",
+              "fieldName": "title"
+            },
+            {
+              "name": "subtitle",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional subtitle or description.",
+              "fieldName": "subtitle"
+            }
+          ],
+          "superclass": {
+            "name": "AganithaComponent",
+            "module": "/src/base.js"
+          },
+          "tagName": "atk-process",
+          "customElement": true,
+          "summary": "A numbered sequence of steps, connected in order.",
+          "atkUse": "Explaining a procedure, workflow, or \"how to use this\" sequence — lab protocols, a multi-step interaction model, an onboarding flow.",
+          "atkAvoid": "Do not use for dated milestones or anything with a status (complete/active/delayed); use `<atk-timeline>` instead. Do not use for unordered items; use a record list or `wa-card` grid instead.",
+          "atkExample": "```html\n<atk-process title=\"How to read this figure\">\n  <atk-step title=\"Select a subtype\">Choose the patient subtype that matches the presenting phenotype.</atk-step>\n  <atk-step title=\"Filter by problem\">Narrow the list using the symptom filters.</atk-step>\n  <atk-step title=\"Click a step\">Open the detail panel for the chosen entry.</atk-step>\n</atk-process>\n```"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AtkProcess",
+          "declaration": {
+            "name": "AtkProcess",
+            "module": "src/components/process/process.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/sidenote/sidenote.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A side note or marginalia callout for contextual annotations.\n\nPlaced inline or alongside main prose text to highlight secondary details,\ndefinitions, or reference notes without interrupting the core reading flow.",
+          "name": "AtkSidenote",
+          "cssParts": [
+            {
+              "description": "The outer sidenote wrapper.",
+              "name": "container"
+            },
+            {
+              "description": "The optional badge label for note classification.",
+              "name": "type"
+            }
+          ],
+          "slots": [
+            {
+              "description": "The note content text.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "css",
+              "static": true,
+              "default": "css` :host { display: block; margin-block: var(--wa-space-m); } .container { padding: var(--wa-space-s) var(--wa-space-m); border-inline-start: 3px solid var(--wa-color-brand-fill-loud); background-color: var(--wa-color-surface-lowered); border-radius: 0 var(--wa-border-radius-s) var(--wa-border-radius-s) 0; font-size: var(--wa-font-size-s); color: var(--wa-color-text-normal); line-height: var(--wa-line-height-normal); } .header { display: flex; align-items: center; gap: var(--wa-space-2xs); margin-bottom: var(--wa-space-2xs); font-weight: var(--wa-font-weight-semibold); color: var(--wa-color-brand-fill-loud); } .type-badge { font-size: var(--wa-font-size-xs); text-transform: uppercase; letter-spacing: 0.05em; } `"
+            },
+            {
+              "kind": "field",
+              "name": "type",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Note\"",
+              "description": "Category or type label shown above the note text (e.g. \"Note\", \"Reference\").",
+              "attribute": "type"
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional detailed label or title for the note.",
+              "attribute": "label"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "type",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Note\"",
+              "description": "Category or type label shown above the note text (e.g. \"Note\", \"Reference\").",
+              "fieldName": "type"
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional detailed label or title for the note.",
+              "fieldName": "label"
+            }
+          ],
+          "superclass": {
+            "name": "AganithaComponent",
+            "module": "/src/base.js"
+          },
+          "tagName": "atk-sidenote",
+          "customElement": true,
+          "summary": "A marginalia callout for contextual notes and references.",
+          "atkUse": "Highlighting secondary details, definitions, or reference notes alongside main paragraph text in scientific reports and documentation.",
+          "atkAvoid": "Do not use for primary page warnings or alert banners; use `<wa-callout>` instead.",
+          "atkExample": "```html\n<atk-sidenote type=\"Note\" label=\"Pharmacokinetics\">\n  Cmax was reached 2.5 hours post-dose across all Phase I cohorts.\n</atk-sidenote>\n```"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AtkSidenote",
+          "declaration": {
+            "name": "AtkSidenote",
+            "module": "src/components/sidenote/sidenote.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/step/step.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A declarative step item child for `<atk-process>`.",
+          "name": "AtkStep",
+          "slots": [
+            {
+              "description": "Description or details for this step.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "attribute": "title"
+            },
+            {
+              "kind": "field",
+              "name": "tag",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional short tag shown after the title (e.g. \"Optional\", \"5 min\").",
+              "attribute": "tag"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "fieldName": "title"
+            },
+            {
+              "name": "tag",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional short tag shown after the title (e.g. \"Optional\", \"5 min\").",
+              "fieldName": "tag"
+            }
+          ],
+          "superclass": {
+            "name": "AganithaComponent",
+            "module": "/src/base.js"
+          },
+          "tagName": "atk-step",
+          "customElement": true,
+          "summary": "A single numbered step in an atk-process sequence.",
+          "atkUse": "Specifying an individual step with a title and description inside an `<atk-process>`.",
+          "atkAvoid": "Do not use outside of an `<atk-process>`. For a chronological or status-tracked milestone, use `<atk-timeline-item>` instead.",
+          "atkExample": "```html\n<atk-step title=\"Select a subtype\">\n  Choose the patient subtype that matches the presenting phenotype.\n</atk-step>\n```"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AtkStep",
+          "declaration": {
+            "name": "AtkStep",
+            "module": "src/components/step/step.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/timeline/timeline.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "normalize_status",
+          "return": {
+            "type": {
+              "text": "NormalizedStatus"
+            }
+          },
+          "parameters": [
+            {
+              "name": "status",
+              "optional": true,
+              "type": {
+                "text": "string"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "description": "A chronological milestone or pipeline timeline component.\n\nDisplays ordered milestones, clinical trial phases, or historical event progressions\nwith status indicators, date badges, and progress tracking.",
+          "name": "AtkTimeline",
+          "slots": [
+            {
+              "description": "Child `<atk-timeline-item>` elements, `<div class=\"step\">` markup, or `<script type=\"application/json\">`.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "css",
+              "static": true,
+              "default": "css` :host { display: block; margin-block: var(--wa-space-l); font-family: var(--wa-font-family-body); } .timeline-wrapper { display: flex; flex-direction: column; gap: var(--wa-space-m); } .timeline-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--wa-space-s); padding-block-end: var(--wa-space-xs); border-block-end: var(--wa-border-width-s) solid var(--wa-color-surface-border); } .title-group { display: flex; flex-direction: column; gap: var(--wa-space-3xs); } .title { font-family: var(--wa-font-family-heading); font-size: var(--wa-font-size-m); font-weight: var(--wa-font-weight-semibold); color: var(--wa-color-text-normal); margin: 0; } .subtitle { font-size: var(--wa-font-size-xs); color: var(--wa-color-text-quiet); margin: 0; } .progress-pill { display: inline-flex; align-items: center; gap: var(--wa-space-3xs); font-size: var(--wa-font-size-xs); font-weight: var(--wa-font-weight-semibold); color: var(--wa-color-brand-on-quiet); background: var(--wa-color-brand-fill-quiet); border: var(--wa-border-width-s) solid var(--wa-color-brand-border-quiet); border-radius: var(--wa-border-radius-pill); padding: var(--wa-space-3xs) var(--wa-space-s); } .timeline-list { display: flex; flex-direction: column; position: relative; padding-inline-start: var(--wa-space-l); } /* Continuous vertical spine */ .timeline-list::before { content: \"\"; position: absolute; inset-inline-start: 11px; top: 16px; bottom: 24px; width: 2px; background: var(--wa-color-surface-border); } .timeline-step { position: relative; display: flex; flex-direction: column; gap: var(--wa-space-xs); padding-inline-start: var(--wa-space-l); padding-block-end: var(--wa-space-l); } .timeline-step:last-child { padding-block-end: 0; } /* Milestone Node / Icon */ .node-marker { position: absolute; inset-inline-start: -17px; top: 6px; width: 22px; height: 22px; border-radius: var(--wa-border-radius-circle); display: flex; align-items: center; justify-content: center; background: var(--wa-color-surface-raised); border: 2px solid var(--wa-color-surface-border); color: var(--wa-color-text-quiet); z-index: 1; box-sizing: border-box; transition: transform var(--wa-transition-normal); } .node-marker wa-icon { font-size: var(--wa-font-size-xs); display: flex; align-items: center; justify-content: center; } .timeline-step:hover .node-marker { transform: scale(1.15); } /* Node Status Variants */ .node-marker[data-status=\"complete\"], .node-marker[data-status=\"done\"] { background: var(--wa-color-success-fill-loud); border-color: var(--wa-color-surface-default); color: var(--wa-color-success-on-loud); } .node-marker[data-status=\"active\"], .node-marker[data-status=\"current\"], .node-marker[data-status=\"in-progress\"] { background: var(--wa-color-brand-fill-loud); border-color: var(--wa-color-surface-default); color: var(--wa-color-brand-on-loud); box-shadow: 0 0 0 3px var(--wa-color-brand-fill-quiet); } .node-marker[data-status=\"delayed\"], .node-marker[data-status=\"warning\"] { background: var(--wa-color-warning-fill-loud); border-color: var(--wa-color-surface-default); color: var(--wa-color-warning-on-loud); } .node-marker[data-status=\"failed\"], .node-marker[data-status=\"terminated\"] { background: var(--wa-color-danger-fill-loud); border-color: var(--wa-color-surface-default); color: var(--wa-color-danger-on-loud); } /* Step Card Container */ .step-card { background: var(--wa-color-surface-raised); border: var(--wa-border-width-s) solid var(--wa-color-surface-border); border-radius: var(--wa-border-radius-m); padding: var(--wa-space-s) var(--wa-space-m); display: flex; flex-direction: column; gap: var(--wa-space-2xs); transition: border-color var(--wa-transition-normal); } .timeline-step:hover .step-card { border-color: var(--wa-color-brand-border-loud); } .step-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--wa-space-xs); } .date-badge { font-family: var(--wa-font-family-code); font-size: var(--wa-font-size-xs); font-weight: var(--wa-font-weight-semibold); color: var(--wa-color-brand-on-quiet); background: var(--wa-color-brand-fill-quiet); border-radius: var(--wa-border-radius-pill); padding: var(--wa-space-3xs) var(--wa-space-xs); display: inline-flex; align-items: center; } .status-badge { font-size: var(--wa-font-size-xs); font-weight: var(--wa-font-weight-semibold); padding: var(--wa-space-3xs) var(--wa-space-xs); border-radius: var(--wa-border-radius-pill); text-transform: capitalize; } .status-badge[data-status=\"complete\"], .status-badge[data-status=\"done\"] { background: var(--wa-color-success-fill-quiet); color: var(--wa-color-success-on-quiet); border: var(--wa-border-width-s) solid var(--wa-color-success-border-quiet); } .status-badge[data-status=\"active\"], .status-badge[data-status=\"current\"], .status-badge[data-status=\"in-progress\"] { background: var(--wa-color-brand-fill-quiet); color: var(--wa-color-brand-on-quiet); border: var(--wa-border-width-s) solid var(--wa-color-brand-border-quiet); } .status-badge[data-status=\"delayed\"], .status-badge[data-status=\"warning\"] { background: var(--wa-color-warning-fill-quiet); color: var(--wa-color-warning-on-quiet); border: var(--wa-border-width-s) solid var(--wa-color-warning-border-quiet); } .status-badge[data-status=\"failed\"], .status-badge[data-status=\"terminated\"] { background: var(--wa-color-danger-fill-quiet); color: var(--wa-color-danger-on-quiet); border: var(--wa-border-width-s) solid var(--wa-color-danger-border-quiet); } .status-badge[data-status=\"upcoming\"], .status-badge[data-status=\"planned\"], .status-badge[data-status=\"pending\"] { background: var(--wa-color-surface-lowered); color: var(--wa-color-text-quiet); border: var(--wa-border-width-s) solid var(--wa-color-surface-border); } .step-title { font-size: var(--wa-font-size-m); font-weight: var(--wa-font-weight-semibold); color: var(--wa-color-text-normal); margin: 0; line-height: 1.3; } .step-desc { font-size: var(--wa-font-size-s); color: var(--wa-color-text-quiet); margin: 0; line-height: 1.5; } .step-tag { display: inline-flex; align-items: center; font-size: var(--wa-font-size-2xs); color: var(--wa-color-text-quiet); margin-block-start: var(--wa-space-3xs); } /* Slotted fallback */ ::slotted(.step) { display: block; margin-block-end: var(--wa-space-m); } `"
+            },
+            {
+              "kind": "field",
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Section title for the timeline.",
+              "attribute": "title"
+            },
+            {
+              "kind": "field",
+              "name": "subtitle",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional subtitle or description.",
+              "attribute": "subtitle"
+            },
+            {
+              "kind": "field",
+              "name": "progress",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Show overall milestone progress summary.",
+              "attribute": "progress"
+            },
+            {
+              "kind": "field",
+              "name": "parsedSteps",
+              "type": {
+                "text": "TimelineStepData[]"
+              },
+              "privacy": "private",
+              "default": "[]"
+            },
+            {
+              "kind": "method",
+              "name": "handleSlotChange",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "parseContent",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Section title for the timeline.",
+              "fieldName": "title"
+            },
+            {
+              "name": "subtitle",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional subtitle or description.",
+              "fieldName": "subtitle"
+            },
+            {
+              "name": "progress",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Show overall milestone progress summary.",
+              "fieldName": "progress"
+            }
+          ],
+          "superclass": {
+            "name": "AganithaComponent",
+            "module": "/src/base.js"
+          },
+          "tagName": "atk-timeline",
+          "customElement": true,
+          "summary": "A chronological milestone or pipeline timeline display.",
+          "atkUse": "Displaying multi-phase clinical trial progressions, drug development milestones, regulatory roadmaps, or chronological project history.",
+          "atkAvoid": "Do not use for simple un-ordered lists or key-value pairs. Use a record list or table instead.",
+          "atkExample": "```html\n<atk-timeline title=\"Clinical Development Milestones\">\n  <div class=\"step\" data-status=\"complete\">\n    <span class=\"date\">Q1 2025</span>\n    <strong>Phase I Safety Trial</strong>\n    <p>Primary safety endpoints met with zero grade 3/4 adverse events.</p>\n  </div>\n  <div class=\"step\" data-status=\"active\">\n    <span class=\"date\">Q3 2026</span>\n    <strong>Phase II Dose Finding</strong>\n    <p>Active enrollment across 12 clinical sites worldwide.</p>\n  </div>\n</atk-timeline>\n```"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "normalize_status",
+          "declaration": {
+            "name": "normalize_status",
+            "module": "src/components/timeline/timeline.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "AtkTimeline",
+          "declaration": {
+            "name": "AtkTimeline",
+            "module": "src/components/timeline/timeline.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/well-plate/well-plate.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "AtkWellPlate",
+          "members": [
+            {
+              "kind": "field",
+              "name": "css",
+              "static": true,
+              "default": "css` :host { display: block; margin-block: var(--wa-space-l); } .wrapper { border: 1px solid var(--wa-color-surface-border); border-radius: var(--wa-border-radius-m); background-color: var(--wa-color-surface-raised); overflow: hidden; } .header { display: flex; align-items: center; justify-content: space-between; padding: var(--wa-space-m); border-bottom: 1px solid var(--wa-color-surface-border); background-color: var(--wa-color-surface-lowered); } .title { font-size: var(--wa-font-size-m); font-weight: var(--wa-font-weight-semibold); color: var(--wa-color-text-normal); } .plate-scroll { padding: var(--wa-space-l); overflow-x: auto; display: flex; justify-content: center; } svg { display: block; max-width: 100%; } .label-text { font-size: 10px; font-weight: var(--wa-font-weight-semibold); fill: var(--wa-color-text-quiet); font-family: var(--wa-font-family-body); text-anchor: middle; dominant-baseline: middle; pointer-events: none; } .well-circle { cursor: pointer; transition: opacity 0.15s ease, stroke-width 0.15s ease; } .well-circle:hover { opacity: 0.85; stroke-width: 1.5; stroke: var(--wa-color-text-normal); } .well-label { font-size: 7px; fill: var(--wa-color-text-normal); font-family: var(--wa-font-family-code); text-anchor: middle; dominant-baseline: middle; pointer-events: none; } .status { padding: var(--wa-space-l); text-align: center; font-size: var(--wa-font-size-s); color: var(--wa-color-text-quiet); } .status.error { color: var(--wa-color-danger-fill-loud); } `"
+            },
+            {
+              "kind": "field",
+              "name": "format",
+              "type": {
+                "text": "\"96\" | \"384\""
+              },
+              "default": "\"96\"",
+              "description": "Plate format: 96-well (8x12) or 384-well (16x24).",
+              "attribute": "format"
+            },
+            {
+              "kind": "field",
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional title shown in the plate header.",
+              "attribute": "title"
+            },
+            {
+              "kind": "field",
+              "name": "src",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional external JSON endpoint URL.",
+              "attribute": "src"
+            },
+            {
+              "kind": "field",
+              "name": "wells",
+              "type": {
+                "text": "WellData[]"
+              },
+              "privacy": "private",
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "well_map",
+              "type": {
+                "text": "Map<string, WellData>"
+              },
+              "privacy": "private",
+              "default": "new Map()"
+            },
+            {
+              "kind": "field",
+              "name": "error",
+              "type": {
+                "text": "string"
+              },
+              "privacy": "private",
+              "default": "\"\""
+            },
+            {
+              "kind": "method",
+              "name": "set_wells",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "data",
+                  "type": {
+                    "text": "WellData[]"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "parse_json",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "field",
+              "name": "config",
+              "type": {
+                "text": "{ rows: number; cols: number; r: number; gap: number; marginLeft: number; marginTop: number }"
+              },
+              "privacy": "private",
+              "readonly": true
+            }
+          ],
+          "attributes": [
+            {
+              "name": "format",
+              "type": {
+                "text": "\"96\" | \"384\""
+              },
+              "default": "\"96\"",
+              "description": "Plate format: 96-well (8x12) or 384-well (16x24).",
+              "fieldName": "format"
+            },
+            {
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional title shown in the plate header.",
+              "fieldName": "title"
+            },
+            {
+              "name": "src",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional external JSON endpoint URL.",
+              "fieldName": "src"
+            }
+          ],
+          "superclass": {
+            "name": "AganithaComponent",
+            "module": "/src/base.js"
+          },
+          "tagName": "atk-well-plate",
+          "customElement": true,
+          "summary": "High-throughput 96-well or 384-well microplate heatmap visualizer.",
+          "atkPack": "bio",
+          "atkUse": "Use when displaying assay screening data, compound concentration layouts, or biological quality control across standard 96-well or 384-well microplates.",
+          "atkAvoid": "Do not use for simple 1D lists, sequence data, or generic tabular records.",
+          "atkExample": "```html\n<atk-well-plate format=\"96\" title=\"Compound Screening Plate\">\n  <script type=\"application/json\">\n    [\n      { \"well\": \"A1\", \"state\": \"control\", \"label\": \"POS\" },\n      { \"well\": \"A2\", \"state\": \"filled\", \"label\": \"0.1uM\" },\n      { \"well\": \"H12\", \"state\": \"blank\" }\n    ]\n  </script>\n</atk-well-plate>\n```"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AtkWellPlate",
+          "declaration": {
+            "name": "AtkWellPlate",
+            "module": "src/components/well-plate/well-plate.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/timeline-item/timeline-item.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A declarative milestone item child for `<atk-timeline>`.",
+          "name": "AtkTimelineItem",
+          "slots": [
+            {
+              "description": "Description or details for this milestone.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "date",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "attribute": "date"
+            },
+            {
+              "kind": "field",
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "attribute": "title"
+            },
+            {
+              "kind": "field",
+              "name": "status",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"planned\"",
+              "attribute": "status"
+            },
+            {
+              "kind": "field",
+              "name": "tag",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "attribute": "tag"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "date",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "fieldName": "date"
+            },
+            {
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "fieldName": "title"
+            },
+            {
+              "name": "status",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"planned\"",
+              "fieldName": "status"
+            },
+            {
+              "name": "tag",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "fieldName": "tag"
+            }
+          ],
+          "superclass": {
+            "name": "AganithaComponent",
+            "module": "/src/base.js"
+          },
+          "tagName": "atk-timeline-item",
+          "customElement": true,
+          "summary": "A single milestone item in an atk-timeline.",
+          "atkUse": "Specifying an individual milestone with date, title, status, and description.",
+          "atkAvoid": "Do not use outside of an `<atk-timeline>`.",
+          "atkExample": "```html\n<atk-timeline-item date=\"Q1 2025\" title=\"Phase I Safety\" status=\"complete\">\n  Primary safety endpoints met.\n</atk-timeline-item>\n```"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AtkTimelineItem",
+          "declaration": {
+            "name": "AtkTimelineItem",
+            "module": "src/components/timeline-item/timeline-item.ts"
           }
         }
       ]

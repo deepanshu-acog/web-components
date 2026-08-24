@@ -23,7 +23,7 @@ export default {
  * like" gap without a second document to keep in sync.
  */
 function atk_tags_plugin() {
-  const collapsed = { "atk-use": "atkUse", "atk-avoid": "atkAvoid" };
+  const collapsed = { "atk-use": "atkUse", "atk-avoid": "atkAvoid", "atk-pack": "atkPack" };
 
   return {
     name: "atk-tags",

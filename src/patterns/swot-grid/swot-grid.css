@@ -1,0 +1,83 @@
+/*
+ * SWOT grid — a real 2x2 quadrant (Strengths / Weaknesses / Opportunities /
+ * Threats), each quadrant tinted by Web Awesome's semantic tokens.
+ *
+ * Uses Web Awesome semantic tokens only. No literal colours.
+ */
+
+.atk-swot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--wa-space-m);
+  margin-block: var(--wa-space-l);
+}
+
+.atk-swot-quadrant {
+  border-radius: var(--wa-border-radius-m);
+  border: 1px solid var(--wa-color-surface-border);
+  padding: var(--wa-space-m);
+  box-shadow: var(--wa-shadow-s);
+}
+
+.atk-swot-quadrant[data-kind="strengths"] {
+  background: var(--wa-color-success-fill-quiet);
+  border-color: var(--wa-color-success-border-quiet);
+}
+
+.atk-swot-quadrant[data-kind="weaknesses"] {
+  background: var(--wa-color-warning-fill-quiet);
+  border-color: var(--wa-color-warning-border-quiet);
+}
+
+.atk-swot-quadrant[data-kind="opportunities"] {
+  background: var(--wa-color-brand-fill-quiet);
+  border-color: var(--wa-color-brand-border-quiet);
+}
+
+.atk-swot-quadrant[data-kind="threats"] {
+  background: var(--wa-color-danger-fill-quiet);
+  border-color: var(--wa-color-danger-border-quiet);
+}
+
+.atk-swot-quadrant-header {
+  display: flex;
+  align-items: center;
+  gap: var(--wa-space-xs);
+  margin-block-end: var(--wa-space-s);
+  border-block-end: 1px solid var(--wa-color-surface-border);
+  padding-block-end: var(--wa-space-2xs);
+}
+
+.atk-swot-quadrant-header h3 {
+  margin: 0;
+  font-size: var(--wa-font-size-m);
+  font-family: var(--wa-font-family-heading);
+  font-weight: var(--wa-font-weight-bold);
+}
+
+.atk-swot-quadrant[data-kind="strengths"] .atk-swot-quadrant-header {
+  color: var(--wa-color-success-on-quiet);
+}
+
+.atk-swot-quadrant[data-kind="weaknesses"] .atk-swot-quadrant-header {
+  color: var(--wa-color-warning-on-quiet);
+}
+
+.atk-swot-quadrant[data-kind="opportunities"] .atk-swot-quadrant-header {
+  color: var(--wa-color-brand-on-quiet);
+}
+
+.atk-swot-quadrant[data-kind="threats"] .atk-swot-quadrant-header {
+  color: var(--wa-color-danger-on-quiet);
+}
+
+.atk-swot-list {
+  margin: 0;
+  padding-inline-start: var(--wa-space-m);
+  font-size: var(--wa-font-size-s);
+  line-height: 1.5;
+}
+
+.atk-swot-list li {
+  margin-block-end: var(--wa-space-xs);
+}
