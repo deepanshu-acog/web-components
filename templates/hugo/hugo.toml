@@ -115,19 +115,3 @@ disableKinds = ['taxonomy', 'term']
 [[module.mounts]]
   source = "static"
   target = "static"
-
-[[module.mounts]]
-  source = "node_modules/@awesome.me/webawesome/dist"
-  target = "static/webawesome"
-
-[[module.mounts]]
-  source = "node_modules/@aganitha/atk-ui/dist"
-  target = "static/atk-ui"
-
-[[module.mounts]]
-  source = "node_modules/@fontsource-variable"
-  target = "static/fonts"
-
-[[module.mounts]]
-  source = "node_modules/molstar/build/viewer"
-  target = "static/molstar"

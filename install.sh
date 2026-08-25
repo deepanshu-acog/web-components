@@ -1,7 +1,18 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# atk-ui CLI Installer
-# Builds, compiles, and installs `atk-ui` CLI binary globally.
+# atk-ui CLI Installer — dev/test convenience only.
+#
+# Builds and installs the same standalone `atk-ui` binary production gets
+# via `atk install --pack atk-utils` (GitHub release, no install.sh
+# involved there). This script exists only so a teammate testing from a
+# source checkout gets the real artifact, not a facsimile — it does exactly
+# what `make build-cli` does, then copies the one binary out. It must not
+# grow beyond that: the binary embeds everything it needs (component
+# catalog, Hugo starter template) at compile time, so nothing here should
+# ever need to vendor node_modules, templates, or dist/ into a share
+# directory for the binary to work at runtime. If `atk-ui preview` needs
+# something from disk, that's a bug in the embedding, not a reason to add
+# a step here.
 # ==============================================================================
 
 set -e
@@ -11,31 +22,23 @@ cd "$REPO_DIR"
 
 echo "📦 Building @aganitha/atk-ui and CLI binary..."
 
-# 1. Ensure dependencies are present
 if [ ! -d "node_modules" ]; then
   echo "  ↳ Installing dependencies with bun..."
   bun install
 fi
 
-# 2. Run catalog generator & bundle previews
-bun run tools/generate.ts 2>/dev/null || true
+bun run tools/generate.ts
+bun run tools/bundle_hugo_app.ts
+bun run tools/copy_hugo_static_assets.ts
 bun run build
 bun run tools/bundle_preview.ts
+bun run tools/bundle_hugo_template.ts
 
-# 3. Ensure template dependencies are installed for Hugo Pipes
-if [ -d "templates/hugo" ]; then
-  echo "  ↳ Preparing Hugo template assets..."
-  (cd templates/hugo && bun install 2>/dev/null || true)
-fi
-
-# 3. Compile standalone native binary
 mkdir -p dist/bin
 echo "  ↳ Compiling standalone executable with bun..."
 bun build --compile --outfile="dist/bin/atk-ui" src/cli/index.ts
-
 chmod +x dist/bin/atk-ui
 
-# 4. Determine installation target directory
 INSTALL_DIR=""
 if [ -d "$HOME/.local/bin" ] || mkdir -p "$HOME/.local/bin" 2>/dev/null; then
   INSTALL_DIR="$HOME/.local/bin"
@@ -45,20 +48,14 @@ else
   INSTALL_DIR="/usr/local/bin"
 fi
 
-echo "🚀 Installing CLI binary to ${INSTALL_DIR}..."
-
-# Copy atk-ui binary
+echo "🚀 Installing to ${INSTALL_DIR}..."
 cp "dist/bin/atk-ui" "${INSTALL_DIR}/atk-ui"
 chmod +x "${INSTALL_DIR}/atk-ui"
 
-# Copy starter templates to user share directory for global preview support
-mkdir -p "$HOME/.local/share/atk-ui/templates"
-cp -R templates/* "$HOME/.local/share/atk-ui/templates/" 2>/dev/null || true
+# bun link makes `atk-ui` resolve to this fresh build ahead of any stale
+# global install (e.g. an npm-installed @aganitha/atk-ui).
+bun link 2>/dev/null || true
 
-# Remove old atk alias if present
-rm -f "${INSTALL_DIR}/atk"
-
-# 5. Check PATH and advise shell config
 PATH_CONFIGURED=true
 if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
   PATH_CONFIGURED=false
@@ -68,9 +65,6 @@ if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
   echo "   export PATH=\"${INSTALL_DIR}:\$PATH\""
   echo ""
 fi
-
-# 6. Global npm/bun package link
-bun link 2>/dev/null || true
 
 echo "✅ Installation complete!"
 echo ""

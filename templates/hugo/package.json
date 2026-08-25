@@ -9,8 +9,6 @@
   "dependencies": {
     "@aganitha/atk-ui": "^0.2.0",
     "@awesome.me/webawesome": "^3.11.0",
-    "@fontsource-variable/ibm-plex-sans": "^5.3.0",
-    "@fontsource-variable/jetbrains-mono": "^5.2.8",
     "echarts": "^5.6.0",
     "lit": "^3.3.3",
     "molstar": "^5.11.0"

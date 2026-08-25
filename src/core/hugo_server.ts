@@ -1,9 +1,11 @@
 /**
  * Hugo compilation, isolation, and preview serving lifecycle manager.
  */
-import { existsSync, statSync, mkdirSync, readdirSync, rmSync, copyFileSync } from "node:fs";
-import { resolve, join, basename, extname } from "node:path";
+import { existsSync, statSync, mkdirSync, readdirSync, rmSync, copyFileSync, writeFileSync } from "node:fs";
+import { readFile } from "node:fs/promises";
+import { resolve, join, basename, extname, dirname } from "node:path";
 import { spawn } from "node:child_process";
+import hugo_template_embed_path from "../../dist/preview/hugo-template.embed" with { type: "file" };
 
 export interface HugoBuildOptions {
   sourceDir: string;
@@ -24,22 +26,60 @@ export interface PreviewServerInstance {
   stop: () => void;
 }
 
-/**
- * Locate the Hugo starter template directory.
- */
-export function resolve_hugo_template_dir(): string {
-  const repo_hugo_dir = resolve(new URL(".", import.meta.url).pathname, "../../templates/hugo");
-  const user_hugo_dir = join(process.env.HOME || "", ".local/share/atk-ui/templates/hugo");
+interface EmbeddedFile {
+  path: string;
+  content: string; // base64
+}
 
-  if (existsSync(join(repo_hugo_dir, "hugo.toml"))) {
-    return repo_hugo_dir;
+// `atk-ui` ships as a standalone compiled binary with no sibling files
+// (D18) — the Hugo starter template can't be read off disk next to it, so
+// it's embedded at compile time (tools/bundle_hugo_template.ts) and
+// extracted here into a per-user cache on first use. Re-extracting only
+// when the embed's content actually changed (tracked by a hash marker)
+// keeps every later `preview` call fast — no Hugo build, no node_modules,
+// no dependency on `install.sh` or a source checkout having put anything
+// on disk beforehand.
+function hugo_template_cache_dir(): string {
+  return join(process.env.HOME || "", ".cache", "atk-ui", "hugo-template");
+}
+
+async function ensure_hugo_template_extracted(): Promise<string> {
+  const cache_dir = hugo_template_cache_dir();
+  const marker_path = join(cache_dir, ".embed-hash");
+
+  const embed_bytes = await readFile(hugo_template_embed_path);
+  const hash = Bun.hash(embed_bytes).toString(16);
+
+  const current_marker = existsSync(marker_path) ? await readFile(marker_path, "utf8") : null;
+  if (current_marker === hash && existsSync(join(cache_dir, "hugo.toml"))) {
+    return cache_dir;
   }
-  if (existsSync(join(user_hugo_dir, "hugo.toml"))) {
-    return user_hugo_dir;
+
+  rmSync(cache_dir, { recursive: true, force: true });
+  mkdirSync(cache_dir, { recursive: true });
+
+  const manifest_json = Bun.gunzipSync(embed_bytes);
+  const entries = JSON.parse(Buffer.from(manifest_json).toString("utf8")) as EmbeddedFile[];
+  for (const entry of entries) {
+    const dest = join(cache_dir, entry.path);
+    mkdirSync(dirname(dest), { recursive: true });
+    writeFileSync(dest, Buffer.from(entry.content, "base64"));
   }
-  throw new Error(
-    "Hugo template directory not found. Please ensure templates/hugo exists or run ./install.sh",
-  );
+
+  writeFileSync(marker_path, hash);
+  return cache_dir;
+}
+
+/**
+ * Get a private, writable copy of the Hugo starter template — extracted
+ * from the binary's embedded copy into a per-user cache, never the shared
+ * source tree. Each call reuses the extracted cache unless the embedded
+ * template changed, and the returned directory is safe to mutate (e.g.
+ * `link_content` clearing and rewriting `content/reports/`) because nothing
+ * else depends on it staying pristine.
+ */
+export async function resolve_hugo_template_dir(): Promise<string> {
+  return ensure_hugo_template_extracted();
 }
 
 /**

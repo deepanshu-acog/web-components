@@ -78,7 +78,7 @@ async function handle_preview(
   const is_dir = statSync(abs_target).isDirectory();
   let hugo_source_dir: string;
   try {
-    hugo_source_dir = resolve_hugo_template_dir();
+    hugo_source_dir = await resolve_hugo_template_dir();
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     process.stderr.write(`Error: ${message}\n`);

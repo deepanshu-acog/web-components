@@ -28,8 +28,10 @@ build: ## Compile to dist/ and copy CSS
 test: ## Run tests
 	bun test
 
-generate: ## Regenerate custom-elements.json and the agent skill
+generate: ## Regenerate custom-elements.json, the agent skill, and the Hugo template's pre-bundled/static assets
 	bun run tools/generate.ts
+	bun run tools/bundle_hugo_app.ts
+	bun run tools/copy_hugo_static_assets.ts
 
 run: ## Run the atk-ui CLI (pass ARGS="preview" etc.)
 	bun run src/cli/index.ts $(ARGS)
@@ -45,6 +47,9 @@ preview-hugo: ## Run Hugo preview server for template (optional: FILE=component_
 check: build test ## Full gate: build, standalone CLI, test, CSS rules, and generated files
 	bun run tools/check_css.ts
 	bun run tools/generate.ts --check
+	bun run tools/bundle_hugo_app.ts --check
+	bun run tools/copy_hugo_static_assets.ts --check
+	bun run tools/bundle_hugo_template.ts --check
 	bun run tools/check_content_layout.ts
 	bun run tools/check_template_version.ts
 	$(MAKE) build-cli
@@ -53,8 +58,9 @@ check: build test ## Full gate: build, standalone CLI, test, CSS rules, and gene
 check-generated: ## Verify generated catalog files are current
 	bun run tools/generate.ts --check
 
-bundle-preview: check-generated build ## Bundle every catalogued component into one file, for atk-ui preview to embed
+bundle-preview: check-generated build ## Bundle every catalogued component, and the Hugo starter template, into files for atk-ui preview to embed
 	bun run tools/bundle_preview.ts
+	bun run tools/bundle_hugo_template.ts
 
 build-cli: bundle-preview ## Cross-compile the atk-ui CLI for every supported platform (no CI — runs locally)
 	@mkdir -p dist/bin

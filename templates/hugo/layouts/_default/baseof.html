@@ -12,8 +12,15 @@
     {{ $site_css := resources.Get "css/site.css" | minify }}
     <link rel="stylesheet" href="{{ $site_css.RelPermalink }}" />
 
-    <link rel="stylesheet" href="/fonts/ibm-plex-sans/index.css" />
-    <link rel="stylesheet" href="/fonts/jetbrains-mono/index.css" />
+    {{/* CDN, not self-hosted: no font files on disk, no node_modules mount
+         needed for fonts. --wa-font-family-heading/body/code in
+         src/theme/theme.css must name the same families as this URL. */}}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    />
 
     <script>
       (() => {
@@ -50,8 +57,10 @@
       {{ partial "footer.html" . }}
     </wa-page>
 
-    {{ $app_js := resources.Get "app.js" | js.Build (dict "minify" true "externals" (slice "molstar" "molstar/lib/apps/viewer/app")) }}
-    <script type="module" src="{{ $app_js.RelPermalink }}"></script>
+    {{/* Pre-bundled at repo-build time by tools/bundle_hugo_app.ts — see that
+         file for why. Hugo never runs esbuild on this; it's a plain static
+         file, so no node_modules is needed here for JS. */}}
+    <script type="module" src="/atk-ui/app.js"></script>
 
     <script>
       // The header search box does two things: it filters the sidebar's own

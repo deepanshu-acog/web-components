@@ -1,5 +1,7 @@
 node_modules/
+**/node_modules/
 dist/
+**/dist/
 *.tsbuildinfo
 theme-builder.html
 skills-lock.json
@@ -8,3 +10,11 @@ docs/handoff.md
 docs/plan-*.md
 docs/*-plan.md
 .roles
+**/public/
+**/resources/
+**/.hugo_build.lock
+**/.pagefind/
+templates/hugo/content/reports/*
+!templates/hugo/content/reports/.gitkeep
+templates/astro/src/content/reports/*
+!templates/astro/src/content/reports/.gitkeep
