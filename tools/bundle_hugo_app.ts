@@ -19,7 +19,7 @@
  * `--check` verifies the committed output is current, same pattern as
  * `tools/generate.ts`.
  */
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir, symlink } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 
@@ -27,6 +27,25 @@ const ROOT = new URL("..", import.meta.url).pathname;
 const ENTRY = join(ROOT, "templates/hugo/assets/app.js");
 const OUT_DIR = join(ROOT, "templates/hugo/static/atk-ui");
 const OUT_FILE = join(OUT_DIR, "app.js");
+
+// app.js bare-imports "@aganitha/atk-ui/components/*" — but that package
+// *is* this repo, so a plain `bun install` never creates a node_modules
+// entry pointing a package back at itself; only `bun link` (run twice, by
+// hand) does. Rather than depend on that global, contributor-machine-only
+// state, make the resolution local and deterministic: self-link
+// node_modules/@aganitha/atk-ui -> repo root here, every run. This also
+// requires `bun run build` to have already produced dist/ (the exports map
+// in package.json resolves "./components/*" to "./dist/components/*/*.js")
+// — run by `make generate`, which depends on `build` for exactly this.
+const SELF_LINK = join(ROOT, "node_modules/@aganitha/atk-ui");
+if (!existsSync(SELF_LINK)) {
+  await mkdir(join(ROOT, "node_modules/@aganitha"), { recursive: true });
+  await symlink(ROOT, SELF_LINK, "dir");
+}
+if (!existsSync(join(ROOT, "dist/components"))) {
+  console.error("dist/components not found — run `bun run build` before bundle_hugo_app.ts.");
+  process.exit(1);
+}
 
 const result = await Bun.build({
   entrypoints: [ENTRY],

@@ -28,7 +28,7 @@ build: ## Compile to dist/ and copy CSS
 test: ## Run tests
 	bun test
 
-generate: ## Regenerate custom-elements.json, the agent skill, and the Hugo template's pre-bundled/static assets
+generate: build ## Regenerate custom-elements.json, the agent skill, and the Hugo template's pre-bundled/static assets
 	bun run tools/generate.ts
 	bun run tools/bundle_hugo_app.ts
 	bun run tools/copy_hugo_static_assets.ts

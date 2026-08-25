@@ -691,103 +691,6 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/components/go-ribbon/go-ribbon.ts",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "Gene Ontology annotations for a gene or protein, shown as a ribbon.\n\nThis wraps `<wc-go-ribbon>` from the Gene Ontology consortium. We do not\ndraw the ribbon ourselves — the people who own the data maintain the\nvisualisation, and that is the right arrangement.\n\nThe upstream component is large and most pages that can show a ribbon do not\nshow one on first paint, so it is loaded on demand rather than bundled.",
-          "name": "AtkGoRibbon",
-          "cssParts": [
-            {
-              "description": "The message shown while loading or after a failure.",
-              "name": "fallback"
-            }
-          ],
-          "members": [
-            {
-              "kind": "field",
-              "name": "css",
-              "static": true,
-              "default": "css` :host { display: block; min-block-size: 3rem; } .fallback { color: var(--wa-color-text-quiet); font-size: var(--wa-font-size-s); padding-block: var(--wa-space-s); } .fallback a { color: var(--wa-color-text-link); } `"
-            },
-            {
-              "kind": "field",
-              "name": "subject",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\"",
-              "description": "The subject identifier, for example `UniProtKB:Q8NER5`. Several may be\ngiven, separated by commas, as the upstream component expects.",
-              "attribute": "subject"
-            },
-            {
-              "kind": "field",
-              "name": "load_state",
-              "type": {
-                "text": "LoadState"
-              },
-              "privacy": "private",
-              "default": "\"idle\""
-            },
-            {
-              "kind": "method",
-              "name": "load_upstream",
-              "privacy": "private",
-              "return": {
-                "type": {
-                  "text": "Promise<void>"
-                }
-              },
-              "description": "Load the upstream component the first time this element is used.\n\nThe import specifier is held in a variable so that bundlers treat it as a\nruntime import rather than trying to resolve it at build time. The package\nis an optional dependency — an application that never shows a ribbon\nshould not have to install it."
-            },
-            {
-              "kind": "method",
-              "name": "render_fallback",
-              "privacy": "private",
-              "return": {
-                "type": {
-                  "text": "TemplateResult"
-                }
-              },
-              "description": "A failure has to say what is missing and still show the subject.\n\nA blank space where a chart should be tells the reader nothing and tells\nwhoever has to fix it even less."
-            }
-          ],
-          "attributes": [
-            {
-              "name": "subject",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\"",
-              "description": "The subject identifier, for example `UniProtKB:Q8NER5`. Several may be\ngiven, separated by commas, as the upstream component expects.",
-              "fieldName": "subject"
-            }
-          ],
-          "superclass": {
-            "name": "AganithaComponent",
-            "module": "/src/base.js"
-          },
-          "tagName": "atk-go-ribbon",
-          "customElement": true,
-          "summary": "Gene Ontology annotations for a gene or protein.",
-          "atkUse": "Showing GO annotations for one gene or protein, when the reader wants to see which functional categories are annotated at a glance.",
-          "atkAvoid": "Do not use it as a general chart. It only understands Gene Ontology subject identifiers. For arbitrary category data, use a table.",
-          "atkExample": "```html\n<atk-go-ribbon subject=\"UniProtKB:Q8NER5\"></atk-go-ribbon>\n```"
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "AtkGoRibbon",
-          "declaration": {
-            "name": "AtkGoRibbon",
-            "module": "src/components/go-ribbon/go-ribbon.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
       "path": "src/components/data-table/data-table.ts",
       "declarations": [
         {
@@ -943,6 +846,103 @@
           "declaration": {
             "name": "AtkDataTable",
             "module": "src/components/data-table/data-table.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/go-ribbon/go-ribbon.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Gene Ontology annotations for a gene or protein, shown as a ribbon.\n\nThis wraps `<wc-go-ribbon>` from the Gene Ontology consortium. We do not\ndraw the ribbon ourselves — the people who own the data maintain the\nvisualisation, and that is the right arrangement.\n\nThe upstream component is large and most pages that can show a ribbon do not\nshow one on first paint, so it is loaded on demand rather than bundled.",
+          "name": "AtkGoRibbon",
+          "cssParts": [
+            {
+              "description": "The message shown while loading or after a failure.",
+              "name": "fallback"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "css",
+              "static": true,
+              "default": "css` :host { display: block; min-block-size: 3rem; } .fallback { color: var(--wa-color-text-quiet); font-size: var(--wa-font-size-s); padding-block: var(--wa-space-s); } .fallback a { color: var(--wa-color-text-link); } `"
+            },
+            {
+              "kind": "field",
+              "name": "subject",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The subject identifier, for example `UniProtKB:Q8NER5`. Several may be\ngiven, separated by commas, as the upstream component expects.",
+              "attribute": "subject"
+            },
+            {
+              "kind": "field",
+              "name": "load_state",
+              "type": {
+                "text": "LoadState"
+              },
+              "privacy": "private",
+              "default": "\"idle\""
+            },
+            {
+              "kind": "method",
+              "name": "load_upstream",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "Promise<void>"
+                }
+              },
+              "description": "Load the upstream component the first time this element is used.\n\nThe import specifier is held in a variable so that bundlers treat it as a\nruntime import rather than trying to resolve it at build time. The package\nis an optional dependency — an application that never shows a ribbon\nshould not have to install it."
+            },
+            {
+              "kind": "method",
+              "name": "render_fallback",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "TemplateResult"
+                }
+              },
+              "description": "A failure has to say what is missing and still show the subject.\n\nA blank space where a chart should be tells the reader nothing and tells\nwhoever has to fix it even less."
+            }
+          ],
+          "attributes": [
+            {
+              "name": "subject",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The subject identifier, for example `UniProtKB:Q8NER5`. Several may be\ngiven, separated by commas, as the upstream component expects.",
+              "fieldName": "subject"
+            }
+          ],
+          "superclass": {
+            "name": "AganithaComponent",
+            "module": "/src/base.js"
+          },
+          "tagName": "atk-go-ribbon",
+          "customElement": true,
+          "summary": "Gene Ontology annotations for a gene or protein.",
+          "atkUse": "Showing GO annotations for one gene or protein, when the reader wants to see which functional categories are annotated at a glance.",
+          "atkAvoid": "Do not use it as a general chart. It only understands Gene Ontology subject identifiers. For arbitrary category data, use a table.",
+          "atkExample": "```html\n<atk-go-ribbon subject=\"UniProtKB:Q8NER5\"></atk-go-ribbon>\n```"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AtkGoRibbon",
+          "declaration": {
+            "name": "AtkGoRibbon",
+            "module": "src/components/go-ribbon/go-ribbon.ts"
           }
         }
       ]

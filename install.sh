@@ -28,9 +28,9 @@ if [ ! -d "node_modules" ]; then
 fi
 
 bun run tools/generate.ts
+bun run build
 bun run tools/bundle_hugo_app.ts
 bun run tools/copy_hugo_static_assets.ts
-bun run build
 bun run tools/bundle_preview.ts
 bun run tools/bundle_hugo_template.ts
 
