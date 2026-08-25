@@ -949,131 +949,6 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/components/mermaid/mermaid.ts",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "Renders flowcharts, sequence diagrams, and process graphs using Mermaid.js.\n\nUses `IntersectionObserver` to lazy-load the Mermaid rendering engine on demand\nwhen scrolled into view. Diagram code can be passed via the `code` attribute\nor as text child content.",
-          "name": "AtkMermaid",
-          "members": [
-            {
-              "kind": "field",
-              "name": "css",
-              "static": true,
-              "default": "css` :host { display: block; margin-block: var(--wa-space-l); overflow-x: auto; } .container { display: flex; justify-content: center; align-items: center; min-height: 4rem; padding: var(--wa-space-m); background-color: var(--wa-color-surface-lowered); border-radius: var(--wa-border-radius-m); border: 1px solid var(--wa-color-surface-border); } .status { font-size: var(--wa-font-size-s); color: var(--wa-color-text-quiet); } .error { color: var(--wa-color-danger-fill-loud); } `"
-            },
-            {
-              "kind": "field",
-              "name": "code",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\"",
-              "description": "Mermaid diagram definition string (e.g. \"graph TD; A-->B;\").",
-              "attribute": "code"
-            },
-            {
-              "kind": "field",
-              "name": "svg",
-              "type": {
-                "text": "string"
-              },
-              "privacy": "private",
-              "default": "\"\""
-            },
-            {
-              "kind": "field",
-              "name": "loading",
-              "type": {
-                "text": "boolean"
-              },
-              "privacy": "private",
-              "default": "true"
-            },
-            {
-              "kind": "field",
-              "name": "error",
-              "type": {
-                "text": "string"
-              },
-              "privacy": "private",
-              "default": "\"\""
-            },
-            {
-              "kind": "field",
-              "name": "observer",
-              "type": {
-                "text": "IntersectionObserver | undefined"
-              },
-              "privacy": "private"
-            },
-            {
-              "kind": "method",
-              "name": "read_code_content",
-              "privacy": "private",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "setup_lazy_load",
-              "privacy": "private",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "render_mermaid",
-              "privacy": "private",
-              "return": {
-                "type": {
-                  "text": "Promise<void>"
-                }
-              }
-            }
-          ],
-          "attributes": [
-            {
-              "name": "code",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\"",
-              "description": "Mermaid diagram definition string (e.g. \"graph TD; A-->B;\").",
-              "fieldName": "code"
-            }
-          ],
-          "superclass": {
-            "name": "AganithaComponent",
-            "module": "/src/base.js"
-          },
-          "tagName": "atk-mermaid",
-          "customElement": true,
-          "summary": "Lazy-loaded Mermaid.js flowchart and diagram renderer.",
-          "atkUse": "Visualizing clinical pathways, biochemical reaction cascades, software architectures, or procedural flowcharts in reports.",
-          "atkAvoid": "Do not use for simple static lists or key-value data; use a timeline or table instead.",
-          "atkExample": "```html\n<atk-mermaid code=\"graph LR; Screening --> Phase1; Phase1 --> Phase2;\"></atk-mermaid>\n```"
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "AtkMermaid",
-          "declaration": {
-            "name": "AtkMermaid",
-            "module": "src/components/mermaid/mermaid.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
       "path": "src/components/metric/metric.ts",
       "declarations": [
         {
@@ -1281,6 +1156,131 @@
           "declaration": {
             "name": "AtkMetric",
             "module": "src/components/metric/metric.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/mermaid/mermaid.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Renders flowcharts, sequence diagrams, and process graphs using Mermaid.js.\n\nUses `IntersectionObserver` to lazy-load the Mermaid rendering engine on demand\nwhen scrolled into view. Diagram code can be passed via the `code` attribute\nor as text child content.",
+          "name": "AtkMermaid",
+          "members": [
+            {
+              "kind": "field",
+              "name": "css",
+              "static": true,
+              "default": "css` :host { display: block; margin-block: var(--wa-space-l); overflow-x: auto; } .container { display: flex; justify-content: center; align-items: center; min-height: 4rem; padding: var(--wa-space-m); background-color: var(--wa-color-surface-lowered); border-radius: var(--wa-border-radius-m); border: 1px solid var(--wa-color-surface-border); } .status { font-size: var(--wa-font-size-s); color: var(--wa-color-text-quiet); } .error { color: var(--wa-color-danger-fill-loud); } `"
+            },
+            {
+              "kind": "field",
+              "name": "code",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Mermaid diagram definition string (e.g. \"graph TD; A-->B;\").",
+              "attribute": "code"
+            },
+            {
+              "kind": "field",
+              "name": "svg",
+              "type": {
+                "text": "string"
+              },
+              "privacy": "private",
+              "default": "\"\""
+            },
+            {
+              "kind": "field",
+              "name": "loading",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "true"
+            },
+            {
+              "kind": "field",
+              "name": "error",
+              "type": {
+                "text": "string"
+              },
+              "privacy": "private",
+              "default": "\"\""
+            },
+            {
+              "kind": "field",
+              "name": "observer",
+              "type": {
+                "text": "IntersectionObserver | undefined"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "read_code_content",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "setup_lazy_load",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "render_mermaid",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "Promise<void>"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "code",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Mermaid diagram definition string (e.g. \"graph TD; A-->B;\").",
+              "fieldName": "code"
+            }
+          ],
+          "superclass": {
+            "name": "AganithaComponent",
+            "module": "/src/base.js"
+          },
+          "tagName": "atk-mermaid",
+          "customElement": true,
+          "summary": "Lazy-loaded Mermaid.js flowchart and diagram renderer.",
+          "atkUse": "Visualizing clinical pathways, biochemical reaction cascades, software architectures, or procedural flowcharts in reports.",
+          "atkAvoid": "Do not use for simple static lists or key-value data; use a timeline or table instead.",
+          "atkExample": "```html\n<atk-mermaid code=\"graph LR; Screening --> Phase1; Phase1 --> Phase2;\"></atk-mermaid>\n```"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AtkMermaid",
+          "declaration": {
+            "name": "AtkMermaid",
+            "module": "src/components/mermaid/mermaid.ts"
           }
         }
       ]

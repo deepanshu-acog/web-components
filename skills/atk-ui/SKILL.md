@@ -109,6 +109,23 @@ this skill actually adds; don't assume it from memory or an older answer.
 >    - **If a check reveals something is wrong or missing**, fix the source
 >      (or flag it) instead of working around it quietly — that's what keeps
 >      this list from needing to be repeated to the next person who reads it.
+>
+> 7. **Before Declaring a Report Done, Audit What You Actually Used:**
+>    List every distinct `wa-*`/`atk-*` tag in the report and the `layout:`
+>    you picked. If it's the same small set you'd write from memory —
+>    typically `wa-card`, `wa-button`, `wa-callout`, `atk-metric`, `atk-chart`,
+>    and no `layout:` at all — stop and re-walk the [Packs](#packs) section
+>    and the `webawesome` skill's `choosing-components` reference before
+>    finishing, the same way `webawesome-design`'s own final pass catches
+>    drift after a first draft. Deliberately consider components this
+>    catalog has but rarely gets reached for — `atk-timeline`, `atk-process`
+>    (with `atk-step`), `atk-sidenote`, `atk-go-ribbon`, `record-list`,
+>    `swot-grid`, `atk-well-plate`, `atk-molstar` for bio content — and
+>    Web Awesome's `wa-tab-group`, `wa-tree`, `wa-details`, `wa-carousel`,
+>    `wa-comparison`. A report that could only ever be one shape regardless
+>    of its content picked its `layout:` out of habit, not fit — re-read
+>    rule 3's six shapes and confirm the one chosen is actually the best
+>    fit for this content, not just the familiar default.
 
 **Do not write these from memory.** Both Web Awesome and this package appear
 in training data at older versions. Read the reference file before using
